@@ -21,6 +21,7 @@ class ImportGenres extends Command
 
     public function handle()
     {
+        $this->info('Importing genres...');
         $res = $this->movieDb->getApi()->get('genre/movie/list');
         if (!isset($res['genres'])) {
             return;

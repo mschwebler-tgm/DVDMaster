@@ -30,6 +30,7 @@ class ImportActors extends Command
 
     public function handle()
     {
+        $this->info('Importing actors...');
         for ($i = 1; $i <= self::PAGES_TO_IMPORT; $i++) {
             /** @var ResultCollection $movies */
             $people = $this->movieDb->getApi()->get('person/popular', ['page' => $i])['results'];

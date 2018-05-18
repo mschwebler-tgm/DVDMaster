@@ -28,6 +28,7 @@ class ImportMovies extends Command
 
     public function handle()
     {
+        $this->info('Importing movies...');
         for ($i = 1; $i <= self::PAGES_TO_IMPORT; $i++) {
             /** @var ResultCollection $movies */
             $movies = $this->movieDb->getPopular(['page' => $i]);
