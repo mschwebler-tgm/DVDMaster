@@ -25,7 +25,7 @@ class AddMoviesTable extends Migration
             $table->longText('overview')->nullable();
             $table->double('popularity')->nullable();
             $table->date('release_date')->nullable();
-            $table->integer('revenue')->nullable();
+            $table->double('revenue')->nullable();
             $table->string('tagline')->nullable();
             $table->string('title');
             $table->double('vote_average')->nullable();

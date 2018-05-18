@@ -20,8 +20,8 @@ class MovieDao
         $dbMovie = new Movie();
         $dbMovie->tmdb_id = $movie->getId();
         $dbMovie->imdb_id = $movie->getImdbId();
-        $dbMovie->backdrop_path = $movie->getBackdropImage();
-        $dbMovie->belongs_to_collection = $movie->getBelongsToCollection();
+        $dbMovie->backdrop_path = $movie->getBackdropImage() ? $movie->getBackdropImage()->getFilePath() : null;
+        $dbMovie->belongs_to_collection = (bool)$movie->getBelongsToCollection();
         $dbMovie->budget = $movie->getBudget();
         $dbMovie->homepage = $movie->getHomepage();
         $dbMovie->original_title = $movie->getOriginalTitle();

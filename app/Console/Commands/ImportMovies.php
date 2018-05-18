@@ -34,6 +34,7 @@ class ImportMovies extends Command
             $movies = $this->movieDb->getPopular(['page' => $i]);
             /** @var \Tmdb\Model\Movie $movie */
             foreach ($movies->toArray() as $movie) {
+                $movie = $this->movieDb->load($movie->getId(), ['append_to_response' => false]);
                 $dbMovie = $this->movieDao->insertFromTmdb($movie);
 
                 foreach ($this->getGenreIds($movie) as $genreId) {
