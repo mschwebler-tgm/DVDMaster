@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <movie-cards></movie-cards>
-</div>
+<router-view></router-view>
 @endsection
