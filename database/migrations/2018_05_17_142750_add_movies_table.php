@@ -18,6 +18,7 @@ class AddMoviesTable extends Migration
             $table->unsignedInteger('tmdb_id')->nullable();
             $table->string('imdb_id')->nullable();
             $table->string('backdrop_path')->nullable();
+            $table->string('poster_path')->nullable();
             $table->boolean('belongs_to_collection')->nullable();
             $table->integer('budget')->nullable();
             $table->string('homepage')->nullable();
