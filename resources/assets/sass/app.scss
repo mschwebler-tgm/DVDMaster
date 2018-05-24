@@ -24,3 +24,16 @@ html, body {
 .pointer {
   cursor: pointer;
 }
+
+#loadingscreen{
+  background-color: rgba(0, 0, 0, 0.56);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999999;
+}

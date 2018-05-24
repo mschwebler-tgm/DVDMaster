@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Movie;
+use App\Service\Dao\MovieDao;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
+    private $movieDao;
+
+    public function __construct(MovieDao $movieDao)
+    {
+        $this->movieDao = $movieDao;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +43,12 @@ class MovieController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $movie = $request->get('movie');
+        if (!$movie) {
+            abort(500);
+        }
+
+        $this->movieDao->insertFromArray($movie);
     }
 
     /**

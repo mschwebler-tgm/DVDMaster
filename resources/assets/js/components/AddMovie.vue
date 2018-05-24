@@ -79,7 +79,7 @@
         <div class="container">
             <div class="row">
                 <div class="col s12">
-                    <a class="waves-effect waves-light btn right">Save</a>
+                    <a class="waves-effect waves-light btn right" @click="save">Save</a>
                 </div>
             </div>
         </div>
@@ -157,6 +157,16 @@
                         'AudioVolumeMute', 'AudioVolumeDown', 'AudioVolumeUp', 'End', 'PageDown', 'PageUp',
                         'Home', 'Insert', 'NumLock'].indexOf(event.key) === -1;
                 }
+            },
+            save() {
+                this.$root.showLoading = true;
+                axios.post('/api/movie', { movie: this.movie }).then(res => {
+                    console.log(res);
+                    this.$root.showLoading = false;
+                }).catch(err => {
+                    console.log(err);
+                    this.$root.showLoading = false;
+                });
             }
         },
         components: {

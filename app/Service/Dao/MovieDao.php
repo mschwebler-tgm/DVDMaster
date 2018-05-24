@@ -2,7 +2,9 @@
 
 namespace App\Service\Dao;
 
+use App\Genre;
 use App\Movie;
+use App\MovieHasGenre;
 
 class MovieDao
 {
@@ -53,6 +55,7 @@ class MovieDao
         $movie = Movie::create([
             "vote_average" => isset($movieArray['vote_average']) && $movieArray['vote_average'] ? $movieArray['vote_average'] : null,
             "vote_count" => isset($movieArray['vote_count']) && $movieArray['vote_count'] ? $movieArray['vote_count'] : null,
+            "custom_rating" => isset($movieArray['custom_rating']) && $movieArray['custom_rating'] ? $movieArray['custom_rating'] : null,
             "tmdb_id" => isset($movieArray['id']) && $movieArray['id'] ? $movieArray['id'] : null,
             "imdb_id" => isset($movieArray['imdb_id']) && $movieArray['imdb_id'] ? $movieArray['imdb_id'] : null,
             "title" => isset($movieArray['title']) && $movieArray['title'] ? $movieArray['title'] : $movieArray['name'],
@@ -68,6 +71,17 @@ class MovieDao
             "revenue" => isset($movieArray['revenue']) && $movieArray['revenue'] ? $movieArray['revenue'] : null,
             "tagline" => isset($movieArray['tagline']) && $movieArray['tagline'] ? $movieArray['tagline'] : null
         ]);
+
+        if (isset($movieArray['genre_ids'])) {
+//            $movie->genres()->attach($movieArray['genre_ids']);
+            foreach ($movieArray['genre_ids'] as $genre_id) {
+                MovieHasGenre::create([
+                    'movie_id' => $movie->id,
+                    'genre_id' => Genre::where('tmdb_id', $genre_id)->first()->id
+                ]);
+//                $movie->genres()->attach($genre_id);
+            }
+        }
 
         return $movie;
     }

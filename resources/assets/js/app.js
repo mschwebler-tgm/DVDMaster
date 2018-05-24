@@ -18,7 +18,8 @@ const app = new Vue({
     data() {
         return {
             theMovieDb,
-            tmdbImagePath: 'https://image.tmdb.org/t/p/'
+            tmdbImagePath: 'https://image.tmdb.org/t/p/',
+            showLoading: false
         }
     },
     mounted() {
