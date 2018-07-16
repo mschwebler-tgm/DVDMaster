@@ -29,15 +29,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s6">
+                    <div class="input-field col s12">
                         <input id="custom_genres" type="text" class="validate" v-model="customMovie.genres">
-                        <label for="custom_genres">Genres</label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s6">
+                    <div class="input-field col s12">
                         <input id="custom_actors" type="text" class="validate" v-model="customMovie.actors">
-                        <label for="custom_actors">Actors</label>
                     </div>
                 </div>
                 <div class="row">
@@ -194,6 +192,8 @@
                     this.customMovie.release_date = year + '-' + month + '-' + day;
                 },
             });
+            this.initGenreTypeAhead();
+            this.initActorTypeAhead();
         },
         methods: {
             searchMovie() {
@@ -290,7 +290,63 @@
             clearBackdrop() {
                 $('#custom_backdrop').val(null);
                 this.custom_backdrop_preview = null;
-            }
+            },
+            initGenreTypeAhead() {
+                let genreNames = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    prefetch: {
+                        url: '/api/genreNames',
+                        filter: function(list) {
+                            return $.map(list, function(genreName) {
+                                return { name: genreName }; });
+                        }
+                    }
+                });
+                genreNames.initialize();
+
+                let input = $('#custom_genres');
+                input.tagsinput({
+                    typeaheadjs: {
+                        name: 'genrenames',
+                        displayKey: 'name',
+                        valueKey: 'name',
+                        source: genreNames.ttAdapter()
+                    },
+                    tagClass: 'custom-tag',
+                });
+
+                input.on('itemAdded', event => this.customMovie.actors = event.target.value.split(','));
+                input.on('itemRemoved', event => this.customMovie.actors = event.target.value.split(','));
+            },
+            initActorTypeAhead() {
+                let actorNames = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    prefetch: {
+                        url: '/api/actorNames',
+                        filter: function(list) {
+                            return $.map(list, function(actorName) {
+                                return { name: actorName }; });
+                        }
+                    }
+                });
+                actorNames.initialize();
+
+                let input = $('#custom_actors');
+                input.tagsinput({
+                    typeaheadjs: {
+                        name: 'actornames',
+                        displayKey: 'name',
+                        valueKey: 'name',
+                        source: actorNames.ttAdapter()
+                    },
+                    tagClass: 'custom-tag',
+                });
+
+                input.on('itemAdded', event => this.customMovie.genres = event.target.value.split(','));
+                input.on('itemRemoved', event => this.customMovie.genres = event.target.value.split(','));
+            },
         },
         components: {
             swiper,

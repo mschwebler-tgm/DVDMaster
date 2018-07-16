@@ -50,8 +50,14 @@ class MovieController extends Controller
 
         $isCustom = (bool) $request->get('is_custom');
         if ($isCustom) {
-            $posterPath = $request->file('custom_poster')->store('posters', 'public');
-            $backdropPath = $request->file('custom_backdrop')->store('backdrops', 'public');
+            $posterPath = null;
+            if ($request->file('custom_poster')) {
+                $posterPath = $request->file('custom_poster')->store('posters', 'public');
+            }
+            $backdropPath = null;
+            if ($request->file('custom_backdrop')) {
+                $backdropPath = $request->file('custom_backdrop')->store('backdrops', 'public');
+            }
             $this->movieDao->insertFromCustomArray($request->all(), $posterPath, $backdropPath);
         } else if ($isCustom === false) {
             $this->movieDao->insertFromArray($movie);

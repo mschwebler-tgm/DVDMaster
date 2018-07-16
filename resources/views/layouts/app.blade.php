@@ -12,6 +12,8 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js') }}" defer></script>
+    <script src="{{ asset('lib/typeahead/typeahead.js') }}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
 
     <!-- Fonts -->
@@ -23,6 +25,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css') }}" rel="stylesheet">
 </head>
 <body>
 <div id="app">
