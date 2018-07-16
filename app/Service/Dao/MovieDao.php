@@ -5,6 +5,7 @@ namespace App\Service\Dao;
 use App\Genre;
 use App\Movie;
 use App\MovieHasGenre;
+use Illuminate\Support\Facades\Storage;
 
 class MovieDao
 {
@@ -84,5 +85,25 @@ class MovieDao
         }
 
         return $movie;
+    }
+
+    public function insertFromCustomArray($payload, $posterPath = null, $backdropPath = null)
+    {
+        if (!isset($payload['movie'])) {
+            return;
+        }
+
+        $movie = (array) json_decode($payload['movie']);
+
+        $movie = Movie::create([
+            "custom_rating" => isset($movie['custom_rating']) ? $movie['custom_rating'] : null,
+            "title" => isset($movie['title']) ? $movie['title'] : null,
+            "backdrop_path" => $backdropPath ? Storage::url($backdropPath) : null,
+            "poster_path" => $backdropPath ? Storage::url($posterPath) : null,
+            "overview" => isset($movie['overview']) ? $movie['overview'] : null,
+            "release_date" => isset($movie['release_date']) ? $movie['release_date'] : null,
+        ]);
+
+        dd($movie);
     }
 }

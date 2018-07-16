@@ -1,9 +1,70 @@
 <template>
     <div style="margin-top: 20px;">
-        <div class="hide-on-med-and-up">
-
+        <div class="container flex-box flex-justify-end" style="padding-bottom: 15px">
+            <span style="margin-right: 20px;">Autocomplete</span>
+            <div class="switch">
+                <label>
+                    Off
+                    <input type="checkbox" v-model="autocomplete">
+                    <span class="lever"></span>
+                    On
+                </label>
+            </div>
         </div>
-        <div class="container hide-on-small-only z-depth-3">
+        <div v-show="!autocomplete">
+            <div class="container z-depth-3">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="custom_title" type="text" class="validate" v-model="customMovie.title">
+                        <label for="custom_title">Title</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <star-rating :increment="0.5" style="z-index: 1000;" inactive-color="#e6e6e6" class="right"
+                                     active-color="#FFD700" v-model="customMovie.custom_rating" :show-rating="false"
+                                     :border-width="0" :star-size="40"></star-rating>
+                    </div>
+                    <div class="input-field col s12">
+                        <textarea id="custom_overview" class="validate materialize-textarea" v-model="customMovie.overview"></textarea>
+                        <label for="custom_overview">Overview</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="custom_genres" type="text" class="validate" v-model="customMovie.genres">
+                        <label for="custom_genres">Genres</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="custom_actors" type="text" class="validate" v-model="customMovie.actors">
+                        <label for="custom_actors">Actors</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s3">
+                        <input type="text" class="datepicker">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s6">
+                        <a class="waves-effect waves-light btn" @click="openCustomBackdropDialog()"><i class="material-icons left">collections</i>Background</a>
+                        <a class="waves-effect waves-light btn" @click="clearBackdrop()" v-if="custom_backdrop_preview"><i class="material-icons left">clear</i>Clear</a>
+                        <input type="file" id="custom_backdrop" style="display: none" accept="image/*" @change="previewBackdrop">
+                        <img :src="custom_backdrop_preview" id="custom_backdrop_preview" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s6">
+                        <a class="waves-effect waves-light btn" @click="openCustomCoverDialog()"><i class="material-icons left">collections_bookmark</i>Cover</a>
+                        <a class="waves-effect waves-light btn" @click="clearCover()" v-if="custom_poster_preview"><i class="material-icons left">clear</i>Clear</a>
+                        <input type="file" id="custom_cover" style="display: none" accept="image/*" @change="previewCover">
+                        <img :src="custom_poster_preview" id="custom_cover_preview" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container hide-on-small-only z-depth-3" v-show="autocomplete">
             <div class="movie-backdrop" :style="{'background-image': movie.backdrop_path ? 'url(' + $root.tmdbImagePath + 'original' + movie.backdrop_path + ')' : ''}">
                 <div class="row" style="height: 420px;">
                     <i class="material-icons clear-movie tooltipped" data-position="right" data-tooltip="Clear" @click="clearMovie">clear</i>
@@ -96,6 +157,7 @@
         data() {
             return {
                 movie: {},
+                customMovie: {},
                 suggestions: [],
                 swiperOption: {
                     slidesPerView: window.innerWidth / 230,
@@ -105,7 +167,10 @@
                 readyForSuggestions: true,
                 collapsibleInstances: [],
                 lastSearchTerm: '',
-                searchTermChanged: false
+                searchTermChanged: false,
+                autocomplete: true,
+                custom_backdrop_preview: null,
+                custom_poster_preview: null
             }
         },
         mounted() {
@@ -115,6 +180,20 @@
             this.instances = M.Collapsible.init(elems);
             elems = document.querySelectorAll('.tooltipped');
             M.Tooltip.init(elems);
+            elems = document.querySelectorAll('.datepicker');
+            M.Datepicker.init(elems, {
+                autoclose: true,
+                format: 'dd. mm. yyyy',
+                yearRange: [1950, (new Date()).getFullYear()],
+                firstDay: 1,
+                onSelect: dateEvent => {
+                    let date = new Date(dateEvent);
+                    let year = date.getFullYear();
+                    let month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
+                    let day = date.getDay() < 10 ? '0' + date.getDay() : date.getDay();
+                    this.customMovie.release_date = year + '-' + month + '-' + day;
+                },
+            });
         },
         methods: {
             searchMovie() {
@@ -159,12 +238,58 @@
             },
             save() {
                 this.$root.showLoading = true;
-                axios.post('/api/movie', { movie: this.movie }).then(res => {
+                let payload = {
+                    movie: this.movie,
+                    is_custom: false
+                };
+                if (!this.autocomplete) {
+                    payload = new FormData();
+                    payload.set('movie', JSON.stringify(this.customMovie));
+                    payload.set('is_custom', 'true');
+                    let coverInput = $('#custom_cover')[0];
+                    if (coverInput.files && coverInput.files[0]) {
+                        payload.append('custom_poster', coverInput.files[0], coverInput.files[0].name);
+                    }
+                    let backdropInput = $('#custom_backdrop')[0];
+                    if (backdropInput.files && backdropInput.files[0]) {
+                        payload.append('custom_backdrop', backdropInput.files[0], backdropInput.files[0].name);
+                    }
+                }
+                axios.post('/api/movie', payload).then(res => {
                     this.$root.showLoading = false;
                     M.toast({html: 'Movie saved!', classes: 'complete-toast'});
                 }).catch(err => {
                     this.$root.showLoading = false;
                 });
+            },
+            openCustomCoverDialog() {
+                $('#custom_cover').trigger('click');
+            },
+            openCustomBackdropDialog() {
+                $('#custom_backdrop').trigger('click');
+            },
+            setPreviewImage(input, element) {
+                if (input.files && input.files[0]) {
+                    let reader = new FileReader();
+                    reader.onload = (e) => {
+                        this[element] = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            },
+            previewCover() {
+                this.setPreviewImage($('#custom_cover')[0], 'custom_poster_preview');
+            },
+            previewBackdrop() {
+                this.setPreviewImage($('#custom_backdrop')[0], 'custom_backdrop_preview');
+            },
+            clearCover() {
+                $('#custom_cover').val(null);
+                this.custom_poster_preview = null;
+            },
+            clearBackdrop() {
+                $('#custom_backdrop').val(null);
+                this.custom_backdrop_preview = null;
             }
         },
         components: {
@@ -376,6 +501,10 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
+    }
+
+    #custom_cover_preview, #custom_backdrop_preview {
+        max-width: 100%;
     }
 
 </style>

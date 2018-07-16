@@ -48,7 +48,14 @@ class MovieController extends Controller
             abort(500);
         }
 
-        $this->movieDao->insertFromArray($movie);
+        $isCustom = (bool) $request->get('is_custom');
+        if ($isCustom) {
+            $posterPath = $request->file('custom_poster')->store('posters', 'public');
+            $backdropPath = $request->file('custom_backdrop')->store('backdrops', 'public');
+            $this->movieDao->insertFromCustomArray($request->all(), $posterPath, $backdropPath);
+        } else if ($isCustom === false) {
+            $this->movieDao->insertFromArray($movie);
+        }
     }
 
     /**

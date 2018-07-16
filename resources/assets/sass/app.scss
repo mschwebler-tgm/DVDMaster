@@ -37,3 +37,11 @@ html, body {
   left: 0;
   z-index: 9999999;
 }
+
+.flex-box {
+  display: flex;
+}
+
+.flex-justify-end {
+  justify-content: flex-end;
+}
