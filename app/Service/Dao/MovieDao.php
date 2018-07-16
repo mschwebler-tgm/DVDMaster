@@ -74,13 +74,13 @@ class MovieDao
         ]);
 
         if (isset($movieArray['genre_ids'])) {
-//            $movie->genres()->attach($movieArray['genre_ids']);
             foreach ($movieArray['genre_ids'] as $genre_id) {
+                $genre = Genre::where('tmdb_id', $genre_id)->first();
+                if (!$genre) { continue; }
                 MovieHasGenre::create([
                     'movie_id' => $movie->id,
-                    'genre_id' => Genre::where('tmdb_id', $genre_id)->first()->id
+                    'genre_id' => $genre->id
                 ]);
-//                $movie->genres()->attach($genre_id);
             }
         }
 
