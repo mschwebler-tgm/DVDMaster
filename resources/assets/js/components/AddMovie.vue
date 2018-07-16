@@ -150,7 +150,6 @@
                 this.suggestions = [];
             },
             registerChange(event) {
-                console.log(event);
                 if (!this.searchTermChanged) {
                     this.searchTermChanged = ['Enter', 'Tab', 'Control', 'Alt', 'Shift', 'Capslock', 'Escape',
                         'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
@@ -161,10 +160,9 @@
             save() {
                 this.$root.showLoading = true;
                 axios.post('/api/movie', { movie: this.movie }).then(res => {
-                    console.log(res);
                     this.$root.showLoading = false;
+                    M.toast({html: 'Movie saved!', classes: 'complete-toast'});
                 }).catch(err => {
-                    console.log(err);
                     this.$root.showLoading = false;
                 });
             }
