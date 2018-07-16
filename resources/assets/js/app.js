@@ -8,6 +8,7 @@ import Transitions from 'vue2-transitions'
 import theMovieDb from './themoviedb';
 
 Vue.component('movie-cards', require('./components/MovieCards.vue'));
+Vue.component('movie-card', require('./components/MovieCard.vue'));
 
 Vue.use(VueRouter);
 Vue.use(Transitions);

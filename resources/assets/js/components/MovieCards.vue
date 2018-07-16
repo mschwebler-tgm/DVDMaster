@@ -17,20 +17,7 @@
             </div>
             <div class="row movie-cards">
                 <div v-for="movie in movies" class="col l3 m4 s12">
-                    <div class="card">
-                        <div class="card-image">
-                            <img :src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path">
-                            <span class="card-title">{{ movie.title }}</span>
-                        </div>
-                        <div class="card-content movie-overview">
-                            <p>{{ movie.overview }}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="#"><i class="material-icons">trending_up</i>&nbsp;&nbsp;{{ movie.vote_average
-                                }}<span
-                                        class="text-muted">&nbsp;({{ movie.vote_count}})</span></a>
-                        </div>
-                    </div>
+                    <movie-card :movie="movie"></movie-card>
                 </div>
             </div>
             <div class="col s12 center" v-if="movies.length === 0 && !featuredMovie">
@@ -60,7 +47,9 @@
 </template>
 
 <script>
+    import MovieCard from "./MovieCard";
     export default {
+        components: {MovieCard},
         data() {
             return {
                 movies: [],
@@ -84,14 +73,6 @@
         font-size: 22px;
         color: white;
         font-family: 'Nunito', sans-serif;
-    }
-
-    .movie-overview {
-        width: 100%;
-        max-height: 120px;
-        overflow: hidden;
-        -ms-text-overflow: ellipsis;
-        text-overflow: ellipsis;
     }
 
     .stage {
