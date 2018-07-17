@@ -2,8 +2,10 @@
     <div class="container">
         <div class="row z-depth-5 " v-if="!loading && movie">
             <div class="col s12 no-padding">
-                <div class="backdrop-image" :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.backdrop_path, 'w1280') + ')'}">
-                    <div class="poster-image" :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.poster_path, 'w185') + ')' }"></div>
+                <div class="backdrop-image"
+                     :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.backdrop_path, 'w1280') + ')'}">
+                    <div class="poster-image"
+                         :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.poster_path, 'w185') + ')' }"></div>
                     <div class="movie-title">
                         <span>{{ movie.title }}</span>
                     </div>
@@ -16,7 +18,8 @@
                         <div><i class="material-icons">edit</i> Edit</div>
                         <div><i class="material-icons">assignment_ind</i> Borrow</div>
                         <div><i class="material-icons">movie</i> Just seen</div>
-                        <div style="margin-left: auto; margin-right: 0;" @click="deleteMovie"><i class="material-icons">delete</i></div>
+                        <div style="margin-left: auto; margin-right: 0;" @click="deleteMovie"><i class="material-icons">delete</i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -35,11 +38,13 @@
                     <div class="spinner-layer spinner-red-only">
                         <div class="circle-clipper left">
                             <div class="circle"></div>
-                        </div><div class="gap-patch">
-                        <div class="circle"></div>
-                    </div><div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
                     </div>
                 </div>
             </div>

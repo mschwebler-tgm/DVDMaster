@@ -2,8 +2,9 @@
     <div class="container">
         <template v-if="loaded">
             <div class="row">
-                <div class="col s12 z-depth-5 stage" v-if="featuredMovie">
-                    <div style="position: relative; max-height: 500px; overflow: hidden;">
+                <div class="col s12 z-depth-5 stage pointer" v-if="featuredMovie">
+                    <div style="position: relative; max-height: 500px; overflow: hidden;"
+                         @click="$root.$router.push('/movie/' + featuredMovie.id)">
                         <img :src="'https://image.tmdb.org/t/p/original' + featuredMovie.backdrop_path"
                              class="featured-cover background-center">
                         <div style="position: absolute; top: 0; left: 0; display: flex; align-items: flex-end; width: 100%; height: 100%">
@@ -31,11 +32,13 @@
                     <div class="spinner-layer spinner-red-only">
                         <div class="circle-clipper left">
                             <div class="circle"></div>
-                        </div><div class="gap-patch">
-                        <div class="circle"></div>
-                    </div><div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -48,6 +51,7 @@
 
 <script>
     import MovieCard from "./MovieCard";
+
     export default {
         components: {MovieCard},
         data() {

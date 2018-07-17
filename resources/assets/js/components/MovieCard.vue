@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card pointer" @click="$root.$router.push('/movie/' + movie.id)">
         <div class="card-image">
             <img :src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path">
             <span class="card-title">{{ movie.title }}</span>
@@ -8,9 +8,11 @@
             <p>{{ movie.overview }}</p>
         </div>
         <div class="card-action">
-            <a href="#"><i class="material-icons">trending_up</i>&nbsp;&nbsp;{{ movie.vote_average
-                }}<span
-                        class="text-muted">&nbsp;({{ movie.vote_count}})</span></a>
+            <a href="#">
+                <i class="material-icons">trending_up</i>&nbsp;&nbsp;
+                {{ movie.vote_average }}
+                <span class="text-muted">&nbsp;({{ movie.vote_count}})</span>
+            </a>
         </div>
     </div>
 </template>
