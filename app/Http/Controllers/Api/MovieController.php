@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Movie;
 use App\Service\Dao\MovieDao;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
@@ -95,5 +96,17 @@ class MovieController extends Controller
         }
         $movie->delete();
         return response('success', 200);
+    }
+
+    public function updateLastSeen($id, $date)
+    {
+        $date = new Carbon($date);
+        $movie = Movie::find($id);
+        if (!$movie) {
+            abort(404);
+        }
+
+        $movie->update(['last_seen' => $date]);
+        return response($movie->last_seen, 200);
     }
 }

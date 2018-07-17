@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/movies', 'MovieController@index');
 Route::get('/movie/{id}', 'MovieController@show');
 Route::get('/movie/{id}/delete', 'MovieController@destroy');
+Route::get('/movie/{id}/lastSeen/{date}', 'MovieController@updateLastSeen');
 Route::get('/genreNames', 'GenreController@genreNames');
 Route::get('/actorNames', 'ActorController@actorNames');
 Route::get('/movie/{id}', 'MovieController@show');
