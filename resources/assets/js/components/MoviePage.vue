@@ -24,7 +24,10 @@
                         </div>
                         <ul id='lastSeenDropDown' class='dropdown-content'>
                             <li><a href="#" @click="updateLastSeen('now')"><i class="material-icons">access_time</i> Now</a></li>
-                            <li><a href="#" @click="pickLastSeen"><i class="material-icons">calendar_today</i>Pick Date</a></li>
+                            <li><a href="#" @click="pickLastSeen"><i class="material-icons">calendar_today</i>Pick date</a></li>
+                            <li><a href="#" @click="updateLastSeenCustom(6, 'days')">1 week ago</a></li>
+                            <li><a href="#" @click="updateLastSeenCustom(1, 'months')">1 month ago</a></li>
+                            <li><a href="#" @click="updateLastSeenCustom(1, 'years')">1 year ago</a></li>
                         </ul>
                         <div style="margin-left: auto; margin-right: 0;" @click="deleteMovie"><i class="material-icons">delete</i>
                         </div>
@@ -113,6 +116,9 @@
                 }).catch(() => {
                     M.toast({html: 'Error while updating last seen', classes: 'complete-toast'});
                 });
+            },
+            updateLastSeenCustom(amount, type) {
+                this.updateLastSeen(moment().subtract(amount, type).format('YYYY-MM-DD'));
             },
             pickLastSeen() {
                 $('#last-seen-date-picker').trigger('click');
