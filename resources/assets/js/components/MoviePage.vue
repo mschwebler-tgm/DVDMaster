@@ -94,11 +94,15 @@
                     constrainWidth: false
                 });
                 elems = document.querySelectorAll('.datepicker');
+                let currentDate = new Date();
                 M.Datepicker.init(elems, {
                     autoclose: true,
                     yearRange: [(new Date()).getFullYear() - 3, (new Date()).getFullYear()],
                     firstDay: 1,
                     format: 'yyyy-mm-dd',
+                    disableDayFn: date => {
+                        return date > currentDate;
+                    }
                 });
             },
             deleteMovie() {

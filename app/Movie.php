@@ -13,7 +13,7 @@ class Movie extends Model
 
     public function rentedBy()
     {
-        return $this->belongsToMany('App\User', 'rental', 'movie_id', 'user_id');
+        return $this->belongsToMany('App\User', 'rentals', 'movie_id', 'user_id');
     }
 
     public function actors()

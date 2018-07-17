@@ -67,7 +67,7 @@ class MovieController extends Controller
 
     public function show($id)
     {
-        return Movie::find($id);
+        return Movie::with('rentedBy', 'actors', 'genres')->find($id);
     }
 
     public function edit($id)
