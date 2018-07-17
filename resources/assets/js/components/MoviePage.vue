@@ -58,6 +58,22 @@
                     </div>
                 </div>
             </div>
+            <div class="col s12 no-padding" id="actors">   <!-- actors -->
+                <swiper :options="swiperOption" v-if="readyToShowActors && movie && movie.actors">
+                    <swiper-slide v-for="actor in movie.actors" :key="actor.id">
+                        <div class="actor" :style="{ 'backgroundImage': 'url(' + $root.getImagePath(actor.profile_path, 'w185') + ')'}">
+                            <div class="actor-name">
+                                {{ actor.name }}
+                            </div>
+                        </div>
+                    </swiper-slide>
+                    <swiper-slide>
+                        <div class="add-actor" style="display: flex; justify-content: center; align-items: center;">
+                            Add actor
+                        </div>
+                    </swiper-slide>
+                </swiper>
+            </div>
         </div>
         <div v-if="!loading && !movie">
             <div class="center" style="padding: 4em">
@@ -88,13 +104,22 @@
 
 <script>
     import moment from 'moment';
+    import '../../../../node_modules/swiper/dist/css/swiper.css';
+    import {swiper, swiperSlide} from 'vue-awesome-swiper';
+    import StarRating from 'vue-star-rating';
 
     export default {
         props: ['id'],
         data() {
             return {
                 loading: true,
-                movie: null
+                movie: null,
+                swiperOption: {
+                    slidesPerView: window.innerWidth / 230,
+                    freeMode: true,
+                    spaceBetween: 50,
+                },
+                readyToShowActors: false
             }
         },
         created() {
@@ -108,6 +133,10 @@
         },
         mounted() {
             this.initM();
+            this.waitForEl('#actors', el => {
+                this.swiperOption.slidesPerView = el.width() / 185;
+                this.readyToShowActors = true;
+            });
         },
         methods: {
             initM() {
@@ -148,6 +177,16 @@
             },
             pickLastSeen() {
                 $('#last-seen-date-picker').trigger('click');
+            },
+            waitForEl(selector, callback) {
+                let el = $(selector);
+                if (el.width()) {
+                    callback(el);
+                } else {
+                    setTimeout(() => {
+                        this.waitForEl(selector, callback);
+                    }, 100);
+                }
             }
         },
         computed: {
@@ -176,6 +215,11 @@
 
                 return table;
             }
+        },
+        components: {
+            swiper,
+            swiperSlide,
+            StarRating
         }
     }
 </script>
@@ -277,6 +321,50 @@
         display: flex;
         width: 100%;
         padding-top: 20px;
+    }
+
+    .actor {
+        width: 185px;
+        height: 278px;
+        background-size: cover;
+        background-position: center center;
+        position: relative;
+    }
+
+    .actor-name {
+        position: absolute;
+        width: calc(100% - 20px);
+        left: 0;
+        bottom: 0;
+        padding: 10px;
+        font-size: 30px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.51);
+    }
+    
+    .add-actor {
+        width: 181px;
+        height: 274px;
+        border: 2px dashed darkgrey;
+        -webkit-border-radius: 1rem;
+        -moz-border-radius: 1rem;
+        border-radius: 1rem;
+        color: darkgrey;
+        cursor: pointer;
+    }
+
+    .add-actor:hover {
+        -webkit-transition: border, color .2s ease-in-out;
+        -moz-transition: border, color .2s ease-in-out;
+        -ms-transition: border, color .2s ease-in-out;
+        -o-transition: border, color .2s ease-in-out;
+        transition: border, color .2s ease-in-out;
+        border: 2px dashed #26a69a;
+        color: #26a69a;
+    }
+
+    #actors {
+        margin-top: 20px;
     }
 
 </style>
