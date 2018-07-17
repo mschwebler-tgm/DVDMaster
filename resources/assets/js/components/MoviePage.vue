@@ -35,6 +35,28 @@
                 </div>
             </div>
             <div class="col s12">
+                <div class="movie-body">
+                    <div class="poster-spacer movie-params-table">
+                        <div style="width: 185px;"> <!-- width of poster -->
+                            <table class="striped">
+                                <tbody>
+                                    <tr v-for="row in tableContents">
+                                        <td v-html="row" class="right-align"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="overview">
+                        <template v-if="movie && movie.overview">
+                            {{ movie.overview }}
+                            <br><br>
+                            <div class="right comment">
+                                {{ movie.comment ? '*' + movie.comment : '' }}
+                            </div>
+                        </template>
+                    </div>
+                </div>
             </div>
         </div>
         <div v-if="!loading && !movie">
@@ -132,6 +154,27 @@
             lastSeen() {
                 if (!this.movie.last_seen) return null;
                 return moment(this.movie.last_seen).fromNow();
+            },
+            tableContents() {
+                if (!this.movie) {
+                    return [];
+                }
+
+                let table = [
+                    this.movie.duration + ' min. <i class="material-icons table-icons">timer</i>',
+                    this.movie.release_date + ' <i class="material-icons table-icons">calendar_today</i>',
+                ];
+                if (this.movie.based_on_book) {
+                    table.push('Based on book <i class="material-icons table-icons"> check </i>')
+                }
+                if (this.movie.true_story) {
+                    table.push('True story <i class="material-icons table-icons"> check </i>')
+                }
+                if (this.movie.blue_ray) {
+                    table.push('Blue-ray <i class="material-icons table-icons"> check </i>')
+                }
+
+                return table;
             }
         }
     }
@@ -191,6 +234,9 @@
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #dadada;
     }
 
     .tool-bar > div {
@@ -199,6 +245,38 @@
         padding: 10px;
         font-size: 16px;
         margin-right: 10px;
+    }
+
+    .overview {
+        flex: 1;
+        padding: 10px;
+    }
+
+    .comment {
+        color: darkgrey;
+    }
+
+    .movie-params-table {
+        padding-right: 20px;
+        padding-top: 30px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .movie-params-table td {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 12px;
+    }
+    
+    .table-icons {
+        color: #26a69a;
+    }
+
+    .movie-body {
+        display: flex;
+        width: 100%;
+        padding-top: 20px;
     }
 
 </style>

@@ -37,6 +37,7 @@ class MovieDao
         $dbMovie->title = $movie->getTitle() ?: null;
         $dbMovie->vote_average = $movie->getVoteAverage() ?: null;
         $dbMovie->vote_count = $movie->getVoteCount() ?: null;
+        $dbMovie->duration = $movie->getRuntime() ?: null;
         $dbMovie->save();
 
         return $dbMovie;
