@@ -28,6 +28,9 @@ const app = new Vue({
     },
     methods: {
         getImagePath(path, resolution) {
+            if (!path) {
+                return 'https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg';
+            }
             if (path.split('/')[0] === 'storage') {
                 return path;
             }

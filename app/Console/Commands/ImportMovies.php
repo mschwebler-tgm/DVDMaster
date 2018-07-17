@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Actor;
+use App\MovieHasActor;
 use App\MovieHasGenre;
 use App\Service\Dao\MovieDao;
 use Illuminate\Console\Command;
@@ -34,8 +36,9 @@ class ImportMovies extends Command
             $movies = $this->movieDb->getPopular(['page' => $i]);
             /** @var \Tmdb\Model\Movie $movie */
             foreach ($movies->toArray() as $movie) {
-                $movie = $this->movieDb->load($movie->getId(), ['append_to_response' => false]);
+                $movie = $this->movieDb->load($movie->getId(), ['append_to_response' => 'credits']);
                 $dbMovie = $this->movieDao->insertFromTmdb($movie);
+                $this->addCast($dbMovie, $movie->getCredits()->getCast());
 
                 foreach ($this->getGenreIds($movie) as $genreId) {
                     MovieHasGenre::firstOrCreate([
@@ -55,5 +58,26 @@ class ImportMovies extends Command
             array_push($ids, $genre->getId());
         }
         return $ids;
+    }
+
+    private function addCast($dbMovie, $cast)
+    {
+        /** @var \Tmdb\Model\Person\CastMember $actor */
+        foreach ($cast as $actor) {
+            $dbActor = Actor::where('tmdb_id', $actor->getId())->first();
+
+            if (!$dbActor) {
+                $dbActor = new Actor();
+                $dbActor->tmdb_id = $actor->getId();
+                $dbActor->name = $actor->getName();
+                $dbActor->profile_path = $actor->getProfilePath();
+                $dbActor->save();
+            }
+
+            MovieHasActor::firstOrCreate([
+                'movie_id' => $dbMovie->id,
+                'actor_id' => $dbActor->id
+            ]);
+        }
     }
 }
