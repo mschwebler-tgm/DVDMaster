@@ -55,6 +55,11 @@
                                 {{ movie.comment ? '*' + movie.comment : '' }}
                             </div>
                         </template>
+                        <div class="genres" v-if="movie && movie.genres">
+                            <div class="chip" v-for="genre in movie.genres">
+                                {{ genre.name }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
