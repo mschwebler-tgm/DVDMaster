@@ -64,23 +64,11 @@ class MovieController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param $title
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         return Movie::find($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
@@ -98,14 +86,14 @@ class MovieController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        /** @var Movie $movie */
+        $movie = Movie::find($id);
+        if (!$movie) {
+            abort(404);
+        }
+        $movie->delete();
+        return response('success', 200);
     }
 }
