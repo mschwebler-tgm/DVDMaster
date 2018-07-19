@@ -105,6 +105,15 @@ class MovieDao
             "release_date" => isset($movie['release_date']) ? $movie['release_date'] : null,
         ]);
 
-        dd($movie);
+        return $movie;
+    }
+
+    public function rent($movie, $user)
+    {
+        $rentedBy = $movie->rentedBy->first();
+        if ($rentedBy) {
+            $movie->rentedBy()->detach();
+        }
+        $movie->rentedBy()->attach($user->id);
     }
 }

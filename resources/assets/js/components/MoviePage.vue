@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <user-modal @userSelected="selectUser"></user-modal>
         <div class="row z-depth-5" v-show="!loading && movie">
             <div class="col s12 no-padding" v-if="movie">
                 <div class="backdrop-image"
@@ -11,13 +12,18 @@
                     </div>
                 </div>
             </div>
-            <div class="col s12">
+            <div class="col s12"> <!-- toolbar -->
                 <div class="movie-header">
                     <div class="poster-spacer"></div>
                     <div class="tool-bar">
                         <div><i class="material-icons">edit</i> Edit</div>
-                        <div><i class="material-icons">assignment_ind</i> Borrow</div>
-                        <!--<div @click="updateLastSeen" data-target="lastSeenDropDown">-->
+                        <div>
+                            <a class="modal-trigger" href="#user-modal">
+                                <i class="material-icons">assignment_ind</i>
+                                <template v-if="movie && !movie.rented_by"> Borrow</template>
+                                <template v-else-if="movie"> Borrowed by {{ movie.rented_by[0].name }}</template>
+                            </a>
+                        </div>
                         <div class="dropdown-trigger" data-target="lastSeenDropDown">
                             <i class="material-icons">movie</i> Just seen
                             <template v-if="movie && movie.last_seen">(last: {{ lastSeen }})</template>
@@ -124,7 +130,8 @@
                     freeMode: true,
                     spaceBetween: 50,
                 },
-                readyToShowActors: false
+                readyToShowActors: false,
+                modal: null
             }
         },
         created() {
@@ -142,6 +149,8 @@
                 this.swiperOption.slidesPerView = el.width() / 185;
                 this.readyToShowActors = true;
             });
+            let elems = document.querySelectorAll('.modal');
+            this.modal = M.Modal.init(elems, {})[0];
         },
         methods: {
             initM() {
@@ -192,6 +201,12 @@
                         this.waitForEl(selector, callback);
                     }, 100);
                 }
+            },
+            selectUser(user) {
+                this.modal.close();
+                axios.post('/api/movie/' + this.movie.id + '/borrowTo/' + user.id).then(res => {
+                    Vue.set(this.movie, 'rented_by', [user]);
+                })
             }
         },
         computed: {
@@ -296,9 +311,14 @@
         margin-right: 10px;
     }
 
+    .tool-bar a {
+        color: darkgrey;
+    }
+
     .overview {
         flex: 1;
         padding: 10px;
+        position: relative;
     }
 
     .comment {

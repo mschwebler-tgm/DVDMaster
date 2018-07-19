@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Movie;
+use App\MovieHasActor;
 use App\Service\Dao\MovieDao;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -108,5 +110,17 @@ class MovieController extends Controller
 
         $movie->update(['last_seen' => $date]);
         return response($movie->last_seen, 200);
+    }
+
+    public function borrowTo($movieId, $userId)
+    {
+        $movie = Movie::find($movieId);
+        $user = User::find($userId);
+        if (!$movie || !$user) {
+            abort(404);
+        }
+
+        $this->movieDao->rent($movie, $user);
+        return $user;
     }
 }
