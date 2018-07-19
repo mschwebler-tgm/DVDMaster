@@ -5,6 +5,8 @@ namespace App\Service\Dao;
 use App\Genre;
 use App\Movie;
 use App\MovieHasGenre;
+use App\Rental;
+use App\User;
 use Illuminate\Support\Facades\Storage;
 
 class MovieDao
@@ -108,11 +110,14 @@ class MovieDao
         return $movie;
     }
 
-    public function rent($movie, $user)
+    public function rent(Movie $movie, User $user)
     {
-        $rentedBy = $movie->rentedBy->first();
+        /** @var Rental $rentedBy */
+        $rentedBy = $movie->rentedBy()->where('state', '!=', 'complete')->first();
         if ($rentedBy) {
-            $movie->rentedBy()->detach();
+            $rental = Rental::where([['movie_id', '=', $movie->id], ['state', '=', 'pending']])->first();
+            $rental->state = 'complete';
+            $rental->save();
         }
         $movie->rentedBy()->attach($user->id);
     }

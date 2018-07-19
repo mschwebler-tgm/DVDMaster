@@ -20,8 +20,10 @@
                         <div>
                             <a class="modal-trigger" href="#user-modal">
                                 <i class="material-icons">assignment_ind</i>
-                                <template v-if="movie && !movie.rented_by"> Borrow</template>
-                                <template v-else-if="movie"> Borrowed by {{ movie.rented_by[0].name }}</template>
+                                <template v-if="movie">
+                                    <template v-if="movie.rented_by.length === 0"> Borrow</template>
+                                    <template v-else> Borrowed by {{ movie.rented_by[0].name }}</template>
+                                </template>
                             </a>
                         </div>
                         <div class="dropdown-trigger" data-target="lastSeenDropDown">
