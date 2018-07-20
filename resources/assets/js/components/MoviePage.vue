@@ -513,10 +513,6 @@
         min-height: 520px;
     }
 
-    #retrieve-modal .datepicker-modal {
-        min-width: 545px;
-    }
-
     #retrieve-state {
         margin-top: 10px;
     }
