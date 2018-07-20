@@ -107,3 +107,25 @@ html, body {
 .small-icons {
   font-size: 20px !important;
 }
+
+#retrieve-modal .noUi-active .noUi-tooltip {
+  width: 100px;
+  border-radius: 15px 15px 15px 15px;
+  transform: translate(-50px, -25px);
+}
+
+#retrieve-modal .noUi-active .noUi-tooltip span {
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+  transform: none;
+}
+
+#retrieve-modal .noUi-tooltip span {
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+  transform: none;
+}

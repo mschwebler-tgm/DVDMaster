@@ -7,6 +7,7 @@ use App\Movie;
 use App\MovieHasGenre;
 use App\Rental;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class MovieDao
@@ -115,10 +116,33 @@ class MovieDao
         /** @var Rental $rentedBy */
         $rentedBy = $movie->rentedBy()->where('state', '!=', 'complete')->first();
         if ($rentedBy) {
+            /** @var Rental $rental */
             $rental = Rental::where([['movie_id', '=', $movie->id], ['state', '=', 'pending']])->first();
             $rental->state = 'complete';
             $rental->save();
         }
         $movie->rentedBy()->attach($user->id);
+        /** @var Rental $rental */
+        $rental = Rental::where([['movie_id', '=', $movie->id], ['user_id', '=', $user->id], ['state', '=', 'pending']])->first();
+        $rental->setCreatedAt(Carbon::now());
+        $rental->save();
+        return $rental;
+    }
+
+    public function retrieve(Movie $movie, $date, $quality)
+    {
+        if (!$date) {
+            $date = Carbon::now();
+        }
+
+        $rental = $movie->pendingRental()->first();
+        if (!$rental) {
+            return null;
+        }
+        $rental->retrieved_at = $date;
+        $rental->quality = $quality;
+        $rental->state = 'complete';
+        $rental->save();
+        return $rental;
     }
 }

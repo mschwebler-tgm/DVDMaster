@@ -69,7 +69,7 @@ class MovieController extends Controller
 
     public function show($id)
     {
-        return Movie::with('rentedBy', 'actors', 'genres')->find($id);
+        return Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')->find($id);
     }
 
     public function edit($id)
@@ -120,7 +120,16 @@ class MovieController extends Controller
             abort(404);
         }
 
-        $this->movieDao->rent($movie, $user);
-        return $user;
+        return $this->movieDao->rent($movie, $user);
+    }
+
+    public function retrieveMovie($movieId, Request $request)
+    {
+        $movie = Movie::find($movieId);
+        if (!$movie) {
+            abort(404);
+        }
+
+        return $this->movieDao->retrieve($movie, $request->get('date'), $request->get('quality'));
     }
 }

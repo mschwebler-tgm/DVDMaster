@@ -1,6 +1,55 @@
 <template>
     <div class="container">
         <user-modal @userSelected="selectUser"></user-modal>
+        <div id="retrieve-modal" class="modal">
+            <div class="modal-content">
+                <h4>Retrieve Movie</h4>
+                <hr>
+                <template v-if="movie && movie.rented_by.length > 0">
+                    Borrowed by {{ movie.rented_by[0].name }} {{ rentalTime }}
+                </template>
+
+                <div class="row" style="margin-top: 50px; margin-bottom: 25px;">
+                    <div class="col s2"></div>
+                    <div class="col s8">
+                        <h5>Date</h5>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 70px;">
+                    <div class="col s2"></div>
+                    <div class="col s4">
+                        <input type="text" class="datepicker" id="retrieve-date" v-model="retrieveDate">
+                        <label for="retrieve-date">Date</label>
+                    </div>
+                    <div class="col s4">
+                        <a class="waves-effect waves-light btn" @click="chooseCurrentRetrievalDate()">Now</a>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col s2"></div>
+                    <div class="col s8">
+                        <h5>Quality</h5>
+                    </div>
+                </div>
+                <div class="row shape-slider">
+                    <div class="col s2 center-align">
+                        <span>DVD lost</span>
+                    </div>
+                    <div class="col s8">
+                        <div id="retrieve-state"></div>
+                    </div>
+                    <div class="col s2 center-align">
+                        <span>Original</span>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 60px;">
+                    <div class="col s2"></div>
+                    <div class="col s8">
+                        <a class="waves-effect waves-light btn right" @click="retrieveMovie">Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row z-depth-5" v-show="!loading && movie">
             <div class="col s12 no-padding" v-if="movie">
                 <div class="backdrop-image"
@@ -18,13 +67,14 @@
                     <div class="tool-bar">
                         <div><i class="material-icons">edit</i> Edit</div>
                         <div>
-                            <a class="modal-trigger" href="#user-modal">
-                                <i class="material-icons">assignment_ind</i>
-                                <template v-if="movie">
-                                    <template v-if="movie.rented_by.length === 0"> Borrow</template>
-                                    <template v-else> Borrowed by {{ movie.rented_by[0].name }}</template>
+                            <template v-if="movie">
+                                <template v-if="movie.rented_by.length === 0">
+                                    <a class="modal-trigger" href="#user-modal"><i class="material-icons">assignment_ind</i> Borrow</a>
                                 </template>
-                            </a>
+                                <template v-else>
+                                    <a class="modal-trigger" href="#retrieve-modal"><i class="material-icons">assignment_ind</i> Borrowed by {{ movie.rented_by[0].name }}</a>
+                                </template>
+                            </template>
                         </div>
                         <div class="dropdown-trigger" data-target="lastSeenDropDown">
                             <i class="material-icons">movie</i> Just seen
@@ -133,7 +183,11 @@
                     spaceBetween: 50,
                 },
                 readyToShowActors: false,
-                modal: null
+                userModal: null,
+                retrieveModal: null,
+                retrieveDatepicker: null,
+                retrieveDate: null,
+                retrieveSlider: null
             }
         },
         created() {
@@ -147,12 +201,28 @@
         },
         mounted() {
             this.initM();
-            this.waitForEl('#actors', el => {
-                this.swiperOption.slidesPerView = el.width() / 185;
-                this.readyToShowActors = true;
+            this.retrieveSlider = document.getElementById('retrieve-state');
+            noUiSlider.create(this.retrieveSlider, {
+                start: 3,
+                range: {
+                    min: 0,
+                    max: 3
+                },
+                step: 1,
+                connect: [true, false],
+                format: {
+                    to(value) {
+                        switch (value) {
+                            case 0: return 'DVD was lost';
+                            case 1: return 'Bad';
+                            case 2: return 'Good';
+                            case 3: return 'Original';
+                        }
+                        return value;
+                    },
+                    from: value => { return value }
+                }
             });
-            let elems = document.querySelectorAll('.modal');
-            this.modal = M.Modal.init(elems, {})[0];
         },
         methods: {
             initM() {
@@ -162,7 +232,7 @@
                 });
                 elems = document.querySelectorAll('.datepicker');
                 let currentDate = new Date();
-                M.Datepicker.init(elems, {
+                let instances = M.Datepicker.init(elems, {
                     autoclose: true,
                     yearRange: [(new Date()).getFullYear() - 3, (new Date()).getFullYear()],
                     firstDay: 1,
@@ -171,6 +241,15 @@
                         return date > currentDate;
                     }
                 });
+                this.retrieveDatepicker = instances[0];
+                this.waitForEl('#actors', el => {
+                    this.swiperOption.slidesPerView = el.width() / 185;
+                    this.readyToShowActors = true;
+                });
+                elems = document.querySelectorAll('.modal');
+                instances = M.Modal.init(elems, {});
+                this.userModal = instances[0];
+                this.retrieveModal = instances[1];
             },
             deleteMovie() {
                 axios.get('/api/movie/' + this.id + '/delete').then(() => {
@@ -205,10 +284,36 @@
                 }
             },
             selectUser(user) {
-                this.modal.close();
+                this.userModal.close();
                 axios.post('/api/movie/' + this.movie.id + '/borrowTo/' + user.id).then(res => {
                     Vue.set(this.movie, 'rented_by', [user]);
+                    Vue.set(this.movie, 'pending_rental', [res.data]);
                 })
+            },
+            retrieveMovie() {
+                let quality = this.retrieveSlider.noUiSlider.get();
+                switch (quality) {
+                    case 'DVD was lost': quality = 'lost';
+                        break;
+                    case 'Bad': quality = 'bad';
+                        break;
+                    case 'Good': quality = 'good';
+                        break;
+                    case 'Original': quality = 'original';
+                        break;
+                }
+                axios.post('/api/movie/' + this.movie.id + '/retrieve', {
+                    quality,
+                    date: this.retrieveDate
+                }).then(res => {
+                    Vue.set(this.movie, 'rented_by', []);
+                    Vue.set(this.movie, 'pending_rental', []);
+                    this.retrieveModal.close();
+                });
+            },
+            chooseCurrentRetrievalDate() {
+                this.retrieveDatepicker.setDate(new Date());
+                this.retrieveDate = this.retrieveDatepicker.toString();
             }
         },
         computed: {
@@ -236,6 +341,14 @@
                 }
 
                 return table;
+            },
+            rentalTime() {
+                if (!this.movie || !this.movie.pending_rental[0]) {
+                    return '';
+                }
+
+                let date = moment(this.movie.pending_rental[0].created_at);
+                return date.fromNow();
             }
         },
         components: {
@@ -392,6 +505,22 @@
 
     #actors {
         margin-top: 20px;
+    }
+
+    #retrieve-modal .modal-content {
+        min-height: 520px;
+    }
+
+    #retrieve-modal .datepicker-modal {
+        min-width: 545px;
+    }
+
+    #retrieve-state {
+        margin-top: 10px;
+    }
+
+    .shape-slider .s2 span {
+        color: darkgrey;
     }
 
 </style>

@@ -26,4 +26,14 @@ class Movie extends Model
         return $this->belongsToMany('App\Genre', 'movie_has_genre', 'movie_id', 'genre_id');
 
     }
+
+    public function rentals()
+    {
+        return $this->hasMany('App\Rental');
+    }
+
+    public function pendingRental()
+    {
+        return $this->hasMany('App\Rental')->where('state', 'pending');
+    }
 }
