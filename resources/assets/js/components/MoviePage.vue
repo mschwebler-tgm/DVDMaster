@@ -288,6 +288,7 @@
                 axios.post('/api/movie/' + this.movie.id + '/borrowTo/' + user.id).then(res => {
                     Vue.set(this.movie, 'rented_by', [user]);
                     Vue.set(this.movie, 'pending_rental', [res.data]);
+                    M.toast({html: 'Borrowed to: ' + user.name, classes: 'complete-toast'});
                 })
             },
             retrieveMovie() {
@@ -309,6 +310,7 @@
                     Vue.set(this.movie, 'rented_by', []);
                     Vue.set(this.movie, 'pending_rental', []);
                     this.retrieveModal.close();
+                    M.toast({html: 'Movie retrieved', classes: 'complete-toast'});
                 });
             },
             chooseCurrentRetrievalDate() {
@@ -426,7 +428,7 @@
         margin-right: 10px;
     }
 
-    .tool-bar a {
+    .tool-bar > div > a {
         color: darkgrey;
     }
 
