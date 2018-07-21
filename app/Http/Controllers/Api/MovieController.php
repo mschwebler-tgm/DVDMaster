@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Movie;
-use App\MovieHasActor;
 use App\Service\Dao\MovieDao;
 use App\User;
 use Carbon\Carbon;

@@ -28,3 +28,5 @@ Route::get('/actorNames', 'ActorController@actorNames');
 Route::get('/movie/{id}', 'MovieController@show');
 Route::post('/movie', 'MovieController@store');
 Route::get('/users/{id}', 'UserController@getAllExcept');
+
+Route::post('/addUser', 'UserController@addFromName');
