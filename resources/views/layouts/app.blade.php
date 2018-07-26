@@ -96,5 +96,9 @@
         @yield('content')
     </main>
 </div>
+
+<script>
+    window.user_id = {{ isset(Auth::user()->id) ? Auth::user()->id : null }};
+</script>
 </body>
 </html>
