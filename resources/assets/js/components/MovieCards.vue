@@ -35,42 +35,7 @@
                 </div>
             </div>
             <div class="row movie-table" v-show="viewMode === 'list'">
-                <table>
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Title</th>
-                        <th>Genres</th>
-                        <th class="hide-on-med-and-down">Actors</th>
-                        <th class="hide-on-small-only">Rating</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="movie in movies">
-                        <td><img :src="$root.getImagePath(movie.poster_path, 'w92')"></td>
-                        <td>{{ movie.title }}</td>
-                        <td>
-                            <div class="genre-col">
-                                <template v-for="genre in getGenreNames(movie)">
-                                    <div class="chip">{{ genre }}</div>
-                                </template>
-                            </div>
-                        </td>
-                        <td class="hide-on-med-and-down">
-                            <div class="actor-col">
-                                <template v-for="actor in getActorNames(movie)">
-                                    <span class="pointer">
-                                        {{ actor }}
-                                    </span>
-                                </template>
-                            </div>
-                        </td>
-                        <td class="hide-on-small-only">
-                            <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <movie-list :movies="movies"></movie-list>
             </div>
             <div class="col s12 center" v-if="movies.length === 0 && !featuredMovie">
                 No movies in Database.
@@ -122,26 +87,6 @@
                 this.viewMode = viewMode;
                 localStorage.setItem('viewMode', viewMode);
             },
-            getGenreNames(movie) {
-                let names = [];
-                for (let genre of movie.genres) {
-                    names.push(genre.name);
-                }
-                return names;
-            },
-            getActorNames(movie) {
-                let names = [];
-                for (let actor of movie.actors) {
-                    names.push(actor.name);
-                    if (names.length === 3) {
-                        break;
-                    }
-                }
-                return names;
-            },
-            updateRating(movie, rating) {
-                axios.post('/api/movie/' + movie.id + '/rate', {rating});
-            }
         },
         computed: {
             featuredMovie() {

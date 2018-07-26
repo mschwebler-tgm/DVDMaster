@@ -11,6 +11,7 @@ Vue.component('movie-cards', require('./components/MovieCards.vue'));
 Vue.component('movie-card', require('./components/MovieCard.vue'));
 Vue.component('user-modal', require('./components/UserModal.vue'));
 Vue.component('movie-rating', require('./components/common/MovieRating.vue'));
+Vue.component('movie-list', require('./components/MovieList.vue'));
 
 Vue.use(VueRouter);
 Vue.use(Transitions);
