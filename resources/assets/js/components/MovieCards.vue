@@ -2,6 +2,17 @@
     <div class="container">
         <template v-if="loaded">
             <div class="row">
+                <div class="col-s-12 z-depth-4">
+                    <div class="toolbar">
+                        <div> <!-- left -->
+
+                        </div> <!-- right -->
+                        <div class="view-mode">
+                            <i class="material-icons" @click="setViewMode('list')" :class="{ active: viewMode === 'list' }">view_list</i>
+                            <i class="material-icons" @click="setViewMode('grid')" :class="{ active: viewMode === 'grid' }">view_module</i>
+                        </div>
+                    </div>
+                </div>
                 <div class="col s12 z-depth-5 stage pointer" v-if="featuredMovie">
                     <div style="position: relative; max-height: 500px; overflow: hidden;"
                          @click="$root.$router.push('/movie/' + featuredMovie.id)">
@@ -58,7 +69,8 @@
             return {
                 movies: [],
                 featuredMovie: null,
-                loaded: false
+                loaded: false,
+                viewMode: localStorage.getItem('viewMode') || 'grid'
             }
         },
         created() {
@@ -68,6 +80,12 @@
                 this.movies = movies;
                 this.loaded = true;
             });
+        },
+        methods: {
+            setViewMode(viewMode) {
+                this.viewMode = viewMode;
+                localStorage.setItem('viewMode', viewMode);
+            }
         }
     }
 </script>
@@ -96,4 +114,39 @@
         bottom: 30px;
         right: 30px;
     }
+
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+    }
+
+    .view-mode {
+        -webkit-box-shadow: inset 0 0 6px 2px rgba(156, 156, 156, 0.3);
+        -moz-box-shadow: inset 0 0 6px 2px rgba(156, 156, 156, 0.3);
+        box-shadow: inset 0 0 6px 2px rgba(156, 156, 156, 0.3);
+        padding-left: 2px;
+        padding-right: 2px;
+        border: 1px solid #d1d1d1;
+        border-radius: 12px;
+    }
+
+    .view-mode i {
+        color: darkgrey;
+        cursor: pointer;
+    }
+
+    .view-mode i.active {
+        color: black;
+    }
+
+    .view-mode i:first-child {
+        padding: 5px 1px 5px 5px;
+    }
+
+    .view-mode i:last-child {
+        padding: 5px 5px 5px 1px;
+        border-left: 1px solid #d1d1d1;
+    }
+
 </style>
