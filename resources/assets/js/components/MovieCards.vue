@@ -13,7 +13,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col s12 z-depth-5 stage pointer" v-if="featuredMovie">
+                <div class="col s12 z-depth-5 stage pointer" v-if="featuredMovie && viewMode === 'grid'">
                     <div style="position: relative; max-height: 500px; overflow: hidden;"
                          @click="$root.$router.push('/movie/' + featuredMovie.id)">
                         <img :src="'https://image.tmdb.org/t/p/original' + featuredMovie.backdrop_path"
@@ -21,16 +21,52 @@
                         <div style="position: absolute; top: 0; left: 0; display: flex; align-items: flex-end; width: 100%; height: 100%">
                             <div style="background-color: rgba(0,0,0,0.33); padding: 35px; width: 100%">
                                 <h1 class="white-text" style="margin-top: 0;">{{ featuredMovie.title }}</h1>
-                                <p class="tagline">{{ featuredMovie.tagline }}</p>
+                                <p class="tagline">{{featuredMovie.tagline }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row movie-cards">
-                <div v-for="movie in movies" class="col l3 m4 s12">
+            <div class="row movie-cards" v-show="viewMode === 'grid'">
+                <div v-for="(movie, index) in movies" class="col l3 m4 s12" v-if="index !== 0">
                     <movie-card :movie="movie"></movie-card>
                 </div>
+            </div>
+            <div class="row movie-table" v-show="viewMode === 'list'">
+                <table>
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Genres</th>
+                        <th class="hide-on-med-and-down">Actors</th>
+                        <th>Rating</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="movie in movies">
+                        <td><img :src="$root.getImagePath(movie.poster_path, 'w92')"></td>
+                        <td>{{ movie.title }}</td>
+                        <td>
+                            <div class="genre-col">
+                                <template v-for="genre in getGenreNames(movie)">
+                                    {{ genre }}
+                                </template>
+                            </div>
+                        </td>
+                        <td class="hide-on-med-and-down">
+                            <div class="actor-col">
+                                <template v-for="actor in getActorNames(movie)">
+                                    {{ actor }}
+                                </template>
+                            </div>
+                        </td>
+                        <td>
+                            <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="col s12 center" v-if="movies.length === 0 && !featuredMovie">
                 No movies in Database.
@@ -64,20 +100,16 @@
     import MovieCard from "./MovieCard";
 
     export default {
-        components: {MovieCard},
         data() {
             return {
                 movies: [],
-                featuredMovie: null,
                 loaded: false,
                 viewMode: localStorage.getItem('viewMode') || 'grid'
             }
         },
         created() {
             axios.get('/api/movies').then((res) => {
-                let movies = res.data;
-                this.featuredMovie = movies.shift();
-                this.movies = movies;
+                this.movies = res.data.data;
                 this.loaded = true;
             });
         },
@@ -85,7 +117,35 @@
             setViewMode(viewMode) {
                 this.viewMode = viewMode;
                 localStorage.setItem('viewMode', viewMode);
+            },
+            getGenreNames(movie) {
+                let names = [];
+                for (let genre of movie.genres) {
+                    names.push(genre.name);
+                }
+                return names;
+            },
+            getActorNames(movie) {
+                let names = [];
+                for (let actor of movie.actors) {
+                    names.push(actor.name);
+                    if (names.length === 3) {
+                        break;
+                    }
+                }
+                return names;
+            },
+            updateRating(movie, rating) {
+                axios.post('/api/movie/' + movie.id + '/rate', {rating});
             }
+        },
+        computed: {
+            featuredMovie() {
+                return this.movies ? this.movies[0] : null;
+            }
+        },
+        components: {
+            MovieCard
         }
     }
 </script>
@@ -147,6 +207,31 @@
     .view-mode i:last-child {
         padding: 5px 5px 5px 1px;
         border-left: 1px solid #d1d1d1;
+    }
+
+    .genre-col {
+        max-width: 300px;
+    }
+
+    .star-ratings {
+        position: relative;
+    }
+
+    .star-ratings:hover .custom-rating {
+        display: flex;
+    }
+
+    .star-ratings:hover .tmdb-rating {
+        display: none;
+    }
+
+    .custom-rating {
+        display: none;
+    }
+
+    .tmdb-rating {
+        position: absolute;
+        top: 0;
     }
 
 </style>

@@ -22,6 +22,7 @@ Route::get('/movie/{id}', 'MovieController@show');
 Route::get('/movie/{id}/delete', 'MovieController@destroy');
 Route::post('/movie/{movieId}/borrowTo/{userId}', 'MovieController@borrowTo');
 Route::post('/movie/{movieId}/retrieve', 'MovieController@retrieveMovie');
+Route::post('/movie/{movieId}/rate', 'MovieController@rateMovie');
 Route::get('/movie/{id}/lastSeen/{date}', 'MovieController@updateLastSeen');
 Route::get('/genreNames', 'GenreController@genreNames');
 Route::get('/actorNames', 'ActorController@actorNames');

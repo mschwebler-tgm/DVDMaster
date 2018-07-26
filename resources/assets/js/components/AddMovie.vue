@@ -76,14 +76,7 @@
                                 </div>
                             </div>
                             <div class="col s12 ratings">
-                                <div class="star-ratings">
-                                <star-rating :increment="0.5" style="z-index: 1000;" class="custom-rating" inactive-color="white"
-                                             active-color="#FFD700" v-model="movie.custom_rating" :show-rating="false"
-                                             :border-width="0" :star-size="40"></star-rating>
-                                <star-rating :increment="0.01" :rating="movie.vote_average/2" :show-rating="false" class="tmdb-rating"
-                                             active-color="#aaaaaa" inactive-color="white" :border-width="0"
-                                             v-if="!movie.custom_rating" :star-size="40"></star-rating>
-                                </div>
+                                <movie-rating :movie="movie"></movie-rating>
                                 <fade-transition :duration="200">
                                     <i class="material-icons white-text pointer tooltipped" data-position="right"
                                        :data-tooltip="movie.vote_count + ' users rated on themoviedb.org'"
@@ -148,7 +141,6 @@
 <script>
     import '../../../../node_modules/swiper/dist/css/swiper.css';
     import {swiper, swiperSlide} from 'vue-awesome-swiper';
-    import StarRating from 'vue-star-rating';
 
     export default {
         name: "AddMovie",
@@ -350,8 +342,7 @@
         },
         components: {
             swiper,
-            swiperSlide,
-            StarRating
+            swiperSlide
         }
     }
 </script>
@@ -489,23 +480,6 @@
         padding: 15px;
         color: white;
         font-size: 34px;
-    }
-
-    .tmdb-rating {
-        position: absolute;
-        top: 0;
-    }
-
-    .star-ratings:hover .custom-rating {
-        display: flex;
-    }
-
-    .star-ratings:hover .tmdb-rating {
-        display: none;
-    }
-
-    .custom-rating {
-        display: none;
     }
 
     .ratings {
