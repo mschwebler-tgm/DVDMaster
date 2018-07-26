@@ -133,3 +133,10 @@ html, body {
 #retrieve-modal .datepicker-modal {
   min-width: 545px;
 }
+
+@media only screen and (max-width: 600px) {
+  .container {
+    margin: 0;
+    width: 100%;
+  }
+}

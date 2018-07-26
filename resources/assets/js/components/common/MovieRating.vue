@@ -13,7 +13,7 @@
     import StarRating from 'vue-star-rating';
 
     export default {
-        props: ['movie'],
+        props: ['movie', ],
         watch: {
             'movie.custom_rating': function(newVal) {
                 this.$emit('newCustomRating', newVal);

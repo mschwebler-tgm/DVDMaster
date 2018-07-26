@@ -5,7 +5,9 @@
                 <div class="col-s-12 z-depth-4">
                     <div class="toolbar">
                         <div> <!-- left -->
-
+                            <i class="material-icons">
+                                filter_list
+                            </i>
                         </div> <!-- right -->
                         <div class="view-mode">
                             <i class="material-icons" @click="setViewMode('list')" :class="{ active: viewMode === 'list' }">view_list</i>
@@ -40,7 +42,7 @@
                         <th>Title</th>
                         <th>Genres</th>
                         <th class="hide-on-med-and-down">Actors</th>
-                        <th>Rating</th>
+                        <th class="hide-on-small-only">Rating</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -50,18 +52,20 @@
                         <td>
                             <div class="genre-col">
                                 <template v-for="genre in getGenreNames(movie)">
-                                    {{ genre }}
+                                    <div class="chip">{{ genre }}</div>
                                 </template>
                             </div>
                         </td>
                         <td class="hide-on-med-and-down">
                             <div class="actor-col">
                                 <template v-for="actor in getActorNames(movie)">
-                                    {{ actor }}
+                                    <span class="pointer">
+                                        {{ actor }}
+                                    </span>
                                 </template>
                             </div>
                         </td>
-                        <td>
+                        <td class="hide-on-small-only">
                             <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
                         </td>
                     </tr>
@@ -178,6 +182,7 @@
     .toolbar {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         padding: 15px;
     }
 
@@ -211,27 +216,6 @@
 
     .genre-col {
         max-width: 300px;
-    }
-
-    .star-ratings {
-        position: relative;
-    }
-
-    .star-ratings:hover .custom-rating {
-        display: flex;
-    }
-
-    .star-ratings:hover .tmdb-rating {
-        display: none;
-    }
-
-    .custom-rating {
-        display: none;
-    }
-
-    .tmdb-rating {
-        position: absolute;
-        top: 0;
     }
 
 </style>
