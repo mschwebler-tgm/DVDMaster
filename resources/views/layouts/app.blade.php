@@ -67,6 +67,11 @@
                     {{ config('app.name', 'DVD Master') }}
                 </a>
                 <form class="container" >
+                    <ul id="nav-mobile" class="left hide-on-med-and-down">
+                        <li><router-link to="/">Home</router-link></li>
+                        <li><router-link to="/addMovie">Add Movie</router-link></li>
+                        <li><router-link to="/rentals">Rentals</router-link></li>
+                    </ul>
                     <div class="input-field right" style="width: 400px; background-color: #CC444B;">
                         <input id="search" type="search" style="height: 64px !important" required>
                         <label class="label-icon" for="search"><i class="material-icons">search</i></label>
