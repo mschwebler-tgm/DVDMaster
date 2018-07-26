@@ -1,13 +1,19 @@
 <template>
     <div class="container">
-        <template v-if="loaded">
+        <template v-show="loaded">
             <div class="row">
-                <div class="col-s-12 z-depth-4">
+                <div class="col-s-12 z-depth-3"> <!-- toolbar -->
                     <div class="toolbar">
-                        <div> <!-- left -->
-                            <i class="material-icons">
-                                filter_list
-                            </i>
+                        <div class="filters"> <!-- left -->
+                            <i class="material-icons">filter_list</i>
+                            <div class="genre-filter">
+                                Genres&nbsp;&nbsp;
+                                <input id="genre_filter" type="text" class="validate">
+                            </div>
+                            <div class="genre-filter">
+                                Actors&nbsp;&nbsp;
+                                <input id="actor_filter" type="text" class="validate">
+                            </div>
                         </div> <!-- right -->
                         <div class="view-mode">
                             <i class="material-icons" @click="setViewMode('list')" :class="{ active: viewMode === 'list' }">view_list</i>
@@ -27,7 +33,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> <!-- stage -->
             </div>
             <div class="row movie-cards" v-show="viewMode === 'grid'">
                 <div v-for="(movie, index) in movies" class="col l3 m4 s12" v-if="index !== 0">
@@ -35,14 +41,16 @@
                 </div>
             </div>
             <div class="row movie-table" v-show="viewMode === 'list'">
-                <movie-list :movies="movies"></movie-list>
+                <div class="col s12 z-depth-5">
+                    <movie-list :movies="movies"></movie-list>
+                </div>
             </div>
             <div class="col s12 center" v-if="movies.length === 0 && !featuredMovie">
                 No movies in Database.
                 <router-link to="/addMovie">Add a movie</router-link>
             </div>
         </template>
-        <template v-else>
+        <template v-show="!loaded">
             <div class="container center">
                 <div class="preloader-wrapper active pre-loader">
                     <div class="spinner-layer spinner-red-only">
@@ -73,7 +81,8 @@
             return {
                 movies: [],
                 loaded: false,
-                viewMode: localStorage.getItem('viewMode') || 'grid'
+                viewMode: localStorage.getItem('viewMode') || 'grid',
+                filter: {}
             }
         },
         created() {
@@ -81,6 +90,64 @@
                 this.movies = res.data.data;
                 this.loaded = true;
             });
+        },
+        mounted() {
+            setTimeout(() => {
+                let genreNames = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    prefetch: {
+                        url: '/api/genreNames',
+                        filter: function(list) {
+                            return $.map(list, function(genreName) {
+                                return { name: genreName }; });
+                        }
+                    }
+                });
+                genreNames.initialize();
+
+                let input = $('#genre_filter');
+                input.tagsinput({
+                    typeaheadjs: {
+                        name: 'genrenames',
+                        displayKey: 'name',
+                        valueKey: 'name',
+                        source: genreNames.ttAdapter()
+                    },
+                    tagClass: 'custom-tag tag-center',
+                });
+
+                input.on('itemAdded', event => this.filter.genres = event.target.value.split(','));
+                input.on('itemRemoved', event => this.filter.genres = event.target.value.split(','));
+
+
+                let actorNames = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    prefetch: {
+                        url: '/api/actorNames',
+                        filter: function(list) {
+                            return $.map(list, function(actorName) {
+                                return { name: actorName }; });
+                        }
+                    }
+                });
+                actorNames.initialize();
+
+                input = $('#actor_filter');
+                input.tagsinput({
+                    typeaheadjs: {
+                        name: 'actornames',
+                        displayKey: 'name',
+                        valueKey: 'name',
+                        source: actorNames.ttAdapter()
+                    },
+                    tagClass: 'custom-tag tag-center',
+                });
+
+                input.on('itemAdded', event => this.filter.actors = event.target.value.split(','));
+                input.on('itemRemoved', event => this.filter.actors = event.target.value.split(','));
+            }, 0);
         },
         methods: {
             setViewMode(viewMode) {
@@ -139,6 +206,7 @@
         padding-right: 2px;
         border: 1px solid #d1d1d1;
         border-radius: 12px;
+        min-width: 71px;
     }
 
     .view-mode i {
@@ -159,8 +227,19 @@
         border-left: 1px solid #d1d1d1;
     }
 
-    .genre-col {
-        max-width: 300px;
+    .filters {
+        display: flex;
+        align-items: center;
+    }
+
+    .genre-filter {
+        display: flex;
+        margin-left: 30px;
+        align-items: center;
+    }
+
+    .genre-filter input {
+        margin: 0;
     }
 
 </style>

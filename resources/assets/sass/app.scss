@@ -140,3 +140,14 @@ html, body {
     width: 100%;
   }
 }
+
+.tag-center {
+  margin-top: 0 !important;
+  top: 0 !important;
+
+}
+
+.filters .bootstrap-tagsinput {
+  display: flex;
+  align-items: center;
+}

@@ -141,6 +141,7 @@
 <script>
     import '../../../../node_modules/swiper/dist/css/swiper.css';
     import {swiper, swiperSlide} from 'vue-awesome-swiper';
+    import StarRating from 'vue-star-rating';
 
     export default {
         name: "AddMovie",
@@ -342,7 +343,8 @@
         },
         components: {
             swiper,
-            swiperSlide
+            swiperSlide,
+            StarRating
         }
     }
 </script>
