@@ -11,11 +11,11 @@ use Tmdb\Model\Collection\ResultCollection;
 use Tmdb\Model\Genre;
 use Tmdb\Repository\MovieRepository;
 
-class ImportMovies extends Command
+class ImportTestMovies extends Command
 {
     const PAGES_TO_IMPORT = 10;  // 20 items per page
 
-    protected $signature = 'import:movies';
+    protected $signature = 'import:testMovies';
     protected $description = 'Import popular movies from themoviedb';
 
     private $movieDb;
