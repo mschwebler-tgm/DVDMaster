@@ -22,7 +22,7 @@ class ImportGenres extends Command
     public function handle()
     {
         $this->info('Importing genres...');
-        $res = $this->movieDb->getApi()->get('genre/movie/list');
+        $res = $this->movieDb->getApi()->get('genre/movie/list', ['language' => 'de']);
         if (!isset($res['genres'])) {
             return;
         }
