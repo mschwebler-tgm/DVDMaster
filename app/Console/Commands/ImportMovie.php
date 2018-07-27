@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Actor;
 use App\Movie;
+use App\MovieHasActor;
 use App\Service\Dao\MovieDao;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -35,17 +37,28 @@ class ImportMovie extends Command
         }
 
         /** @var \Tmdb\Model\Movie|\Tmdb\Model\AbstractModel $movieRes */
-        $movieRes = $this->movieDb->load($tmdbId, ['append_to_response' => ['credits'], 'language' => 'de']);
+        $movieRes = $this->movieDb->load($tmdbId, ['append_to_response' => 'credits', 'language' => 'de']);
         $this->setMovieAttrs($movie, $movieRes);
+        $movie->save();
 
         /** @var \Tmdb\Model\Person\CastMember $actor */
         foreach ($movieRes->getCredits()->getCast() as $actor) {
-            Artisan::call('import:actor', ['tmdbId' => $actor->getId()]);
+            $dbActor = Actor::where('tmdb_id', $actor->getId())->first();
+            if (!$dbActor) {
+                $this->info('dispatching ImportActor for ' . $actor->getName());
+                \App\Jobs\ImportActor::dispatch($actor->getId(), $movie->tmdb_id);
+            } else {
+                MovieHasActor::firstOrCreate([
+                    'actor_id' => $dbActor->id,
+                    'movie_id' => $movie->id
+                ]);
+            }
         }
     }
 
     private function setMovieAttrs(&$movie, $movieRes)
     {
+        $movie->tmdb_id = $movieRes->getId() ?: null;
         $movie->imdb_id = $movieRes->getImdbId() ?: null;
         $movie->backdrop_path = $movieRes->getBackdropImage() ? $movieRes->getBackdropImage()->getFilePath() : null;
         $movie->poster_path = $movieRes->getPosterPath() ?: null;

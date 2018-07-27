@@ -10,7 +10,7 @@ use Tmdb\Repository\MovieRepository;
 
 class ImportActor extends Command
 {
-    protected $signature = 'import:actor {tmdbId}';
+    protected $signature = 'import:actor {tmdbId} {appendToMovie?}';
     protected $description = 'Command description';
 
     private $movieDb;
@@ -38,9 +38,9 @@ class ImportActor extends Command
             $actor->save();
 
             // get know_for
-            $knownForRes = $this->movieDb->getApi()->get("person/$tmdbId/combined_credits", ['language' => 'de']);
-            foreach ($knownForRes['cast'] as $knownFor) {
-                $dbMovie = Movie::where('tmdb_id', $knownFor['id'])->first();
+            $movieId = $this->argument('appendToMovie');
+            if ($movieId) {
+                $dbMovie = Movie::where('tmdb_id', $movieId)->first();
                 if ($dbMovie) {
                     MovieHasActor::firstOrCreate([
                         'actor_id' => $actor->id,
@@ -48,8 +48,10 @@ class ImportActor extends Command
                     ]);
                 }
             }
+            return $actor;
         } catch (\Exception $e) {
             $this->error($e->getMessage());
+            return null;
         }
     }
 

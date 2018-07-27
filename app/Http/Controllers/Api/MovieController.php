@@ -8,6 +8,7 @@ use App\Service\Dao\MovieDao;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class MovieController extends Controller
 {
@@ -43,7 +44,7 @@ class MovieController extends Controller
             }
             $this->movieDao->insertFromCustomArray($request->all(), $posterPath, $backdropPath);
         } else if ($isCustom === false) {
-            $this->movieDao->insertFromArray($movie);
+            Artisan::call('import:movie', ['tmdbId' => $movie['id']]);
         }
     }
 
