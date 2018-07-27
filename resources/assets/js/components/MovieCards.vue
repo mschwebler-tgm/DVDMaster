@@ -87,7 +87,7 @@
         },
         created() {
             axios.get('/api/movies').then((res) => {
-                this.movies = res.data.data;
+                this.movies = res.data;
                 this.loaded = true;
             });
         },
@@ -147,7 +147,7 @@
 
                 input.on('itemAdded', event => this.filter.actors = event.target.value.split(','));
                 input.on('itemRemoved', event => this.filter.actors = event.target.value.split(','));
-            }, 0);
+            }, 1000);
         },
         methods: {
             setViewMode(viewMode) {
