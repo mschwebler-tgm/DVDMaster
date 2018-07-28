@@ -33,9 +33,9 @@ class ImportActors extends Command
         $this->info('Importing actors...');
         for ($i = 1; $i <= self::PAGES_TO_IMPORT; $i++) {
             /** @var ResultCollection $movies */
-            $people = $this->movieDb->getApi()->get('person/popular', ['page' => $i])['results'];
+            $people = $this->movieDb->getApi()->get('person/popular', ['page' => $i, 'language' => 'de'])['results'];
             foreach ($people as $person) {
-                $personDetails = $this->movieDb->getApi()->get('person/' . $person['id']);
+                $personDetails = $this->movieDb->getApi()->get('person/' . $person['id'], ['language' => 'de']);
                 $dbPerson = $this->actorDao->insertFromArray($personDetails);
 
                 foreach ($person['known_for'] as $mov) {

@@ -11,11 +11,11 @@ use Tmdb\Model\Collection\ResultCollection;
 use Tmdb\Model\Genre;
 use Tmdb\Repository\MovieRepository;
 
-class ImportMovies extends Command
+class ImportTestMovies extends Command
 {
     const PAGES_TO_IMPORT = 10;  // 20 items per page
 
-    protected $signature = 'import:movies';
+    protected $signature = 'import:testMovies';
     protected $description = 'Import popular movies from themoviedb';
 
     private $movieDb;
@@ -33,10 +33,10 @@ class ImportMovies extends Command
         $this->info('Importing movies...');
         for ($i = 1; $i <= self::PAGES_TO_IMPORT; $i++) {
             /** @var ResultCollection $movies */
-            $movies = $this->movieDb->getPopular(['page' => $i]);
+            $movies = $this->movieDb->getPopular(['page' => $i, 'language' => 'de']);
             /** @var \Tmdb\Model\Movie $movie */
             foreach ($movies->toArray() as $movie) {
-                $movie = $this->movieDb->load($movie->getId(), ['append_to_response' => 'credits']);
+                $movie = $this->movieDb->load($movie->getId(), ['append_to_response' => 'credits', 'language' => 'de']);
                 $dbMovie = $this->movieDao->insertFromTmdb($movie);
                 $this->addCast($dbMovie, $movie->getCredits()->getCast());
 

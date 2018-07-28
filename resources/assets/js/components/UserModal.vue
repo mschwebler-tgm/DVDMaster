@@ -30,7 +30,7 @@
             }
         },
         created() {
-            axios.get('/api/users/1').then(res => {
+            axios.get('/api/users/' + window.user_id).then(res => {
                 this.users = res.data;
             });
         },

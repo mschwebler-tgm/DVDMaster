@@ -133,3 +133,21 @@ html, body {
 #retrieve-modal .datepicker-modal {
   min-width: 545px;
 }
+
+@media only screen and (max-width: 600px) {
+  .container {
+    margin: 0;
+    width: 100%;
+  }
+}
+
+.tag-center {
+  margin-top: 0 !important;
+  top: 0 !important;
+
+}
+
+.filters .bootstrap-tagsinput {
+  display: flex;
+  align-items: center;
+}
