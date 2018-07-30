@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <user-modal @userSelected="selectUser"></user-modal>
         <div id="retrieve-modal" class="modal">
             <div class="modal-content">
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="row z-depth-5" v-show="!loading && movie">
+        <div class="row z-depth-5" v-show="movie">
             <div class="col s12 no-padding" v-if="movie">
                 <div class="backdrop-image"
                      :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.backdrop_path, 'w1280') + ')'}">
@@ -65,7 +65,7 @@
                 <div class="movie-header">
                     <div class="poster-spacer"></div>
                     <div class="tool-bar">
-                        <div><i class="material-icons">edit</i> Edit</div>
+                        <div @click="$root.$router.push('/movie/' + movie.id + '/edit')"><i class="material-icons">edit</i> Edit</div>
                         <div>
                             <template v-if="movie">
                                 <template v-if="movie.rented_by.length === 0">
@@ -138,45 +138,20 @@
                 </swiper>
             </div>
         </div>
-        <div v-if="!loading && !movie">
-            <div class="center" style="padding: 4em">
-                <h5>Sorry, the movie you requested could not be found.</h5>
-                <a href="#" @click="$root.$router.go(-1)">Go back</a>
-            </div>
-        </div>
-        <template v-if="loading">
-            <div class="container center">
-                <div class="preloader-wrapper active pre-loader">
-                    <div class="spinner-layer spinner-red-only">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
         <input type="text" class="datepicker" id="last-seen-date-picker" style="display: none;" @change="updateLastSeen($event.target.value)">
     </div>
 </template>
 
 <script>
     import moment from 'moment';
-    import '../../../../node_modules/swiper/dist/css/swiper.css';
+    import '../../../../../node_modules/swiper/dist/css/swiper.css';
     import {swiper, swiperSlide} from 'vue-awesome-swiper';
     import StarRating from 'vue-star-rating';
 
     export default {
-        props: ['id'],
+        props: ['id', 'movie'],
         data() {
             return {
-                loading: true,
-                movie: null,
                 swiperOption: {
                     slidesPerView: window.innerWidth / 230,
                     freeMode: true,
@@ -189,15 +164,6 @@
                 retrieveDate: null,
                 retrieveSlider: null
             }
-        },
-        created() {
-            axios.get('/api/movie/' + this.id).then(res => {
-                this.movie = res.data;
-                this.loading = false;
-            }).catch(err => {
-                this.loading = false;
-                M.toast({html: 'Error while loading movie', classes: 'complete-toast'});
-            });
         },
         mounted() {
             this.initM();
