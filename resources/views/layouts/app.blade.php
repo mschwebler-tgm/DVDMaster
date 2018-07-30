@@ -49,11 +49,11 @@
         @else
             <ul id="dropdown1" class="dropdown-content">
                 <li>
-                    <a class="dropdown-item" href="{{ route('logout') }}"
+                    <a class="dropdown-item" href="/logout"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}
                     </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                    <form id="logout-form" action="/logout" method="POST"
                           style="display: none;">
                         @csrf
                     </form>
@@ -81,8 +81,8 @@
                 <ul class="right hide-on-med-and-down" style="position: absolute; top: 0; right: 0;">
                     <!-- Dropdown Trigger -->
                     @guest
-                        <li><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                        <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                        <li><a href="/login">{{ __('Login') }}</a></li>
+                        <li><a href="/register">{{ __('Register') }}</a></li>
                     @else
                         <li><a class="dropdown-trigger" href="#" data-target="dropdown1">{{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}<i
                                         class="material-icons right">arrow_drop_down</i></a></li>
