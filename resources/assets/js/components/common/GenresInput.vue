@@ -1,5 +1,7 @@
 <template>
-    <input id="custom_genres" type="text" class="validate">
+    <div class="custom-wrapper">
+        <input id="custom_genres" type="text" class="validate">
+    </div>
 </template>
 
 <script>

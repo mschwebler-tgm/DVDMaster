@@ -1,0 +1,79 @@
+.custom-tag {
+  background-color: #26a69a;
+  font-size: 14px;
+  padding: 4px 6px;
+  border-radius: 0.4em;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.bootstrap-tagsinput {
+  border: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.tt-input {
+  min-width: 150px;
+}
+
+.tt-menu {
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+  cursor: pointer;
+}
+
+.tt-suggestion {
+  font-size: 15px;
+  padding: 0 10px;
+}
+
+.tt-suggestion:hover {
+  background-color: #26a69a;
+}
+
+.tt-cursor {
+  background-color: #26a69a;
+}
+
+.bootstrap-tagsinput .tag {
+  position: relative;
+  top: 10px;
+}
+
+.tag-center {
+  margin-top: 0 !important;
+  top: 0 !important;
+
+}
+
+.filters .bootstrap-tagsinput {
+  display: flex;
+  align-items: center;
+}
+
+.custom-wrapper .bootstrap-tagsinput {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.custom-wrapper .bootstrap-tagsinput .twitter-typeahead {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  margin: 0;
+}
