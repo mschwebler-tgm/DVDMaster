@@ -8,11 +8,11 @@
                             <i class="material-icons">filter_list</i>
                             <div class="genre-filter">
                                 Genres&nbsp;&nbsp;
-                                <input id="genre_filter" type="text" class="validate">
+                                <genres-input v-if="showTaginputs" classes="custom-tag tag-center"></genres-input>
                             </div>
                             <div class="genre-filter">
                                 Actors&nbsp;&nbsp;
-                                <input id="actor_filter" type="text" class="validate">
+                                <actors-input v-if="showTaginputs" classes="custom-tag tag-center"></actors-input>
                             </div>
                         </div> <!-- right -->
                         <div class="view-mode">
@@ -82,7 +82,8 @@
                 movies: [],
                 loaded: false,
                 viewMode: localStorage.getItem('viewMode') || 'grid',
-                filter: {}
+                filter: {},
+                showTaginputs: false
             }
         },
         created() {
@@ -92,62 +93,7 @@
             });
         },
         mounted() {
-            setTimeout(() => {
-                let genreNames = new Bloodhound({
-                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: {
-                        url: '/api/genreNames',
-                        filter: function(list) {
-                            return $.map(list, function(genreName) {
-                                return { name: genreName }; });
-                        }
-                    }
-                });
-                genreNames.initialize();
-
-                let input = $('#genre_filter');
-                input.tagsinput({
-                    typeaheadjs: {
-                        name: 'genrenames',
-                        displayKey: 'name',
-                        valueKey: 'name',
-                        source: genreNames.ttAdapter()
-                    },
-                    tagClass: 'custom-tag tag-center',
-                });
-
-                input.on('itemAdded', event => this.filter.genres = event.target.value.split(','));
-                input.on('itemRemoved', event => this.filter.genres = event.target.value.split(','));
-
-
-                let actorNames = new Bloodhound({
-                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: {
-                        url: '/api/actorNames',
-                        filter: function(list) {
-                            return $.map(list, function(actorName) {
-                                return { name: actorName }; });
-                        }
-                    }
-                });
-                actorNames.initialize();
-
-                input = $('#actor_filter');
-                input.tagsinput({
-                    typeaheadjs: {
-                        name: 'actornames',
-                        displayKey: 'name',
-                        valueKey: 'name',
-                        source: actorNames.ttAdapter()
-                    },
-                    tagClass: 'custom-tag tag-center',
-                });
-
-                input.on('itemAdded', event => this.filter.actors = event.target.value.split(','));
-                input.on('itemRemoved', event => this.filter.actors = event.target.value.split(','));
-            }, 1000);
+            setTimeout(() => this.showTaginputs = true, 1000);
         },
         methods: {
             setViewMode(viewMode) {

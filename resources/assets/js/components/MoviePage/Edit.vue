@@ -17,12 +17,12 @@
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input id="custom_genres" type="text" class="validate" v-model="movie.genres">
+                <actors-input @change="updateActors" :initial="movie.actors"></actors-input>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input id="custom_actors" type="text" class="validate" v-model="movie.actors">
+                <genres-input @change="updateGenres" :initial="movie.genres"></genres-input>
             </div>
         </div>
         <div class="row">
@@ -50,6 +50,8 @@
 </template>
 
 <script>
+    import StarRating from 'vue-star-rating';
+
     export default {
         props: ['movie'],
         data() {
@@ -57,6 +59,10 @@
                 custom_backdrop_preview: null,
                 custom_poster_preview: null
             }
+        },
+        mounted() {
+            M.updateTextFields();
+            M.textareaAutoResize($('#custom_overview'));
         },
         methods: {
             openCustomCoverDialog() {
@@ -88,6 +94,15 @@
                 $('#custom_backdrop').val(null);
                 this.custom_backdrop_preview = null;
             },
+            updateActors(actors) {
+                this.movie.actors = actors;
+            },
+            updateGenres(genres) {
+                this.movie.genres = genres;
+            }
+        },
+        components: {
+            StarRating
         }
     }
 </script>

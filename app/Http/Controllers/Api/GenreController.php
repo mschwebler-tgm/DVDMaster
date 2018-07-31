@@ -6,8 +6,8 @@ use App\Genre;
 
 class GenreController extends Controller
 {
-    public function genreNames()
+    public function genres()
     {
-        return Genre::all()->pluck('name')->toArray();
+        return Genre::all();
     }
 }
