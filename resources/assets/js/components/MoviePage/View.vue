@@ -218,7 +218,7 @@
                 this.retrieveModal = instances[1];
             },
             deleteMovie() {
-                axios.get('/api/movie/' + this.id + '/delete').then(() => {
+                axios.get('/api/movie/' + this.movie.id + '/delete').then(() => {
                     M.toast({html: 'Movie deleted', classes: 'complete-toast'});
                     this.$root.$router.go(-1);
                 }).catch(() => {

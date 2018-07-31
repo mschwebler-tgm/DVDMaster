@@ -15,6 +15,7 @@
                     <div class="spinner-layer spinner-red-only">
                         <div class="circle-clipper left">
                             <div class="circle"></div>
+                            <div class="circle"></div>
                         </div>
                         <div class="gap-patch">
                             <div class="circle"></div>

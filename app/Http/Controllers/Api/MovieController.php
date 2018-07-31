@@ -35,13 +35,9 @@ class MovieController extends Controller
         $isCustom = (bool) $request->get('is_custom');
         if ($isCustom) {
             $posterPath = null;
-            if ($request->file('custom_poster')) {
-                $posterPath = $request->file('custom_poster')->store('posters', 'public');
-            }
+            $posterPath = $this->savePoster($request);
             $backdropPath = null;
-            if ($request->file('custom_backdrop')) {
-                $backdropPath = $request->file('custom_backdrop')->store('backdrops', 'public');
-            }
+            $backdropPath = $this->saveBackdropImage($request);
             $this->movieDao->insertFromCustomArray($request->all(), $posterPath, $backdropPath);
         } else if ($isCustom === false) {
             Artisan::call('import:movie', ['tmdbId' => $movie['id']]);
@@ -107,5 +103,57 @@ class MovieController extends Controller
         $movie->custom_rating = $request->get('rating');
         $movie->save();
         return $movie;
+    }
+
+    public function updateMovie($movieId, Request $request)
+    {
+        /** @var Movie $movie */
+        $movie = Movie::with('genres', 'actors')->where('id', $movieId)->first();
+        if (!$movie || !$request->get('movie')) {
+            abort(404);
+        }
+
+        $payload = json_decode($request->get('movie'), true);
+        $actors = $payload['actors'];
+        $genres = $payload['genres'];
+        $posterPath = $this->savePoster($request);
+        if (!$posterPath) {
+            $posterPath = $payload['poster_path'];
+        }
+        $backdropPath = $this->saveBackdropImage($request);
+        if (!$backdropPath) {
+            $backdropPath = $payload['backdrop_path'];
+        }
+        $payload['poster_path'] = $posterPath;
+        $payload['backdrop_path'] = $backdropPath;
+
+        $attributeKeys = array_keys($movie->getAttributes());
+        $toUpdate = [];
+        foreach ($attributeKeys as $key) {
+            $toUpdate[$key] = $payload[$key];
+        }
+        $movie->update($toUpdate);
+        $this->movieDao->updateGenres($movie, $genres);
+        $this->movieDao->updateActors($movie, $actors);
+
+        return $movie;
+    }
+
+    private function savePoster(Request $request)
+    {
+        if ($request->file('custom_poster')) {
+            $posterPath = $request->file('custom_poster')->store('posters', 'public');
+            return $posterPath;
+        }
+        return null;
+    }
+
+    private function saveBackdropImage(Request $request)
+    {
+        if ($request->file('custom_backdrop')) {
+            $backdropPath = $request->file('custom_backdrop')->store('backdrops', 'public');
+            return $backdropPath;
+        }
+        return null;
     }
 }
