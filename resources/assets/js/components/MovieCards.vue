@@ -4,18 +4,8 @@
             <div class="row">
                 <div class="col-s-12 z-depth-3"> <!-- toolbar -->
                     <div class="toolbar">
-                        <div class="filters"> <!-- left -->
-                            <i class="material-icons">filter_list</i>
-                            <div class="genre-filter">
-                                Genres&nbsp;&nbsp;
-                                <genres-input v-if="showTaginputs" classes="custom-tag tag-center"></genres-input>
-                            </div>
-                            <div class="genre-filter">
-                                Actors&nbsp;&nbsp;
-                                <actors-input v-if="showTaginputs" classes="custom-tag tag-center"></actors-input>
-                            </div>
-                        </div> <!-- right -->
-                        <div class="view-mode">
+                        <movie-filter></movie-filter> <!-- left -->
+                        <div class="view-mode"> <!-- right -->
                             <i class="material-icons" @click="setViewMode('list')" :class="{ active: viewMode === 'list' }">view_list</i>
                             <i class="material-icons" @click="setViewMode('grid')" :class="{ active: viewMode === 'grid' }">view_module</i>
                         </div>
@@ -80,16 +70,11 @@
         data() {
             return {
                 loaded: false,
-                viewMode: localStorage.getItem('viewMode') || 'grid',
-                filter: {},
-                showTaginputs: false
+                viewMode: localStorage.getItem('viewMode') || 'grid'
             }
         },
         created() {
             this.$store.dispatch('MOVIES_ACTION_GET_ALL');
-        },
-        mounted() {
-            setTimeout(() => this.showTaginputs = true, 1000);
         },
         methods: {
             setViewMode(viewMode) {
@@ -170,21 +155,6 @@
     .view-mode i:last-child {
         padding: 5px 5px 5px 1px;
         border-left: 1px solid #d1d1d1;
-    }
-
-    .filters {
-        display: flex;
-        align-items: center;
-    }
-
-    .genre-filter {
-        display: flex;
-        margin-left: 30px;
-        align-items: center;
-    }
-
-    .genre-filter input {
-        margin: 0;
     }
 
 </style>

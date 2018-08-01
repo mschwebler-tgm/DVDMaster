@@ -1,6 +1,7 @@
 const state = {
     movies: [],
-    movie: null
+    movie: null,
+    filter: {}
 };
 
 const actions = {
@@ -9,8 +10,8 @@ const actions = {
             commit('MOVIES_COMMIT_SET_LIST', res.data);
         });
     },
-    MOVIES_ACTION_SEARCH ({commit}, query) {
-        axios.get('/api/customSearch/movies?query=' + query).then(res => {
+    MOVIES_ACTION_SEARCH ({commit, state}) {
+        axios.get('/api/customSearch/movies', {params: state.filter}).then(res => {
             commit('MOVIES_COMMIT_SET_LIST', res.data);
         });
     },
@@ -44,6 +45,9 @@ const mutations = {
     },
     MOVIES_COMMIT_SET (state, movie) {
         state.movie = movie;
+    },
+    MOVIES_COMMIT_FILTER_UPDATE (state, {type, data}) {
+        state.filter[type] = data;
     }
 };
 

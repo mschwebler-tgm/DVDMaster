@@ -15,7 +15,8 @@
         },
         methods: {
             search() {
-                this.$store.dispatch('MOVIES_ACTION_SEARCH', this.query);
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'title', data: this.query});
+                this.$store.dispatch('MOVIES_ACTION_SEARCH');
             },
             reset() {
                 this.query = '';
