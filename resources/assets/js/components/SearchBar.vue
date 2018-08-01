@@ -20,6 +20,7 @@
             },
             reset() {
                 this.query = '';
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'title', data: this.query});
                 this.$store.dispatch('MOVIES_ACTION_GET_ALL');
             }
         }
