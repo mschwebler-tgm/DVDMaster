@@ -12,7 +12,7 @@ class SearchController extends Controller
         $movies = Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')
             ->orderBy('popularity', 'desc');
 
-        $movies->where('title', 'like', "%{$request->get('query', '')}%");
+        $movies->where('title', 'like', "%{$request->get('title', '')}%");
         if ($request->has('genres')) {
             $movies->whereHas('genres', function ($query) use ($request) {
                 $query->whereIn('name', $request->get('genres', []));
