@@ -14,6 +14,7 @@ Vue.component('movie-rating', require('./components/common/MovieRating.vue'));
 Vue.component('movie-list', require('./components/MovieList.vue'));
 Vue.component('actors-input', require('./components/common/ActorsInput.vue'));
 Vue.component('genres-input', require('./components/common/GenresInput.vue'));
+Vue.component('search-bar', require('./components/SearchBar.vue'));
 
 Vue.use(VueRouter);
 Vue.use(Transitions);
