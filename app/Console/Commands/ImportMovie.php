@@ -3,11 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Actor;
+use App\Genre;
 use App\Movie;
 use App\MovieHasActor;
+use App\MovieHasGenre;
 use App\Service\Dao\MovieDao;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Tmdb\Repository\MovieRepository;
 
 class ImportMovie extends Command
@@ -53,6 +54,18 @@ class ImportMovie extends Command
                     'movie_id' => $movie->id
                 ]);
             }
+        }
+
+        /** @var \Tmdb\Model\Genre $genre */
+        foreach ($movieRes->getGenres() as $genre) {
+            $dbGenre = Genre::firstOrCreate([
+                'tmdb_id' => $genre->getId(),
+                'name' => $genre->getName()
+            ]);
+            MovieHasGenre::firstOrCreate([
+                'genre_id' => $dbGenre->id,
+                'movie_id' => $movie->id
+            ]);
         }
     }
 
