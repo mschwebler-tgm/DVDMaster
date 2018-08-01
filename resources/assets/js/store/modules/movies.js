@@ -21,6 +21,20 @@ const actions = {
         }).catch(() => {
             commit('MOVIES_COMMIT_SET', 404);
         });
+    },
+    MOVIES_ACTION_SAVE ({commit}, payload) {
+        axios.post('/api/movie/', payload).then(res => {
+            M.toast({ html: 'Movie saved', classes: 'complete-toast' });
+        }).catch(() => {
+            M.toast({ html: 'Error while saving movie', classes: 'complete-toast' });
+        });
+    },
+    MOVIES_ACTION_UPDATE ({commit}, {payload, id}) {
+        axios.post('/api/movie/' + id + '/update', payload).then(res => {
+            M.toast({ html: 'Movie saved', classes: 'complete-toast' });
+        }).catch(() => {
+            M.toast({ html: 'Error while saving movie', classes: 'complete-toast' });
+        });
     }
 };
 

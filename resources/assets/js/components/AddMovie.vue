@@ -228,7 +228,6 @@
                 }
             },
             save() {
-                this.$root.showLoading = true;
                 let payload = {
                     movie: this.movie,
                     is_custom: false
@@ -246,12 +245,7 @@
                         payload.append('custom_backdrop', backdropInput.files[0], backdropInput.files[0].name);
                     }
                 }
-                axios.post('/api/movie', payload).then(res => {
-                    this.$root.showLoading = false;
-                    M.toast({html: 'Movie saved!', classes: 'complete-toast'});
-                }).catch(err => {
-                    this.$root.showLoading = false;
-                });
+                this.$store.dispatch('MOVIES_ACTION_SAVE', payload);
             },
             openCustomCoverDialog() {
                 $('#custom_cover').trigger('click');

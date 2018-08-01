@@ -156,9 +156,7 @@
                 if (backdropInput.files && backdropInput.files[0]) {
                     payload.append('custom_backdrop', backdropInput.files[0], backdropInput.files[0].name);
                 }
-                axios.post('/api/movie/' + this.movie.id + '/update', payload).then(res => {
-
-                });
+                this.$store.dispatch('MOVIES_ACTION_UPDATE', {payload, id: this.movie.id});
             }
         },
         computed: {
