@@ -86,7 +86,7 @@
             }
         },
         created() {
-            this.$store.dispatch('MOVIES_ACTION_GET');
+            this.$store.dispatch('MOVIES_ACTION_GET_ALL');
         },
         mounted() {
             setTimeout(() => this.showTaginputs = true, 1000);

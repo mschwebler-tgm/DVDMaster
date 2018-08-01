@@ -45,7 +45,12 @@ class MovieController extends Controller
 
     public function show($id)
     {
-        return Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')->find($id);
+        $movie = Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')->find($id);
+        if (!$movie) {
+            abort(404);
+        }
+
+        return $movie;
     }
 
     public function destroy($id)
