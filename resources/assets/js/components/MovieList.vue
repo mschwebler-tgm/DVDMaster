@@ -42,6 +42,7 @@
         props: ['movies'],
         methods: {
             getGenreNames(movie) {
+                console.log(movie);
                 let names = [];
                 for (let genre of movie.genres) {
                     names.push(genre.name);

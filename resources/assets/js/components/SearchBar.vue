@@ -15,7 +15,7 @@
         },
         methods: {
             search() {
-                axios.get('/api/customSearch/movies?query=' + this.query);
+                this.$store.dispatch('MOVIES_ACTION_SEARCH', this.query);
             }
         }
     }

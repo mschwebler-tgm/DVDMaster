@@ -36,7 +36,7 @@
                 </div> <!-- stage -->
             </div>
             <div class="row movie-cards" v-show="viewMode === 'grid'">
-                <div v-for="(movie, index) in movies" class="col l3 m4 s12" v-if="index !== 0">
+                <div v-for="(movie, index) in movies" class="col l3 m4 s12" v-if="index !== 0" :key="movie.id">
                     <movie-card :movie="movie"></movie-card>
                 </div>
             </div>
@@ -79,7 +79,6 @@
     export default {
         data() {
             return {
-                movies: [],
                 loaded: false,
                 viewMode: localStorage.getItem('viewMode') || 'grid',
                 filter: {},
@@ -87,10 +86,7 @@
             }
         },
         created() {
-            axios.get('/api/movies').then((res) => {
-                this.movies = res.data;
-                this.loaded = true;
-            });
+            this.$store.dispatch('MOVIES_ACTION_GET');
         },
         mounted() {
             setTimeout(() => this.showTaginputs = true, 1000);
@@ -103,7 +99,10 @@
         },
         computed: {
             featuredMovie() {
-                return this.movies ? this.movies[0] : null;
+                return this.$store.getters.MOVIES_GET_ALL.length > 0 ? this.$store.getters.MOVIES_GET_ALL[0] : null;
+            },
+            movies() {
+                return this.$store.getters.MOVIES_GET_ALL;
             }
         },
         components: {

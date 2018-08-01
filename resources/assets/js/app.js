@@ -6,6 +6,7 @@ import VueRouter from 'vue-router';
 import router from './router';
 import Transitions from 'vue2-transitions'
 import theMovieDb from './themoviedb';
+import store from './store';
 
 Vue.component('movie-cards', require('./components/MovieCards.vue'));
 Vue.component('movie-card', require('./components/MovieCard.vue'));
@@ -22,6 +23,7 @@ Vue.use(Transitions);
 const app = new Vue({
     el: '#app',
     router,
+    store,
     data() {
         return {
             theMovieDb,
