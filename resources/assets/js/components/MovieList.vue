@@ -1,40 +1,43 @@
 <template>
-    <table>
-        <thead>
-        <tr>
-            <th></th>
-            <th>Title</th>
-            <th>Genres</th>
-            <th class="hide-on-med-and-down">Actors</th>
-            <th class="hide-on-small-only">Rating</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="movie in movies" @click="$root.$router.push('/movie/' + movie.id)">
-            <td><img :src="$root.getImagePath(movie.poster_path, 'w92')" width="92" height="138"></td>
-            <td>{{ movie.title }}</td>
-            <td>
-                <div class="genre-col">
-                    <template v-for="genre in getGenreNames(movie)">
-                        <div class="chip">{{ genre }}</div>
-                    </template>
-                </div>
-            </td>
-            <td class="hide-on-med-and-down">
-                <div class="actor-col">
-                    <template v-for="actor in getActorNames(movie)">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Genres</th>
+                <th class="hide-on-med-and-down">Actors</th>
+                <th class="hide-on-small-only">Rating</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="movie in movies" @click="$root.$router.push('/movie/' + movie.id)">
+                <td><img :src="$root.getImagePath(movie.poster_path, 'w92')" width="92" height="138"></td>
+                <td>{{ movie.title }}</td>
+                <td>
+                    <div class="genre-col">
+                        <template v-for="genre in getGenreNames(movie)">
+                            <div class="chip">{{ genre }}</div>
+                        </template>
+                    </div>
+                </td>
+                <td class="hide-on-med-and-down">
+                    <div class="actor-col">
+                        <template v-for="actor in getActorNames(movie)">
                                     <span class="pointer">
                                         {{ actor }}
                                     </span>
-                    </template>
-                </div>
-            </td>
-            <td class="hide-on-small-only">
-                <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                        </template>
+                    </div>
+                </td>
+                <td class="hide-on-small-only">
+                    <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paginator toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE" identifier="movie-list-view-paginator"></paginator>
+    </div>
 </template>
 
 <script>

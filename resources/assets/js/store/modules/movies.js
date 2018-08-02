@@ -63,7 +63,8 @@ const mutations = {
         state.movies = data;
     },
     MOVIES_COMMIT_APPEND_MOVIESDATA (state, data) {
-        state.movies.data = state.movies.data.concat(data.data);
+        data.data = state.movies.data.concat(data.data);
+        state.movies = data;
     },
     MOVIES_COMMIT_SET (state, movie) {
         state.movie = movie;
@@ -75,6 +76,7 @@ const mutations = {
 
 const getters = {
     MOVIES_GET_ALL: state => state.movies.data,
+    MOVIES_GET_NEXT_PAGE_URL: state => state.movies.next_page_url,
     MOVIES_GET: state => state.movie,
 };
 

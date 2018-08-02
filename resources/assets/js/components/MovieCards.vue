@@ -1,6 +1,6 @@
 <template>
-    <div class="container">
-        <template v-show="loaded">
+    <div>
+        <div class="container" v-if="loaded">
             <div class="row">
                 <div class="col-s-12 z-depth-3"> <!-- toolbar -->
                     <div class="toolbar">
@@ -35,28 +35,27 @@
                     <movie-list :movies="movies"></movie-list>
                 </div>
             </div>
-            <div class="col s12 center" v-if="movies.length === 0 && !featuredMovie">
+            <div class="col s12 center" v-if="loaded && movies.length === 0 && !featuredMovie">
                 No movies in Database.
                 <router-link to="/addMovie">Add a movie</router-link>
             </div>
-        </template>
-        <template v-show="!loaded">
-            <div class="container center">
-                <div class="preloader-wrapper active pre-loader">
-                    <div class="spinner-layer spinner-red-only">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
+            <paginator toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE" identifier="movie-card-view-paginator"></paginator>
+        </div>
+        <div class="container center" v-else>
+            <div class="preloader-wrapper active pre-loader">
+                <div class="spinner-layer spinner-red-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
                     </div>
                 </div>
             </div>
-        </template>
+        </div>
 
         <router-link to="/addMovie" class="btn-floating btn-large waves-effect waves-light add-movie"><i
                 class="material-icons">add</i></router-link>
@@ -74,7 +73,9 @@
             }
         },
         created() {
-            this.$store.dispatch('MOVIES_ACTION_GET_ALL');
+            this.$store.dispatch('MOVIES_ACTION_GET_FIRSTPAGE').then(() => {
+                this.loaded = true;
+            })
         },
         methods: {
             setViewMode(viewMode) {
