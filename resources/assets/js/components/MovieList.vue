@@ -10,8 +10,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="movie in movies">
-            <td><img :src="$root.getImagePath(movie.poster_path, 'w92')"></td>
+        <tr v-for="movie in movies" @click="$root.$router.push('/movie/' + movie.id)">
+            <td><img :src="$root.getImagePath(movie.poster_path, 'w92')" width="92" height="138"></td>
             <td>{{ movie.title }}</td>
             <td>
                 <div class="genre-col">
@@ -42,7 +42,6 @@
         props: ['movies'],
         methods: {
             getGenreNames(movie) {
-                console.log(movie);
                 let names = [];
                 for (let genre of movie.genres) {
                     names.push(genre.name);
@@ -69,5 +68,10 @@
 <style scoped>
     .genre-col {
         max-width: 300px;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+        cursor: pointer
     }
 </style>

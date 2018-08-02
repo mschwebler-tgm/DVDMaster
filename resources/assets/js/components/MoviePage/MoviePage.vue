@@ -1,15 +1,15 @@
 <template>
     <div class="container">
-        <template v-if="movie && movie !== 404">
+        <template v-if="movie && !loading">
             <router-view :movie="movie"></router-view>
         </template>
-        <template v-if="movie === 404">
+        <template v-if="!movie && !loading">
             <div class="center" style="padding: 4em">
                 <h5>Sorry, the movie you requested could not be found.</h5>
                 <a href="#" @click="$root.$router.go(-1)">Go back</a>
             </div>
         </template>
-        <template v-if="!movie">
+        <template v-if="loading">
             <div class="container center">
                 <div class="preloader-wrapper active pre-loader">
                     <div class="spinner-layer spinner-red-only">
@@ -33,12 +33,20 @@
 <script>
     export default {
         props: ['id'],
+        data() {
+           return {
+               loading: false
+           }
+        },
         created() {
-            this.$store.dispatch('MOVIES_ACTION_GET_BY_ID', this.id);
+            if (this.$store.getters.MOVIES_GET.id != this.id) { this.loading = true; }
+            this.$store.dispatch('MOVIES_ACTION_GET_BY_ID', this.id)
+                .then(() => this.loading = false)
+                .catch(() => this.loading = false);
         },
         computed: {
             movie() {
-                return this.$store.getters.MOVIES_GET;
+                return this.$store.getters.MOVIES_GET.id == this.id ? this.$store.getters.MOVIES_GET : null;
             }
         }
     }

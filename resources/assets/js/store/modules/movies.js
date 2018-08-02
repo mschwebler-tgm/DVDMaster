@@ -1,26 +1,34 @@
 const state = {
     movies: [],
-    movie: null,
+    movie: {},
     filter: {}
 };
 
 const actions = {
     MOVIES_ACTION_GET_ALL ({commit}) {
-        axios.get('/api/movies').then(res => {
-            commit('MOVIES_COMMIT_SET_LIST', res.data);
+        return new Promise((resolve, reject) => {
+            axios.get('/api/movies').then(res => {
+                commit('MOVIES_COMMIT_SET_LIST', res.data);
+                resolve();
+            }).catch(reject);
         });
     },
     MOVIES_ACTION_SEARCH ({commit, state}) {
-        axios.get('/api/customSearch/movies', {params: state.filter}).then(res => {
-            commit('MOVIES_COMMIT_SET_LIST', res.data);
+        return new Promise((resolve, reject) => {
+            axios.get('/api/customSearch/movies', {params: state.filter}).then(res => {
+                commit('MOVIES_COMMIT_SET_LIST', res.data);
+                resolve();
+            }).catch(reject);
         });
     },
     MOVIES_ACTION_GET_BY_ID ({commit}, id) {
-        commit('MOVIES_COMMIT_SET', null);
-        axios.get('/api/movie/' + id).then(res => {
-            commit('MOVIES_COMMIT_SET', res.data);
-        }).catch(() => {
-            commit('MOVIES_COMMIT_SET', 404);
+        return new Promise((resolve, reject) => {
+            axios.get('/api/movie/' + id).then(res => {
+                commit('MOVIES_COMMIT_SET', res.data);
+                resolve();
+            }).catch(() => {
+                reject();
+            });
         });
     },
     MOVIES_ACTION_SAVE ({commit}, payload) {
