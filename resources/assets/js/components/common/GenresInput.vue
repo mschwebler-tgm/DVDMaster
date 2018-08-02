@@ -38,7 +38,7 @@
                 input.on('itemRemoved', () => this.$emit('change', input.tagsinput('items')));
             },
             initValues(input) {
-                if (!this.initial) return;
+                if (!this.initial || !input) return;
                 for (let genre of this.initial) {
                     input.tagsinput('add', genre);
                 }
