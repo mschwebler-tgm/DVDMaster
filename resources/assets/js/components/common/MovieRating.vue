@@ -1,5 +1,5 @@
 <template>
-    <div class="star-ratings">
+    <div class="star-ratings" @click="stopPropagination($event)">
         <star-rating :increment="0.5" style="z-index: 1000;" class="custom-rating" inactive-color="white"
                      active-color="#FFD700" v-model="movie.custom_rating" :show-rating="false"
                      :border-width="0" :star-size="40" @click="$emit('newCustomRating', movie.custom_rating)"></star-rating>
@@ -17,6 +17,11 @@
         watch: {
             'movie.custom_rating': function(newVal) {
                 this.$emit('newCustomRating', newVal);
+            }
+        },
+        methods: {
+            stopPropagination(event) {
+                event.stopPropagation();
             }
         },
         components: {
