@@ -23,6 +23,6 @@ class SearchController extends Controller
                 $query->whereIn('name', $request->get('actors', []));
             });
         }
-        return $movies->get();
+        return $movies->paginate();
     }
 }

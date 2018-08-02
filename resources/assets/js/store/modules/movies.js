@@ -1,14 +1,25 @@
 const state = {
-    movies: [],
+    movies: {
+        data: []
+    },
     movie: {},
     filter: {}
 };
 
 const actions = {
-    MOVIES_ACTION_GET_ALL ({commit}) {
+    MOVIES_ACTION_GET_FIRSTPAGE ({commit}) {
         return new Promise((resolve, reject) => {
             axios.get('/api/movies').then(res => {
-                commit('MOVIES_COMMIT_SET_LIST', res.data);
+                commit('MOVIES_COMMIT_SET_MOVIESDATA', res.data);
+                resolve();
+            }).catch(reject);
+        });
+    },
+    MOVIES_ACTION_GET_LOADNEXTPAGE ({state, commit}) {
+        return new Promise((resolve, reject) => {
+            if (!state.movies.next_page_url) { reject(0) }
+            axios.get(state.movies.next_page_url).then(res => {
+                commit('MOVIES_COMMIT_APPEND_MOVIESDATA', res.data);
                 resolve();
             }).catch(reject);
         });
@@ -16,7 +27,7 @@ const actions = {
     MOVIES_ACTION_SEARCH ({commit, state}) {
         return new Promise((resolve, reject) => {
             axios.get('/api/customSearch/movies', {params: state.filter}).then(res => {
-                commit('MOVIES_COMMIT_SET_LIST', res.data);
+                commit('MOVIES_COMMIT_SET_MOVIESDATA', res.data);
                 resolve();
             }).catch(reject);
         });
@@ -48,8 +59,11 @@ const actions = {
 };
 
 const mutations = {
-    MOVIES_COMMIT_SET_LIST (state, movies) {
-        state.movies = movies;
+    MOVIES_COMMIT_SET_MOVIESDATA (state, data) {
+        state.movies = data;
+    },
+    MOVIES_COMMIT_APPEND_MOVIESDATA (state, data) {
+        state.movies.data = state.movies.data.concat(data.data);
     },
     MOVIES_COMMIT_SET (state, movie) {
         state.movie = movie;
@@ -60,7 +74,7 @@ const mutations = {
 };
 
 const getters = {
-    MOVIES_GET_ALL: state => state.movies,
+    MOVIES_GET_ALL: state => state.movies.data,
     MOVIES_GET: state => state.movie,
 };
 
