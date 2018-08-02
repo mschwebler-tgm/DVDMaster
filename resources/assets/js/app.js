@@ -40,7 +40,7 @@ const app = new Vue({
             if (!path) {
                 return 'https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg';
             }
-            if (path.split('/')[0] === 'storage') {
+            if (path.split('/')[1] === 'storage') {
                 return path;
             }
             return this.tmdbImagePath + resolution + path;
