@@ -63,7 +63,7 @@
         </div>
 
         <div class="container hide-on-small-only z-depth-3" v-show="autocomplete">
-            <div class="movie-backdrop" :style="{'background-image': movie.backdrop_path ? 'url(' + $root.tmdbImagePath + 'original' + movie.backdrop_path + ')' : ''}">
+            <div class="movie-backdrop" :style="{'background-image': movie.backdrop_path ? 'url(' + $root.getImagePath(movie.backdrop_path, 'original') + ')' : ''}">
                 <div class="row" style="height: 420px;">
                     <i class="material-icons clear-movie tooltipped" data-position="right" data-tooltip="Clear" @click="clearMovie">clear</i>
                     <div class="col m6">
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="col m6 poster-container">
-                        <img :src="movie.poster_path ? ($root.tmdbImagePath + 'w185' + movie.poster_path)
+                        <img :src="movie.poster_path ? ($root.getImagePath(movie.poster_path, 'w185'))
                                                    : ('https://dentallabor-gruettner.de/wp-content/uploads/2017/05/placeholder.gif')"
                              class="movie-poster background-center">
                         <p v-if="movie.release_date" class="grey-text" style="font-size: 14px;">
@@ -112,7 +112,7 @@
                                         v-if="suggestion.poster_path">
                                             <div class="movie-sugg">
                                             <div class="movie-sugg-cover" :class="{'movie-sugg-active': movie.id === suggestion.id}">
-                                                <img :src="$root.tmdbImagePath + 'w185' + suggestion.poster_path"
+                                                <img :src="$root.getImagePath(suggestion.poster_path, 'w185')"
                                                      class="background-center" @click="selectMovie(suggestion)"/>
                                             </div>
                                         </div>

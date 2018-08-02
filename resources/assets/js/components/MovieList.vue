@@ -59,6 +59,7 @@
                 return names;
             },
             updateRating(movie, rating) {
+                console.log(rating);
                 axios.post('/api/movie/' + movie.id + '/rate', {rating});
             }
         }
