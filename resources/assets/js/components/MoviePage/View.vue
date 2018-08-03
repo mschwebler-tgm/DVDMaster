@@ -54,6 +54,7 @@
             <div class="col s12 no-padding" v-if="movie">
                 <div class="backdrop-image"
                      :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.backdrop_path, 'w1280') + ')'}">
+                    <i class="material-icons pointer" id="back-button" @click="$router.go(-1)">arrow_back</i>
                     <div class="poster-image"
                          :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.poster_path, 'w185') + ')' }"></div>
                     <div class="movie-title">
@@ -485,6 +486,25 @@
 
     .shape-slider .s2 span {
         color: darkgrey;
+    }
+
+    #back-button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 15px;
+        color: #cecece;
+        font-size: 42px;
+        -webkit-transition: background-color .3s, color .3s;
+        -moz-transition: background-color .3s, color .3s;
+        -ms-transition: background-color .3s, color .3s;
+        -o-transition: background-color .3s, color .3s;
+        transition: background-color .3s, color .3s;
+    }
+    
+    #back-button:hover {
+        color: white;
+        background-color: rgba(0, 0, 0, 0.67);
     }
 
 </style>

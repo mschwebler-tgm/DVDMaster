@@ -1,14 +1,17 @@
 <template>
     <div style="margin-top: 20px;">
-        <div class="container flex-box flex-justify-end" style="padding-bottom: 15px">
-            <span style="margin-right: 20px;">Autocomplete</span>
-            <div class="switch">
-                <label>
-                    Off
-                    <input type="checkbox" v-model="autocomplete">
-                    <span class="lever"></span>
-                    On
-                </label>
+        <div class="container flex-box flex-justify-space-between" style="padding-bottom: 15px">
+            <span class="pointer" @click="$router.push('/')"><i class="material-icons">arrow_back</i> Back</span>
+            <div class="flex-box">
+                <span style="margin-right: 20px;">Autocomplete</span>
+                <div class="switch">
+                    <label>
+                        Off
+                        <input type="checkbox" v-model="autocomplete">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
             </div>
         </div>
         <div v-show="!autocomplete">
