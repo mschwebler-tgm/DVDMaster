@@ -43,7 +43,7 @@ const actions = {
         });
     },
     MOVIES_ACTION_SAVE ({commit}, payload) {
-        axios.post('/api/movie/', payload).then(res => {
+        axios.post('/api/movie', payload).then(res => {
             M.toast({ html: 'Movie saved', classes: 'complete-toast' });
         }).catch(() => {
             M.toast({ html: 'Error while saving movie', classes: 'complete-toast' });
