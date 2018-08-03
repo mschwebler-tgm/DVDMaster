@@ -68,14 +68,14 @@
     export default {
         data() {
             return {
-                loaded: false,
+                loaded: this.$store.getters.MOVIES_GET_ALL.length > 0,
                 viewMode: localStorage.getItem('viewMode') || 'grid'
             }
         },
         created() {
             this.$store.dispatch('MOVIES_ACTION_GET_FIRSTPAGE').then(() => {
                 this.loaded = true;
-            })
+            });
         },
         methods: {
             setViewMode(viewMode) {

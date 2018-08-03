@@ -30,5 +30,6 @@ Route::get('/actors', 'ActorController@actors');
 Route::get('/movie/{id}', 'MovieController@show');
 Route::post('/movie', 'MovieController@store');
 Route::get('/users/{id}', 'UserController@getAllExcept');
+Route::post('/users', 'UserController@create');
 
 Route::get('/customSearch/movies', 'SearchController@movies');

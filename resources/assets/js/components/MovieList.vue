@@ -48,14 +48,14 @@
         methods: {
             getGenreNames(movie) {
                 let names = [];
-                for (let i = 0; movie.genres && i < movie.genres.length; i++) {
+                for (let i = 0; movie.genres && i < movie.genres.length && names.length < 7; i++) {
                     names.push(movie.genres[i].name);
                 }
                 return names;
             },
             getActorNames(movie) {
                 let names = [];
-                for (let i = 0; movie.actors && i < movie.actors.length; i++) {
+                for (let i = 0; movie.actors && i < movie.actors.length && names.length < 7; i++) {
                     names.push(movie.actors[i].name);
                 }
                 return names;
