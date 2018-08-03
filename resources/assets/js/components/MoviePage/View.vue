@@ -69,11 +69,11 @@
                         <div @click="$root.$router.push('/movie/' + movie.id + '/edit')"><i class="material-icons">edit</i> Edit</div>
                         <div>
                             <template v-if="movie">
-                                <template v-if="movie.rented_by.length === 0">
+                                <template v-if="movie.pending_rental.length === 0">
                                     <a class="modal-trigger" href="#user-modal"><i class="material-icons">assignment_ind</i> Borrow</a>
                                 </template>
                                 <template v-else>
-                                    <a class="modal-trigger" href="#retrieve-modal"><i class="material-icons">assignment_ind</i> Borrowed by {{ movie.rented_by[0].name }}</a>
+                                    <a class="modal-trigger" href="#retrieve-modal"><i class="material-icons">assignment_ind</i> Borrowed by {{ movie.pending_rental[0].name }}</a>
                                 </template>
                             </template>
                         </div>
