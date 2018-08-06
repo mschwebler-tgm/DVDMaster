@@ -1,6 +1,7 @@
 <template>
     <div>
         <div class="container" v-if="loaded">
+            <dashboard></dashboard>
             <div class="row">
                 <div class="col-s-12 z-depth-3"> <!-- toolbar -->
                     <div class="toolbar">
