@@ -1,6 +1,6 @@
 <template>
-    <div :id="identifier">
-        <loader v-if="loading"></loader>
+    <div :id="identifier" style="height: 120px; position: relative; width: 100%; display: flex; align-items: center; justify-content: center;">
+        <loader v-show="loading"></loader>
     </div>
 </template>
 
@@ -32,6 +32,7 @@
             },
             paginate() {
                 if (!this.loading && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
+                    console.log('loading');
                     this.loading = true;
                     this.$store.dispatch(this.toDispatch).then(() => {
                         this.loading = false;

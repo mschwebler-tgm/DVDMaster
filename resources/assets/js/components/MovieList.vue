@@ -34,9 +34,6 @@
                     <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
                 </td>
             </tr>
-            <tr>
-                <paginator toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE" identifier="movie-list-view-paginator"></paginator>
-            </tr>
             </tbody>
         </table>
     </div>
