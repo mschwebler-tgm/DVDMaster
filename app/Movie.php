@@ -18,13 +18,12 @@ class Movie extends Model
 
     public function actors()
     {
-        return $this->belongsToMany('App\Actor', 'movie_has_actor', 'movie_id', 'actor_id');
+        return $this->belongsToMany('App\Actor', 'movie_has_actor', 'movie_id', 'actor_id')->orderBy('popularity', 'desc');
     }
 
     public function genres()
     {
         return $this->belongsToMany('App\Genre', 'movie_has_genre', 'movie_id', 'genre_id');
-
     }
 
     public function rentals()

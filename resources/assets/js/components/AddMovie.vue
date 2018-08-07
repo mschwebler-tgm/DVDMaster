@@ -1,14 +1,17 @@
 <template>
     <div style="margin-top: 20px;">
-        <div class="container flex-box flex-justify-end" style="padding-bottom: 15px">
-            <span style="margin-right: 20px;">Autocomplete</span>
-            <div class="switch">
-                <label>
-                    Off
-                    <input type="checkbox" v-model="autocomplete">
-                    <span class="lever"></span>
-                    On
-                </label>
+        <div class="container flex-box flex-justify-space-between" style="padding-bottom: 15px">
+            <span class="pointer" @click="$router.push('/')"><i class="material-icons">arrow_back</i> Back</span>
+            <div class="flex-box">
+                <span style="margin-right: 20px;">Autocomplete</span>
+                <div class="switch">
+                    <label>
+                        Off
+                        <input type="checkbox" v-model="autocomplete">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
             </div>
         </div>
         <div v-show="!autocomplete">
@@ -30,12 +33,12 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="custom_genres" type="text" class="validate" v-model="customMovie.genres">
+                        <genres-input @change="genres => customMovie.genres = genres"></genres-input>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="custom_actors" type="text" class="validate" v-model="customMovie.actors">
+                        <actors-input @change="actors => customMovie.actors = actors"></actors-input>
                     </div>
                 </div>
                 <div class="row">
@@ -63,7 +66,7 @@
         </div>
 
         <div class="container hide-on-small-only z-depth-3" v-show="autocomplete">
-            <div class="movie-backdrop" :style="{'background-image': movie.backdrop_path ? 'url(' + $root.tmdbImagePath + 'original' + movie.backdrop_path + ')' : ''}">
+            <div class="movie-backdrop" :style="{'background-image': movie.backdrop_path ? 'url(' + $root.getImagePath(movie.backdrop_path, 'original') + ')' : ''}">
                 <div class="row" style="height: 420px;">
                     <i class="material-icons clear-movie tooltipped" data-position="right" data-tooltip="Clear" @click="clearMovie">clear</i>
                     <div class="col m6">
@@ -90,7 +93,7 @@
                         </div>
                     </div>
                     <div class="col m6 poster-container">
-                        <img :src="movie.poster_path ? ($root.tmdbImagePath + 'w185' + movie.poster_path)
+                        <img :src="movie.poster_path ? ($root.getImagePath(movie.poster_path, 'w185'))
                                                    : ('https://dentallabor-gruettner.de/wp-content/uploads/2017/05/placeholder.gif')"
                              class="movie-poster background-center">
                         <p v-if="movie.release_date" class="grey-text" style="font-size: 14px;">
@@ -112,7 +115,7 @@
                                         v-if="suggestion.poster_path">
                                             <div class="movie-sugg">
                                             <div class="movie-sugg-cover" :class="{'movie-sugg-active': movie.id === suggestion.id}">
-                                                <img :src="$root.tmdbImagePath + 'w185' + suggestion.poster_path"
+                                                <img :src="$root.getImagePath(suggestion.poster_path, 'w185')"
                                                      class="background-center" @click="selectMovie(suggestion)"/>
                                             </div>
                                         </div>
@@ -185,8 +188,6 @@
                     this.customMovie.release_date = year + '-' + month + '-' + day;
                 },
             });
-            this.initGenreTypeAhead();
-            this.initActorTypeAhead();
         },
         methods: {
             searchMovie() {
@@ -230,7 +231,6 @@
                 }
             },
             save() {
-                this.$root.showLoading = true;
                 let payload = {
                     movie: this.movie,
                     is_custom: false
@@ -248,12 +248,7 @@
                         payload.append('custom_backdrop', backdropInput.files[0], backdropInput.files[0].name);
                     }
                 }
-                axios.post('/api/movie', payload).then(res => {
-                    this.$root.showLoading = false;
-                    M.toast({html: 'Movie saved!', classes: 'complete-toast'});
-                }).catch(err => {
-                    this.$root.showLoading = false;
-                });
+                this.$store.dispatch('MOVIES_ACTION_SAVE', payload);
             },
             openCustomCoverDialog() {
                 $('#custom_cover').trigger('click');
@@ -283,62 +278,6 @@
             clearBackdrop() {
                 $('#custom_backdrop').val(null);
                 this.custom_backdrop_preview = null;
-            },
-            initGenreTypeAhead() {
-                let genreNames = new Bloodhound({
-                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: {
-                        url: '/api/genreNames',
-                        filter: function(list) {
-                            return $.map(list, function(genreName) {
-                                return { name: genreName }; });
-                        }
-                    }
-                });
-                genreNames.initialize();
-
-                let input = $('#custom_genres');
-                input.tagsinput({
-                    typeaheadjs: {
-                        name: 'genrenames',
-                        displayKey: 'name',
-                        valueKey: 'name',
-                        source: genreNames.ttAdapter()
-                    },
-                    tagClass: 'custom-tag',
-                });
-
-                input.on('itemAdded', event => this.customMovie.actors = event.target.value.split(','));
-                input.on('itemRemoved', event => this.customMovie.actors = event.target.value.split(','));
-            },
-            initActorTypeAhead() {
-                let actorNames = new Bloodhound({
-                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: {
-                        url: '/api/actorNames',
-                        filter: function(list) {
-                            return $.map(list, function(actorName) {
-                                return { name: actorName }; });
-                        }
-                    }
-                });
-                actorNames.initialize();
-
-                let input = $('#custom_actors');
-                input.tagsinput({
-                    typeaheadjs: {
-                        name: 'actornames',
-                        displayKey: 'name',
-                        valueKey: 'name',
-                        source: actorNames.ttAdapter()
-                    },
-                    tagClass: 'custom-tag',
-                });
-
-                input.on('itemAdded', event => this.customMovie.genres = event.target.value.split(','));
-                input.on('itemRemoved', event => this.customMovie.genres = event.target.value.split(','));
             },
         },
         components: {

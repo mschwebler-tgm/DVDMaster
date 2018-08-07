@@ -6,12 +6,20 @@ import VueRouter from 'vue-router';
 import router from './router';
 import Transitions from 'vue2-transitions'
 import theMovieDb from './themoviedb';
+import store from './store';
 
 Vue.component('movie-cards', require('./components/MovieCards.vue'));
 Vue.component('movie-card', require('./components/MovieCard.vue'));
 Vue.component('user-modal', require('./components/UserModal.vue'));
 Vue.component('movie-rating', require('./components/common/MovieRating.vue'));
 Vue.component('movie-list', require('./components/MovieList.vue'));
+Vue.component('actors-input', require('./components/common/ActorsInput.vue'));
+Vue.component('genres-input', require('./components/common/GenresInput.vue'));
+Vue.component('search-bar', require('./components/SearchBar.vue'));
+Vue.component('movie-filter', require('./components/MovieFilter.vue'));
+Vue.component('paginator', require('./components/common/Paginator.vue'));
+Vue.component('loader', require('./components/common/Loader.vue'));
+Vue.component('dashboard', require('./components/Dashboard.vue'));
 
 Vue.use(VueRouter);
 Vue.use(Transitions);
@@ -19,6 +27,7 @@ Vue.use(Transitions);
 const app = new Vue({
     el: '#app',
     router,
+    store,
     data() {
         return {
             theMovieDb,
@@ -34,7 +43,7 @@ const app = new Vue({
             if (!path) {
                 return 'https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg';
             }
-            if (path.split('/')[0] === 'storage') {
+            if (path.split('/')[1] === 'storage') {
                 return path;
             }
             return this.tmdbImagePath + resolution + path;

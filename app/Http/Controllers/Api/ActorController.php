@@ -6,8 +6,8 @@ use App\Actor;
 
 class ActorController extends Controller
 {
-    public function actorNames()
+    public function actors()
     {
-        return Actor::all()->pluck('name')->toArray();
+        return Actor::where('popularity', '>', 5)->get();
     }
 }

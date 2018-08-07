@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <user-modal @userSelected="selectUser"></user-modal>
         <div id="retrieve-modal" class="modal">
             <div class="modal-content">
@@ -50,10 +50,11 @@
                 </div>
             </div>
         </div>
-        <div class="row z-depth-5" v-show="!loading && movie">
+        <div class="row z-depth-5" v-show="movie">
             <div class="col s12 no-padding" v-if="movie">
                 <div class="backdrop-image"
                      :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.backdrop_path, 'w1280') + ')'}">
+                    <i class="material-icons pointer" id="back-button" @click="$router.go(-1)">arrow_back</i>
                     <div class="poster-image"
                          :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.poster_path, 'w185') + ')' }"></div>
                     <div class="movie-title">
@@ -65,14 +66,14 @@
                 <div class="movie-header">
                     <div class="poster-spacer"></div>
                     <div class="tool-bar">
-                        <div><i class="material-icons">edit</i> Edit</div>
+                        <div @click="$root.$router.push('/movie/' + movie.id + '/edit')"><i class="material-icons">edit</i> Edit</div>
                         <div>
                             <template v-if="movie">
-                                <template v-if="movie.rented_by.length === 0">
+                                <template v-if="movie.pending_rental.length === 0">
                                     <a class="modal-trigger" href="#user-modal"><i class="material-icons">assignment_ind</i> Borrow</a>
                                 </template>
                                 <template v-else>
-                                    <a class="modal-trigger" href="#retrieve-modal"><i class="material-icons">assignment_ind</i> Borrowed by {{ movie.rented_by[0].name }}</a>
+                                    <a class="modal-trigger" href="#retrieve-modal"><i class="material-icons">assignment_ind</i> Borrowed by {{ movie.pending_rental[0].name }}</a>
                                 </template>
                             </template>
                         </div>
@@ -138,45 +139,20 @@
                 </swiper>
             </div>
         </div>
-        <div v-if="!loading && !movie">
-            <div class="center" style="padding: 4em">
-                <h5>Sorry, the movie you requested could not be found.</h5>
-                <a href="#" @click="$root.$router.go(-1)">Go back</a>
-            </div>
-        </div>
-        <template v-if="loading">
-            <div class="container center">
-                <div class="preloader-wrapper active pre-loader">
-                    <div class="spinner-layer spinner-red-only">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
         <input type="text" class="datepicker" id="last-seen-date-picker" style="display: none;" @change="updateLastSeen($event.target.value)">
     </div>
 </template>
 
 <script>
     import moment from 'moment';
-    import '../../../../node_modules/swiper/dist/css/swiper.css';
+    import '../../../../../node_modules/swiper/dist/css/swiper.css';
     import {swiper, swiperSlide} from 'vue-awesome-swiper';
     import StarRating from 'vue-star-rating';
 
     export default {
-        props: ['id'],
+        props: ['id', 'movie'],
         data() {
             return {
-                loading: true,
-                movie: null,
                 swiperOption: {
                     slidesPerView: window.innerWidth / 230,
                     freeMode: true,
@@ -189,15 +165,6 @@
                 retrieveDate: null,
                 retrieveSlider: null
             }
-        },
-        created() {
-            axios.get('/api/movie/' + this.id).then(res => {
-                this.movie = res.data;
-                this.loading = false;
-            }).catch(err => {
-                this.loading = false;
-                M.toast({html: 'Error while loading movie', classes: 'complete-toast'});
-            });
         },
         mounted() {
             this.initM();
@@ -252,7 +219,7 @@
                 this.retrieveModal = instances[1];
             },
             deleteMovie() {
-                axios.get('/api/movie/' + this.id + '/delete').then(() => {
+                axios.get('/api/movie/' + this.movie.id + '/delete').then(() => {
                     M.toast({html: 'Movie deleted', classes: 'complete-toast'});
                     this.$root.$router.go(-1);
                 }).catch(() => {
@@ -519,6 +486,25 @@
 
     .shape-slider .s2 span {
         color: darkgrey;
+    }
+
+    #back-button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 15px;
+        color: #cecece;
+        font-size: 42px;
+        -webkit-transition: background-color .3s, color .3s;
+        -moz-transition: background-color .3s, color .3s;
+        -ms-transition: background-color .3s, color .3s;
+        -o-transition: background-color .3s, color .3s;
+        transition: background-color .3s, color .3s;
+    }
+    
+    #back-button:hover {
+        color: white;
+        background-color: rgba(0, 0, 0, 0.67);
     }
 
 </style>

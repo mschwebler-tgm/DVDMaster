@@ -11,9 +11,9 @@
     <title>{{ config('app.name', 'DVD Master') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js') }}" defer></script>
-    <script src="{{ asset('lib/typeahead/typeahead.js') }}" defer></script>
+    <script src="/js/app.js" defer></script>
+    <script src="/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js" defer></script>
+    <script src="/lib/typeahead/typeahead.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
     <script src="https://materializecss.com/extras/noUiSlider/nouislider.js"></script>
 
@@ -26,8 +26,8 @@
     <link href="https://materializecss.com/extras/noUiSlider/nouislider.css" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css') }}" rel="stylesheet">
+    <link href="/css/app.css" rel="stylesheet">
+    <link href="/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css" rel="stylesheet">
 </head>
 <body>
 <div id="app">
@@ -49,11 +49,11 @@
         @else
             <ul id="dropdown1" class="dropdown-content">
                 <li>
-                    <a class="dropdown-item" href="{{ route('logout') }}"
+                    <a class="dropdown-item" href="/logout"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}
                     </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                    <form id="logout-form" action="/logout" method="POST"
                           style="display: none;">
                         @csrf
                     </form>
@@ -62,27 +62,23 @@
         @endguest
 
         <nav>
-            <div class="nav-wrapper">
+            <div class="nav-wrapper" style="overflow: hidden;">
                 <a class="brand-logo left" href="{{ url('/') }}" style="padding-left: 20px;">
                     {{ config('app.name', 'DVD Master') }}
                 </a>
-                <form class="container" >
+                <div class="container">
                     <ul id="nav-mobile" class="left hide-on-med-and-down">
                         <li><router-link to="/">Home</router-link></li>
                         <li><router-link to="/addMovie">Add Movie</router-link></li>
                         <li><router-link to="/rentals">Rentals</router-link></li>
                     </ul>
-                    <div class="input-field right" style="width: 400px; background-color: #CC444B;">
-                        <input id="search" type="search" style="height: 64px !important" required>
-                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                        <i class="material-icons">close</i>
-                    </div>
-                </form>
+                    <search-bar></search-bar>
+                </div>
                 <ul class="right hide-on-med-and-down" style="position: absolute; top: 0; right: 0;">
                     <!-- Dropdown Trigger -->
                     @guest
-                        <li><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                        <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                        <li><a href="/login">{{ __('Login') }}</a></li>
+                        <li><a href="/register">{{ __('Register') }}</a></li>
                     @else
                         <li><a class="dropdown-trigger" href="#" data-target="dropdown1">{{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}<i
                                         class="material-icons right">arrow_drop_down</i></a></li>

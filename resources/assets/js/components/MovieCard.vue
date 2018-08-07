@@ -1,7 +1,7 @@
 <template>
     <div class="card pointer" @click="$root.$router.push('/movie/' + movie.id)">
         <div class="card-image">
-            <img :src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path">
+            <img :src="$root.getImagePath(movie.backdrop_path, 'w500')">
             <span class="card-title">{{ movie.title }}</span>
         </div>
         <div class="card-content movie-overview">

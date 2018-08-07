@@ -1,21 +1,12 @@
 <template>
-    <div class="container">
-        <template v-show="loaded">
+    <div>
+        <div class="container" v-if="loaded">
+            <dashboard></dashboard>
             <div class="row">
                 <div class="col-s-12 z-depth-3"> <!-- toolbar -->
                     <div class="toolbar">
-                        <div class="filters"> <!-- left -->
-                            <i class="material-icons">filter_list</i>
-                            <div class="genre-filter">
-                                Genres&nbsp;&nbsp;
-                                <input id="genre_filter" type="text" class="validate">
-                            </div>
-                            <div class="genre-filter">
-                                Actors&nbsp;&nbsp;
-                                <input id="actor_filter" type="text" class="validate">
-                            </div>
-                        </div> <!-- right -->
-                        <div class="view-mode">
+                        <movie-filter></movie-filter> <!-- left -->
+                        <div class="view-mode"> <!-- right -->
                             <i class="material-icons" @click="setViewMode('list')" :class="{ active: viewMode === 'list' }">view_list</i>
                             <i class="material-icons" @click="setViewMode('grid')" :class="{ active: viewMode === 'grid' }">view_module</i>
                         </div>
@@ -36,7 +27,7 @@
                 </div> <!-- stage -->
             </div>
             <div class="row movie-cards" v-show="viewMode === 'grid'">
-                <div v-for="(movie, index) in movies" class="col l3 m4 s12" v-if="index !== 0">
+                <div v-for="(movie, index) in movies" class="col l3 m4 s12" v-if="index !== 0" :key="movie.id">
                     <movie-card :movie="movie"></movie-card>
                 </div>
             </div>
@@ -45,28 +36,27 @@
                     <movie-list :movies="movies"></movie-list>
                 </div>
             </div>
-            <div class="col s12 center" v-if="movies.length === 0 && !featuredMovie">
+            <div class="col s12 center" v-if="loaded && movies.length === 0 && !featuredMovie">
                 No movies in Database.
                 <router-link to="/addMovie">Add a movie</router-link>
             </div>
-        </template>
-        <template v-show="!loaded">
-            <div class="container center">
-                <div class="preloader-wrapper active pre-loader">
-                    <div class="spinner-layer spinner-red-only">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
+            <paginator toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE" identifier="movie-card-view-paginator"></paginator>
+        </div>
+        <div class="container center" v-else>
+            <div class="preloader-wrapper active pre-loader">
+                <div class="spinner-layer spinner-red-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
                     </div>
                 </div>
             </div>
-        </template>
+        </div>
 
         <router-link to="/addMovie" class="btn-floating btn-large waves-effect waves-light add-movie"><i
                 class="material-icons">add</i></router-link>
@@ -79,75 +69,14 @@
     export default {
         data() {
             return {
-                movies: [],
-                loaded: false,
-                viewMode: localStorage.getItem('viewMode') || 'grid',
-                filter: {}
+                loaded: this.$store.getters.MOVIES_GET_ALL.length > 0,
+                viewMode: localStorage.getItem('viewMode') || 'grid'
             }
         },
         created() {
-            axios.get('/api/movies').then((res) => {
-                this.movies = res.data;
+            this.$store.dispatch('MOVIES_ACTION_GET_FIRSTPAGE').then(() => {
                 this.loaded = true;
             });
-        },
-        mounted() {
-            setTimeout(() => {
-                let genreNames = new Bloodhound({
-                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: {
-                        url: '/api/genreNames',
-                        filter: function(list) {
-                            return $.map(list, function(genreName) {
-                                return { name: genreName }; });
-                        }
-                    }
-                });
-                genreNames.initialize();
-
-                let input = $('#genre_filter');
-                input.tagsinput({
-                    typeaheadjs: {
-                        name: 'genrenames',
-                        displayKey: 'name',
-                        valueKey: 'name',
-                        source: genreNames.ttAdapter()
-                    },
-                    tagClass: 'custom-tag tag-center',
-                });
-
-                input.on('itemAdded', event => this.filter.genres = event.target.value.split(','));
-                input.on('itemRemoved', event => this.filter.genres = event.target.value.split(','));
-
-
-                let actorNames = new Bloodhound({
-                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: {
-                        url: '/api/actorNames',
-                        filter: function(list) {
-                            return $.map(list, function(actorName) {
-                                return { name: actorName }; });
-                        }
-                    }
-                });
-                actorNames.initialize();
-
-                input = $('#actor_filter');
-                input.tagsinput({
-                    typeaheadjs: {
-                        name: 'actornames',
-                        displayKey: 'name',
-                        valueKey: 'name',
-                        source: actorNames.ttAdapter()
-                    },
-                    tagClass: 'custom-tag tag-center',
-                });
-
-                input.on('itemAdded', event => this.filter.actors = event.target.value.split(','));
-                input.on('itemRemoved', event => this.filter.actors = event.target.value.split(','));
-            }, 1000);
         },
         methods: {
             setViewMode(viewMode) {
@@ -157,7 +86,10 @@
         },
         computed: {
             featuredMovie() {
-                return this.movies ? this.movies[0] : null;
+                return this.$store.getters.MOVIES_GET_ALL.length > 0 ? this.$store.getters.MOVIES_GET_ALL[0] : null;
+            },
+            movies() {
+                return this.$store.getters.MOVIES_GET_ALL;
             }
         },
         components: {
@@ -225,21 +157,6 @@
     .view-mode i:last-child {
         padding: 5px 5px 5px 1px;
         border-left: 1px solid #d1d1d1;
-    }
-
-    .filters {
-        display: flex;
-        align-items: center;
-    }
-
-    .genre-filter {
-        display: flex;
-        margin-left: 30px;
-        align-items: center;
-    }
-
-    .genre-filter input {
-        margin: 0;
     }
 
 </style>

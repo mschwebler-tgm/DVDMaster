@@ -3,11 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Actor;
+use App\Genre;
 use App\Movie;
 use App\MovieHasActor;
+use App\MovieHasGenre;
 use App\Service\Dao\MovieDao;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Tmdb\Repository\MovieRepository;
 
 class ImportMovie extends Command
@@ -44,7 +45,7 @@ class ImportMovie extends Command
         /** @var \Tmdb\Model\Person\CastMember $actor */
         foreach ($movieRes->getCredits()->getCast() as $actor) {
             $dbActor = Actor::where('tmdb_id', $actor->getId())->first();
-            if (!$dbActor) {
+            if (!$dbActor || $this->actorNotComplete($dbActor)) {
                 $this->info('dispatching ImportActor for ' . $actor->getName());
                 \App\Jobs\ImportActor::dispatch($actor->getId(), $movie->tmdb_id);
             } else {
@@ -53,6 +54,18 @@ class ImportMovie extends Command
                     'movie_id' => $movie->id
                 ]);
             }
+        }
+
+        /** @var \Tmdb\Model\Genre $genre */
+        foreach ($movieRes->getGenres() as $genre) {
+            $dbGenre = Genre::firstOrCreate([
+                'tmdb_id' => $genre->getId(),
+                'name' => $genre->getName()
+            ]);
+            MovieHasGenre::firstOrCreate([
+                'genre_id' => $dbGenre->id,
+                'movie_id' => $movie->id
+            ]);
         }
     }
 
@@ -75,6 +88,15 @@ class ImportMovie extends Command
         $movie->vote_average = $movieRes->getVoteAverage() ?: null;
         $movie->vote_count = $movieRes->getVoteCount() ?: null;
         $movie->duration = $movieRes->getRuntime() ?: null;
+    }
+
+    private function actorNotComplete(Actor $actor)
+    {
+        return !$actor->biography ||
+               !$actor->birthday ||
+               !$actor->gender ||
+               !$actor->popularity ||
+               !$actor->profile_path;
     }
 
 }
