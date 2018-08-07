@@ -21,6 +21,8 @@ Vue.component('paginator', require('./components/common/Paginator.vue'));
 Vue.component('loader', require('./components/common/Loader.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
 
+Vue.component('jolly', require('./components/external/Jolly.vue'));
+
 Vue.use(VueRouter);
 Vue.use(Transitions);
 

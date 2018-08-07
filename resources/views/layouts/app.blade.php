@@ -94,7 +94,7 @@
 </div>
 
 <script>
-    window.user_id = {{ isset(Auth::user()->id) ? Auth::user()->id : null }};
+    window.user_id = {{ isset(Auth::user()->id) ? Auth::user()->id : 0 }};
 </script>
 </body>
 </html>

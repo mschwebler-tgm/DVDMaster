@@ -18,4 +18,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/jolly', 'JollyController@index');
+Route::get('/jolly/images', 'JollyController@images');
+Route::post('/jolly', 'JollyController@store');
 Route::get('/{any}', 'HomeController@index')->where('any', '^(?!api\/|storage\/).+');
