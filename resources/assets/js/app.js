@@ -7,6 +7,10 @@ import router from './router';
 import Transitions from 'vue2-transitions'
 import theMovieDb from './themoviedb';
 import store from './store';
+import VueMaterial from 'vue-material';
+
+import 'vue-material/dist/vue-material.min.css';
+import 'vue-material/dist/theme/default.css';
 
 Vue.component('movie-cards', require('./components/MovieCards.vue'));
 Vue.component('movie-card', require('./components/MovieCard.vue'));
@@ -20,9 +24,11 @@ Vue.component('movie-filter', require('./components/MovieFilter.vue'));
 Vue.component('paginator', require('./components/common/Paginator.vue'));
 Vue.component('loader', require('./components/common/Loader.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
+Vue.component('root', require('./components/static/Root.vue'));
 
 Vue.use(VueRouter);
 Vue.use(Transitions);
+Vue.use(VueMaterial);
 
 const app = new Vue({
     el: '#app',
@@ -32,11 +38,12 @@ const app = new Vue({
         return {
             theMovieDb,
             tmdbImagePath: 'https://image.tmdb.org/t/p/',
-            showLoading: false
+            showLoading: false,
+            showSidepanel: false
         }
     },
     mounted() {
-        M.AutoInit();
+        // M.AutoInit();
     },
     methods: {
         getImagePath(path, resolution) {
@@ -47,6 +54,17 @@ const app = new Vue({
                 return path;
             }
             return this.tmdbImagePath + resolution + path;
+        },
+        toLogin() {
+            window.location = '/login';
+        },
+        toRegistration() {
+            window.location = '/register';
+        },
+        logout() {
+            axios.post('/logout').then(() => {
+                window.location = '/login';
+            });
         }
     }
 });
