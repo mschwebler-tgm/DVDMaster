@@ -25,7 +25,7 @@
     <link href="/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css" rel="stylesheet">
 </head>
 <body>
-<div id="app">
+<div id="app" style="overflow-x: hidden">
     <div id="loadingscreen" v-if="showLoading">
         <div class="preloader-wrapper active">
             <div class="spinner-layer spinner-red-only">
@@ -45,10 +45,13 @@
                 <span class="md-subheading pointer" style="line-height: 48px; vertical-align: center" @click="toLogin">{{ __('Login') }}</span>&nbsp;&nbsp;&nbsp;
                 <span class="md-subheading pointer" style="line-height: 48px; vertical-align: center" @click="toRegistration">{{ __('Register') }}</span>
             @else
-                <md-button @click="showSidepanel = true">{{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}</md-button>
+                <md-button @click="showSidepanel = true" class="md-xsmall-hide">{{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}</md-button>
             @endguest
         </template>
         <template slot="content">
+            <md-button @click="showSidepanel = true" class="md-icon-button" id="menu-button" style="position: absolute; top: 8px; right: 4px;">
+                <md-icon>menu</md-icon>
+            </md-button>
             @yield('content')
         </template>
     </root>

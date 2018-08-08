@@ -13,6 +13,10 @@ html, body {
   height: 100%;
 }
 
+.md-drawer.md-right:not(.md-active) {
+  width: 0;
+}
+
 .material-icons, .icon-text {
   vertical-align: middle;
 }
@@ -95,5 +99,11 @@ html, body {
   .container {
     margin: 0;
     width: 100%;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  #menu-button {
+    display: none;
   }
 }

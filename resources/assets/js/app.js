@@ -24,6 +24,8 @@ Vue.component('movie-filter', require('./components/MovieFilter.vue'));
 Vue.component('paginator', require('./components/common/Paginator.vue'));
 Vue.component('loader', require('./components/common/Loader.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
+
+// static
 Vue.component('root', require('./components/static/Root.vue'));
 
 Vue.use(VueRouter);
@@ -39,7 +41,8 @@ const app = new Vue({
             theMovieDb,
             tmdbImagePath: 'https://image.tmdb.org/t/p/',
             showLoading: false,
-            showSidepanel: false
+            showSidepanel: false,
+            remember: true
         }
     },
     mounted() {

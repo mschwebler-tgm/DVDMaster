@@ -20,11 +20,11 @@
 
         <md-app-content>
             <div class="md-layout">
-                <div class="md-layout-item md-small-size-5 md-xsmall-hide"></div>
-                <div class="md-layout-item md-small-size-90 md-medium-size-66 md-large-size-66 md-xlarge-size-66">
+                <div class="md-layout-item md-xsmall-hide md-small-size-5 md-xsmall-hide"></div>
+                <div class="md-layout-item md-xsmall-size-100 md-small-size-90 md-medium-size-66 md-large-size-66 md-xlarge-size-66">
                     <slot name="content"></slot>
                 </div>
-                <div class="md-layout-item md-small-size-5 md-xsmall-hide"></div>
+                <div class="md-layout-item md-xsmall-hide md-small-size-5 md-xsmall-hide"></div>
             </div>
         </md-app-content>
     </md-app>
