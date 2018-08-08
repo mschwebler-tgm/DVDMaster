@@ -1,43 +1,44 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="md-layout md-gutter md-elevation-4" style="padding: 15px;">
-        <div class="md-layout-item md-size-50 md-xsmall-size-100">
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <span class="md-headline">{{ __('Login') }}</span>
-                <md-field>
-                    <label>Email</label>
-                    <md-input id="email" name="email" type="email" value="{{ old('email') }}"
-                              placeholder="Email address" required></md-input>
-                </md-field>
-                <md-field>
-                    <label>Password</label>
-                    <md-input id="password" name="password" type="password" placeholder="Password" required></md-input>
-                    @if ($errors->has('password'))
-                        <span class="invalid-feedback">
+    <div class="md-layout md-gutter md-alignment-center-center">
+        <div style="max-width: 670px; padding: 15px;" class="md-elevation-4 md-layout">
+            <div class="md-layout-item md-size-50 md-xsmall-size-100">
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <span class="md-headline">{{ __('Login') }}</span>
+                    <md-field>
+                        <label>Email</label>
+                        <md-input id="email" name="email" type="email" value="{{ old('email') }}"
+                                  placeholder="Email address" required></md-input>
+                    </md-field>
+                    <md-field>
+                        <label>Password</label>
+                        <md-input id="password" name="password" type="password" placeholder="Password" required></md-input>
+                        @if ($errors->has('password'))
+                            <span class="invalid-feedback">
                     <strong>{{ $errors->first('password') }}</strong>
                 </span>
-                    @endif
-                </md-field>
-                <md-checkbox v-model="remember" id="remember" name="remember">Remember me (for centuries)</md-checkbox>
+                        @endif
+                    </md-field>
+                    <md-checkbox v-model="remember" id="remember" name="remember">Remember me (for centuries)</md-checkbox>
 
-                <md-divider style="margin-top: 10px;"></md-divider>
+                    <md-divider style="margin-top: 10px;"></md-divider>
 
-                <div class="md-layout md-alignment-center-right" style="margin-top: 20px">
-                    <md-button class="md-raised md-primary" type="submit">Login</md-button>
-                    <a href="{{ route('password.request') }}">
-                        <md-button class="md-primary">Forgot Your Password?</md-button>
-                    </a>
-                </div>
+                    <div class="md-layout md-alignment-center-right" style="margin-top: 20px">
+                        <md-button class="md-raised md-primary" type="submit">Login</md-button>
+                        <a href="{{ route('password.request') }}">
+                            <md-button class="md-primary">Forgot Your Password?</md-button>
+                        </a>
+                    </div>
 
-            </form>
-        </div>
-        <div class="md-layout-item md-size-50 md-xsmall-hide">
-            <div class="flex-box"
-                 style="justify-content: center; align-items: center; flex-direction: column; padding: 15px;">
-                <img src="/images/sheep.png" style="width: 70%; max-width: 260px; height: auto;">
-                <span class="md-caption" style="font-style: italic; padding-top: 15px">
+                </form>
+            </div>
+            <div class="md-layout-item md-size-50 md-xsmall-hide">
+                <div class="flex-box"
+                     style="justify-content: center; align-items: center; flex-direction: column; padding: 15px;">
+                    <img src="/images/sheep.png" style="width: 70%; max-width: 260px; height: auto;">
+                    <span class="md-caption" style="font-style: italic; padding-top: 15px">
                     @php
                         $quotes = [
                             "People, like sheep, tend to follow a leader - occasionally in the right direction. - Alexander Chase",
@@ -66,6 +67,7 @@
                         echo $quotes[array_rand($quotes, 1)];
                     @endphp
                 </span>
+                </div>
             </div>
         </div>
     </div>
