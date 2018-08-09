@@ -37,7 +37,7 @@
             <div class="md-layout-item md-size-50 md-xsmall-hide">
                 <div class="flex-box"
                      style="justify-content: center; align-items: center; flex-direction: column; padding: 15px;">
-                    <img src="/images/sheep.png" style="width: 70%; max-width: 260px; height: auto;">
+                    <img src="/images/sheep1.png" style="width: 70%; max-width: 260px; height: auto;">
                     <span class="md-caption" style="font-style: italic; padding-top: 15px">
                     @php
                         $quotes = [
