@@ -8,7 +8,11 @@
 // Custom bootstrap tagsinput
 @import "tagsinput";
 
+// common classes
 @import "common";
+
+// loaders
+@import "~spinkit/scss/spinners/2-double-bounce";
 
 html, body {
   width: 100%;
