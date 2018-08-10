@@ -42,11 +42,8 @@ const app = new Vue({
             tmdbImagePath: 'https://image.tmdb.org/t/p/',
             showLoading: false,
             showSidepanel: false,
-            remember: true
+            remember: false  // remember checbox on login page needs a model
         }
-    },
-    mounted() {
-        // M.AutoInit();
     },
     methods: {
         getImagePath(path, resolution) {

@@ -76,6 +76,8 @@
 
 <script>
     window.user_id = {{ isset(Auth::user()->id) ? Auth::user()->id : 0 }};
+    window.isAdmin = !!{{ isset(Auth::user()->role) && Auth::user()->role === 'admin'? 1 : 0 }};
+    window.isLogged = !!{{ Auth::user() != null ? 1 : 0 }};
 </script>
 </body>
 </html>
