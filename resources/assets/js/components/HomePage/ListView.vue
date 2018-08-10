@@ -3,19 +3,13 @@
         <!--<div class="header">-->
             <!--Title-->
         <!--</div>-->
-        <div class="sk-double-bounce" v-show="movies.length === 0">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-        </div>
         <div class="movie-row toMovie" v-if="movies" v-for="movie in movies" @click="navigateToMovie($event, movie)" :key="movie.id">
             <movie-list-item :movie="movie"></movie-list-item>
         </div>
-        <div class="sk-wave" v-else-if="movies.length === 0">
-            <div class="sk-rect sk-rect1"></div>
-            <div class="sk-rect sk-rect2"></div>
-            <div class="sk-rect sk-rect3"></div>
-            <div class="sk-rect sk-rect4"></div>
-            <div class="sk-rect sk-rect5"></div>
+        <paginator identifier="movie-list" toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE"></paginator>
+        <div class="sk-double-bounce" v-show="loading">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
         </div>
     </div>
 </template>
@@ -31,6 +25,11 @@
                 if (event.target.classList.value.indexOf('toMovie') !== -1) {
                     this.$router.push('/movie/' + movie.id);
                 }
+            }
+        },
+        computed: {
+            loading() {
+                return this.$store.getters.MOVIES_GET_LOADING;
             }
         }
     }

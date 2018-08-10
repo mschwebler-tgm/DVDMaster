@@ -1,5 +1,5 @@
 <template>
-    <div :id="identifier" style="height: 120px; position: relative; width: 100%; display: flex; align-items: center; justify-content: center;">
+    <div :id="identifier" style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center;">
         <loader v-show="loading"></loader>
     </div>
 </template>
@@ -31,12 +31,8 @@
                 });
             },
             paginate() {
-                if (!this.loading && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
-                    console.log('loading');
-                    this.loading = true;
-                    this.$store.dispatch(this.toDispatch).then(() => {
-                        this.loading = false;
-                    });
+                if (!this.$store.getters.MOVIES_GET_LOADING && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
+                    this.$store.dispatch(this.toDispatch);
                 }
             }
         }
@@ -44,8 +40,5 @@
 </script>
 
 <style scoped>
-    #paginator {
-        padding-top: 160px;
-        position: relative;
-    }
+
 </style>
