@@ -1,0 +1,43 @@
+.pad {
+  padding: 15px;
+}
+
+.nopad {
+  padding: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.pointer {
+  cursor: pointer !important;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-box {
+  display: flex;
+}
+
+.flex-justify-end {
+  justify-content: flex-end;
+}
+
+.flex-justify-center {
+  justify-content: center;
+}
+
+.flex-justify-space-between {
+  justify-content: space-between;
+}
+
+.flex-align-end {
+  align-items: flex-end;
+}
+
+.flex-align-center {
+  align-items: center;
+}
