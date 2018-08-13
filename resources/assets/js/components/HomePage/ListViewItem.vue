@@ -14,9 +14,9 @@
             <div class="hints">
                 <span class="md-title toMovie" style="opacity: 0;">A</span>
                 <div class="flex">
-                    <div>
+                    <div v-if="rentedBy">
                         <md-icon>import_export</md-icon>
-                        <md-tooltip md-direction="bottom">Borrowed by Matthias</md-tooltip>
+                        <md-tooltip md-direction="bottom">Borrowed by {{ rentedBy.name }}</md-tooltip>
                     </div>
                 </div>
             </div>
@@ -57,8 +57,11 @@
             }
         },
         computed: {
-            borrowedBy() {
-
+            rentedBy() {
+                if (this.movie.rented_by.length > 0) {
+                    return this.movie.rented_by[0];
+                }
+                return null;
             }
         }
     }
@@ -71,6 +74,8 @@
 
     .cover {
         margin-right: 20px;
+        height: 130px;
+        width: 92px;
     }
 
     .genre-chip {
