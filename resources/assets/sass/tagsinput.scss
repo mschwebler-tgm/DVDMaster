@@ -42,11 +42,13 @@
 }
 
 .tt-suggestion:hover {
-  background-color: #26a69a;
+  background-color: var(--md-theme-default-accent, #ff5252);
+  color: var(--md-theme-default-text-primary-on-accent, #fff);
 }
 
 .tt-cursor {
-  background-color: #26a69a;
+  background-color: var(--md-theme-default-accent, #ff5252);
+  color: var(--md-theme-default-text-primary-on-accent, #fff);
 }
 
 .bootstrap-tagsinput .tag {

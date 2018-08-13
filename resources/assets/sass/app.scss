@@ -80,9 +80,18 @@ html, body {
   min-width: 545px;
 }
 
-//.filter-tag {
-//  top: 0;
-//}
+.tag-filters input.tt-input {
+  border-bottom: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));
+  -webkit-transition: border-bottom .3s;
+  -moz-transition: border-bottom .3s;
+  -ms-transition: border-bottom .3s;
+  -o-transition: border-bottom .3s;
+  transition: border-bottom .3s;
+}
+
+.tag-filters input.tt-input:focus {
+  border-bottom: 2px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));
+}
 
 @media only screen and (max-width: 600px) {
   .container {

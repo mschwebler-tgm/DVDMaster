@@ -1,8 +1,5 @@
 <template>
     <div>
-        <!--<div class="header">-->
-            <!--Title-->
-        <!--</div>-->
         <div class="movie-row toMovie" v-if="movies" v-for="movie in movies" @click="navigateToMovie($event, movie)" :key="movie.id">
             <movie-list-item :movie="movie"></movie-list-item>
         </div>
@@ -17,9 +14,6 @@
 <script>
     export default {
         props: ['movies'],
-        created() {
-            console.log(this.movies);
-        },
         methods: {
             navigateToMovie(event, movie) {
                 if (event.target.classList.value.indexOf('toMovie') !== -1) {
@@ -36,9 +30,10 @@
 </script>
 
 <style scoped>
+
     .movie-row {
         padding: 10px;
-        border-bottom: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));
+        border-top: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));
         transition: .3s cubic-bezier(.4,0,.2,1);
         transition-property: background-color,font-weight;
         will-change: background-color,font-weight;

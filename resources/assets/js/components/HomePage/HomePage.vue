@@ -1,13 +1,26 @@
 <template>
     <div>
-        <div class="md-elevation-1 pad">
-            <div class="flex flex-justify-space-between flex-align-end">
-                <span class="md-display-3">Movies</span>
-                <md-switch v-model="listView">Listview</md-switch>
+        <div class="md-elevation-1">
+            <div class="header">
+                <md-toolbar class="md-accent">
+                    <h3 class="md-title">Movies</h3>
+                    <div class="movie-toolbar">
+                        <div class="pointer" @click="toggleFilters">
+                            <md-icon >filter_list</md-icon>
+                        </div>
+                    </div>
+                    <div style="width: 127px;"></div> <!-- compensate absolute view toggle element -->
+                    <div class="viewToggle">
+                        <md-switch v-model="listView">{{ listView ? 'Listview' : 'Gridview' }}
+                        </md-switch>
+                    </div>
+                </md-toolbar>
             </div>
-            <md-divider></md-divider>
-            <movie-list v-if="listView" :movies="movies"></movie-list>
-            <movie-cards v-else></movie-cards>
+            <home-filter :show="showFilters"></home-filter>
+            <div class="pad">
+                <movie-list v-show="listView" :movies="movies"></movie-list>
+                <movie-cards v-show="!listView"></movie-cards>
+            </div>
         </div>
     </div>
 </template>
@@ -16,13 +29,20 @@
     export default {
         data() {
             return {
-                listView: localStorage.getItem('listView') === 'true'
+                listView: localStorage.getItem('listView') === 'true',
+                showFilters: localStorage.getItem('showFilters_home') === 'true'
             }
         },
         created() {
             this.$store.dispatch('MOVIES_ACTION_GET_FIRSTPAGE').then(() => {
                 this.loaded = true;
             });
+        },
+        methods: {
+            toggleFilters() {
+                this.showFilters = !this.showFilters;
+                localStorage.setItem('showFilters_home', this.showFilters ? 'true' : 'false');
+            }
         },
         computed: {
             movies() {
@@ -38,5 +58,36 @@
 </script>
 
 <style scoped>
+    .header {
+        margin-top: 5px;
+    }
 
+    .movie-toolbar {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .viewToggle {
+        padding: 6px 6px 6px 16px;
+        background: #fff;
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: var(--md-theme-default-text-primary-on-background, rgba(0, 0, 0, 0.87));
+        width: 143px;
+        display: flex;
+        align-items: center;
+    }
+
+    @media only screen and (max-width: 960px) {
+        .viewToggle {
+            height: 48px;
+        }
+    }
+
+    @media only screen and (max-width: 600px) {
+        .viewToggle {
+            height: 56px;
+        }
+    }
 </style>
