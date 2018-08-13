@@ -18,6 +18,18 @@
                         <md-icon>import_export</md-icon>
                         <md-tooltip md-direction="bottom">Borrowed by {{ rentedBy.name }}</md-tooltip>
                     </div>
+                    <div v-if="isBlueRay">
+                        <md-icon>album</md-icon>
+                        <md-tooltip md-direction="bottom">Blue Ray</md-tooltip>
+                    </div>
+                    <div v-if="isTrueStory">
+                        <md-icon>event</md-icon>
+                        <md-tooltip md-direction="bottom">True story</md-tooltip>
+                    </div>
+                    <div v-if="isBasedOnBook">
+                        <md-icon>book</md-icon>
+                        <md-tooltip md-direction="bottom">Based on book</md-tooltip>
+                    </div>
                 </div>
             </div>
             <div class="actors-container flex flex-align-center toMovie">
@@ -62,6 +74,15 @@
                     return this.movie.rented_by[0];
                 }
                 return null;
+            },
+            isBlueRay() {
+                return !!this.movie.blue_ray;
+            },
+            isTrueStory() {
+                return !!this.movie.true_story;
+            },
+            isBasedOnBook() {
+                return !!this.movie.based_on_book;
             }
         }
     }
@@ -107,13 +128,15 @@
     }
 
     .hints {
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
         flex: 1;
     }
 
     .hints i {
         color: var(--md-theme-default-divider, rgba(0,0,0,0.12)) !important;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     .hints i:hover {
