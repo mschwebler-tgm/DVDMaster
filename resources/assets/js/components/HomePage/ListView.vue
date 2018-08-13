@@ -42,7 +42,7 @@
         transition: .3s cubic-bezier(.4,0,.2,1);
         transition-property: background-color,font-weight;
         will-change: background-color,font-weight;
-        /*cursor: pointer;*/
+        cursor: pointer;
     }
 
     .movie-row:hover {

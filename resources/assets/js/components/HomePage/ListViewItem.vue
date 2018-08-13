@@ -39,7 +39,10 @@
                         <br>
                     </template>
                 </div>
-                <md-icon :style="'opacity: ' + (movie.actors.length !== 0 ? 1 : 0)">person</md-icon>
+                <div>
+                    <md-icon :style="'opacity: ' + (movie.actors.length !== 0 ? 1 : 0)">person</md-icon>
+                    <md-tooltip md-direction="right">Actors</md-tooltip>
+                </div>
             </div>
         </div>
         <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
@@ -89,6 +92,10 @@
 </script>
 
 <style scoped>
+    span {
+        cursor: text;
+    }
+    
     .title {
         width: 400px;
     }
@@ -141,10 +148,6 @@
 
     .hints i:hover {
         color: var(--md-theme-default-text-primary-on-background, rgba(0,0,0,0.87)) !important;
-    }
-
-    .toMovie {
-        cursor: pointer;
     }
 
     @media only screen and (max-width: 960px) {
