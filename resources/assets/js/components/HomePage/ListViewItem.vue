@@ -12,13 +12,13 @@
                 </div>
             </div>
             <div class="hints">
-                <div>
+                <span class="md-title toMovie" style="opacity: 0;">A</span>
+                <div class="flex">
                     <div>
                         <md-icon>import_export</md-icon>
                         <md-tooltip md-direction="bottom">Borrowed by Matthias</md-tooltip>
                     </div>
                 </div>
-                <md-chip style="opacity: 0" class="toMovie pointer">filler</md-chip>
             </div>
             <div class="actors-container flex flex-align-center toMovie">
                 <div class="actors">
@@ -101,6 +101,24 @@
         color: rgba(0, 0, 0, 0.64);
     }
 
+    .hints {
+        padding-left: 20px;
+        padding-right: 20px;
+        flex: 1;
+    }
+
+    .hints i {
+        color: var(--md-theme-default-divider, rgba(0,0,0,0.12)) !important;
+    }
+
+    .hints i:hover {
+        color: var(--md-theme-default-text-primary-on-background, rgba(0,0,0,0.87)) !important;
+    }
+
+    .toMovie {
+        cursor: pointer;
+    }
+
     @media only screen and (max-width: 960px) {
         .actors-container {
             padding-right: 6%;
@@ -122,9 +140,6 @@
         }
     }
 
-
-    /* dynamic sizes */
-
     @media only screen and (min-width: 961px) and (max-width: 1430px) {
         .actors-container {
             display: none;
@@ -132,6 +147,7 @@
         .hints {
             display: block;
             margin-right: 13%;
+            flex: initial;
         }
     }
 
