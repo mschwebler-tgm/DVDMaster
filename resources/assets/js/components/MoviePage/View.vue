@@ -1,56 +1,57 @@
 <template>
     <div>
-        <user-modal @userSelected="selectUser"></user-modal>
-        <div id="retrieve-modal" class="modal">
-            <div class="modal-content">
-                <h4>Retrieve Movie</h4>
-                <hr>
-                <template v-if="movie && movie.rented_by.length > 0">
-                    Borrowed by {{ movie.rented_by[0].name }} {{ rentalTime }}
-                </template>
+        <md-datepicker md-immediately v-model="customDate" id="movie-date-picker" style="height: 0; visibility: hidden; position: fixed"/>
+        <!--<user-modal @userSelected="selectUser"></user-modal>-->
+        <!--<div id="retrieve-modal" class="modal">-->
+            <!--<div class="modal-content">-->
+                <!--<h4>Retrieve Movie</h4>-->
+                <!--<hr>-->
+                <!--<template v-if="movie && movie.rented_by.length > 0">-->
+                    <!--Borrowed by {{ movie.rented_by[0].name }} {{ rentalTime }}-->
+                <!--</template>-->
 
-                <div class="row" style="margin-top: 50px; margin-bottom: 25px;">
-                    <div class="col s2"></div>
-                    <div class="col s8">
-                        <h5>Date</h5>
-                    </div>
-                </div>
-                <div class="row" style="margin-bottom: 70px;">
-                    <div class="col s2"></div>
-                    <div class="col s4">
-                        <input type="text" class="datepicker" id="retrieve-date" v-model="retrieveDate">
-                        <label for="retrieve-date">Date</label>
-                    </div>
-                    <div class="col s4">
-                        <a class="waves-effect waves-light btn" @click="chooseCurrentRetrievalDate()">Now</a>
-                    </div>
-                </div>
-                <div class="row" style="margin-bottom: 25px;">
-                    <div class="col s2"></div>
-                    <div class="col s8">
-                        <h5>Quality</h5>
-                    </div>
-                </div>
-                <div class="row shape-slider">
-                    <div class="col s2 center-align">
-                        <span>DVD lost</span>
-                    </div>
-                    <div class="col s8">
-                        <div id="retrieve-state"></div>
-                    </div>
-                    <div class="col s2 center-align">
-                        <span>Original</span>
-                    </div>
-                </div>
-                <div class="row" style="margin-top: 60px;">
-                    <div class="col s2"></div>
-                    <div class="col s8">
-                        <a class="waves-effect waves-light btn right" @click="retrieveMovie">Save</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row z-depth-5" v-show="movie">
+                <!--<div class="row" style="margin-top: 50px; margin-bottom: 25px;">-->
+                    <!--<div class="col s2"></div>-->
+                    <!--<div class="col s8">-->
+                        <!--<h5>Date</h5>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="row" style="margin-bottom: 70px;">-->
+                    <!--<div class="col s2"></div>-->
+                    <!--<div class="col s4">-->
+                        <!--<input type="text" class="datepicker" id="retrieve-date" v-model="retrieveDate">-->
+                        <!--<label for="retrieve-date">Date</label>-->
+                    <!--</div>-->
+                    <!--<div class="col s4">-->
+                        <!--<a class="waves-effect waves-light btn" @click="chooseCurrentRetrievalDate()">Now</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="row" style="margin-bottom: 25px;">-->
+                    <!--<div class="col s2"></div>-->
+                    <!--<div class="col s8">-->
+                        <!--<h5>Quality</h5>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="row shape-slider">-->
+                    <!--<div class="col s2 center-align">-->
+                        <!--<span>DVD lost</span>-->
+                    <!--</div>-->
+                    <!--<div class="col s8">-->
+                        <!--<div id="retrieve-state"></div>-->
+                    <!--</div>-->
+                    <!--<div class="col s2 center-align">-->
+                        <!--<span>Original</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="row" style="margin-top: 60px;">-->
+                    <!--<div class="col s2"></div>-->
+                    <!--<div class="col s8">-->
+                        <!--<a class="waves-effect waves-light btn right" @click="retrieveMovie">Save</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="md-elevation-3" v-show="movie">
             <div class="col s12 no-padding" v-if="movie">
                 <div class="backdrop-image"
                      :style="{ 'backgroundImage': 'url(' + $root.getImagePath(movie.backdrop_path, 'w1280') + ')'}">
@@ -66,29 +67,32 @@
                 <div class="movie-header">
                     <div class="poster-spacer"></div>
                     <div class="tool-bar">
-                        <div @click="$root.$router.push('/movie/' + movie.id + '/edit')"><i class="material-icons">edit</i> Edit</div>
-                        <div>
-                            <template v-if="movie">
-                                <template v-if="movie.pending_rental.length === 0">
-                                    <a class="modal-trigger" href="#user-modal"><i class="material-icons">assignment_ind</i> Borrow</a>
-                                </template>
-                                <template v-else>
-                                    <a class="modal-trigger" href="#retrieve-modal"><i class="material-icons">assignment_ind</i> Borrowed by {{ movie.pending_rental[0].name }}</a>
-                                </template>
+                        <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center"><md-icon>edit</md-icon> Edit</div>
+                        <template v-if="movie">
+                            <template v-if="movie.pending_rental.length === 0">
+                                <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center">
+                                    <md-icon>assignment_ind</md-icon> Borrow</div>
                             </template>
-                        </div>
-                        <div class="dropdown-trigger" data-target="lastSeenDropDown">
-                            <i class="material-icons">movie</i> Just seen
-                            <template v-if="movie && movie.last_seen">(last: {{ lastSeen }})</template>
-                        </div>
-                        <ul id='lastSeenDropDown' class='dropdown-content'>
-                            <li><a href="#" @click="updateLastSeen('now')"><i class="material-icons">access_time</i> Now</a></li>
-                            <li><a href="#" @click="pickLastSeen"><i class="material-icons">calendar_today</i>Pick date</a></li>
-                            <li><a href="#" @click="updateLastSeenCustom(6, 'days')">1 week ago</a></li>
-                            <li><a href="#" @click="updateLastSeenCustom(1, 'months')">1 month ago</a></li>
-                            <li><a href="#" @click="updateLastSeenCustom(1, 'years')">1 year ago</a></li>
-                        </ul>
-                        <div style="margin-left: auto; margin-right: 0;" @click="deleteMovie"><i class="material-icons">delete</i>
+                            <template v-else>
+                                <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center">
+                                    <md-icon>assignment_ind</md-icon> Borrowed by {{ movie.pending_rental[0].name }}
+                                </div>
+                            </template>
+                        </template>
+                        <md-menu md-direction="bottom-start" id="just-seen-menu">
+                            <div md-menu-trigger style="position: relative; top: 3px;">Just seen <template v-if="movie && movie.last_seen">(last: {{ lastSeen }})</template></div>
+                            <md-menu-content>
+                                <md-menu-item class="hover-effect" @click="updateLastSeenCustom(0, 'days')"><span><md-icon>access_time</md-icon> Now</span></md-menu-item>
+                                <md-menu-item class="hover-effect" @click="pickLastSeen"><span><md-icon>calendar_today</md-icon> Pick Date</span></md-menu-item>
+                                <md-divider></md-divider>
+                                <md-menu-item class="hover-effect" @click="updateLastSeenCustom(6, 'days')"><span>1 week ago</span></md-menu-item>
+                                <md-menu-item class="hover-effect" @click="updateLastSeenCustom(1, 'months')"><span>1 month ago</span></md-menu-item>
+                                <md-menu-item class="hover-effect" @click="updateLastSeenCustom(1, 'years')"><span>1 year ago</span></md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                        <div style="margin-left: auto; margin-right: 0;" @click="deleteMovie" class="flex flex-justify-center flex-align-center">
+                            <md-icon>delete</md-icon>
+                            <md-tooltip md-direction="right">Delete</md-tooltip>
                         </div>
                     </div>
                 </div>
@@ -163,7 +167,8 @@
                 retrieveModal: null,
                 retrieveDatepicker: null,
                 retrieveDate: null,
-                retrieveSlider: null
+                retrieveSlider: null,
+                customDate: null
             }
         },
         mounted() {
@@ -227,7 +232,7 @@
                 });
             },
             updateLastSeen(date) {
-                axios.get('/api/movie/' + this.id + '/lastSeen/' + date).then(res => {
+                axios.get('/api/movie/' + this.movie.id + '/lastSeen/' + date).then(res => {
                     this.movie.last_seen = res.data;
                     M.toast({html: 'Updated last seen.', classes: 'complete-toast'});
                 }).catch(() => {
@@ -235,10 +240,17 @@
                 });
             },
             updateLastSeenCustom(amount, type) {
-                this.updateLastSeen(moment().subtract(amount, type).format('YYYY-MM-DD'));
+                this.updateLastSeen(moment().subtract(amount, type).format('YYYY-MM-DD hh:mm:ss'));
             },
             pickLastSeen() {
-                $('#last-seen-date-picker').trigger('click');
+                let position = $('#just-seen-menu').position();
+                let $datePicker = $('#movie-date-picker > i');
+                $('#movie-date-picker').css({
+                    position: 'fixed',
+                    top: position.top,
+                    left: position.left
+                });
+                $datePicker.trigger('click');
             },
             waitForEl(selector, callback) {
                 let el = $(selector);
@@ -320,6 +332,13 @@
                 return date.fromNow();
             }
         },
+        watch: {
+            customDate(newVal, oldVal) {
+                if (oldVal !== newVal && (newVal.getHours() + newVal.getMinutes() + newVal.getSeconds()) === 0 && (!oldVal || newVal.valueOf() !== oldVal.valueOf())) {
+                    this.updateLastSeen(moment(newVal).format('YYYY-MM-DD hh:mm:ss'));
+                }
+            }
+        },
         components: {
             swiper,
             swiperSlide,
@@ -385,6 +404,7 @@
         padding-top: 5px;
         padding-bottom: 5px;
         border-bottom: 1px solid #dadada;
+        max-height: 55px;
     }
 
     .tool-bar > div {
@@ -505,6 +525,17 @@
     #back-button:hover {
         color: white;
         background-color: rgba(0, 0, 0, 0.67);
+    }
+
+    .hover-effect {
+        transition: .3s cubic-bezier(.4,0,.2,1);
+        transition-property: background-color,font-weight;
+        will-change: background-color,font-weight;
+        cursor: pointer;
+    }
+
+    .hover-effect:hover {
+        background-color: var(--md-theme-default-highlight-on-background, rgba(0,0,0,0.08));
     }
 
 </style>
