@@ -5,10 +5,10 @@
                 <div class="content">
                     <div class="tag-filters">
                         <div class="flex flex-align-center">
-                            <md-icon>bookmark</md-icon>&nbsp;&nbsp;<genres-input classes="custom-tag filter-tag"></genres-input> <span class="md-caption">Genres</span>
+                            <md-icon>bookmark</md-icon>&nbsp;&nbsp;<genres-input classes="custom-tag filter-tag" @change="updateGenreFilter"></genres-input> <span class="md-caption">Genres</span>
                         </div>
                         <div class="flex flex-align-center">
-                            <md-icon>person</md-icon>&nbsp;&nbsp;<actors-input classes="custom-tag filter-tag"></actors-input> <span class="md-caption">Actors</span>
+                            <md-icon>person</md-icon>&nbsp;&nbsp;<actors-input classes="custom-tag filter-tag" @change="updateActorFilter"></actors-input> <span class="md-caption">Actors</span>
                         </div>
                     </div>
                 </div>
@@ -16,25 +16,37 @@
                     <table>
                         <tr>
                             <td>
-                                <span class="icon-filters"><md-icon>import_export</md-icon> Borrowed</span>
+                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('borrowed') !== -1)}"
+                                      @click="toggleFilter('borrowed')">
+                                    <md-icon>import_export</md-icon>
+                                    <md-tooltip md-direction="left">Borrowed</md-tooltip>
+                                </span>
                             </td>
                             <td>
-                                <span class="icon-filters"><md-icon>album</md-icon> Blue Ray</span>
+                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('blue_ray') !== -1)}"
+                                      @click="toggleFilter('blue_ray')">
+                                    <md-icon>album</md-icon>
+                                    <md-tooltip md-direction="right">Blue Ray</md-tooltip>
+                                </span>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <span class="icon-filters"><md-icon>event</md-icon> True story</span>
+                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('true_story') !== -1)}"
+                                      @click="toggleFilter('true_story')">
+                                    <md-icon>event</md-icon>
+                                    <md-tooltip md-direction="left">True story</md-tooltip>
+                                </span>
                             </td>
                             <td>
-                                <span class="icon-filters"><md-icon>book</md-icon> Based on book</span>
+                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('based_on_book') !== -1)}"
+                                      @click="toggleFilter('based_on_book')">
+                                    <md-icon>book</md-icon>
+                                    <md-tooltip md-direction="right">Based on book</md-tooltip>
+                                </span>
                             </td>
                         </tr>
                     </table>
-
-
-
-
                 </div>
                 <div class="close" @click="$parent.toggleFilters()">
                     <md-icon>expand_less</md-icon>
@@ -50,6 +62,35 @@
         data() {
             return {
                 boolFilters: []
+            }
+        },
+        methods: {
+            toggleFilter(boolFilter) {
+                if (this.boolFilters.indexOf(boolFilter) !== -1) {
+                    this.boolFilters.splice(this.boolFilters.indexOf(boolFilter), 1);
+                } else {
+                    this.boolFilters.push(boolFilter);
+                }
+                this._updateBoolFilters();
+            },
+            updateGenreFilter(genres) {
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'genres', data: this._pluckNames(genres)});
+                this.$store.dispatch('MOVIES_ACTION_SEARCH');
+            },
+            updateActorFilter(actors) {
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'actors', data: this._pluckNames(actors)});
+                this.$store.dispatch('MOVIES_ACTION_SEARCH');
+            },
+            _updateBoolFilters() {
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'bool', data: this.boolFilters});
+                this.$store.dispatch('MOVIES_ACTION_SEARCH');
+            },
+            _pluckNames(dataArray) {
+                let names = [];
+                for (let data of dataArray) {
+                    names.push(data.name);
+                }
+                return names;
             }
         }
     }
@@ -105,6 +146,19 @@
 
     .icon-filters {
         padding: 5px;
+        cursor: pointer;
+    }
+
+    .icon-filters i {
+        color: var(--md-theme-demo-light-text-accent-on-background-variant, rgba(0,0,0,.24)) !important;
+    }
+
+    .icon-filters:hover i {
+        color: var(--md-theme-default-icon-on-background, rgba(0,0,0,0.54)) !important;
+    }
+
+    .icon-filters.icon-filter-active i {
+        color: var(--md-theme-default-icon-on-background, rgba(0,0,0,0.54)) !important;
     }
 
     /* Animations */
