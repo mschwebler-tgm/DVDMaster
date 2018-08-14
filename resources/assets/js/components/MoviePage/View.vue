@@ -67,15 +67,15 @@
                 <div class="movie-header">
                     <div class="poster-spacer"></div>
                     <div class="tool-bar">
-                        <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center"><md-icon>edit</md-icon> Edit</div>
+                        <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center"><md-icon>edit</md-icon>&nbsp;&nbsp;Edit</div>
                         <template v-if="movie">
                             <template v-if="movie.pending_rental.length === 0">
                                 <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center">
-                                    <md-icon>assignment_ind</md-icon> Borrow</div>
+                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrow</div>
                             </template>
                             <template v-else>
                                 <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center">
-                                    <md-icon>assignment_ind</md-icon> Borrowed by {{ movie.pending_rental[0].name }}
+                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrowed by {{ movie.pending_rental[0].name }}
                                 </div>
                             </template>
                         </template>
@@ -112,16 +112,16 @@
                     </div>
                     <div class="overview">
                         <template v-if="movie && movie.overview">
-                            {{ movie.overview }}
+                            <span class="md-body-1">{{ movie.overview }}</span>
                             <br><br>
-                            <div class="right comment">
-                                {{ movie.comment ? '*' + movie.comment : '' }}
+                            <div class="flex flex-justify-end ">
+                                <span class="md-caption">{{ movie.comment ? '*' + movie.comment : '' }}</span>
                             </div>
                         </template>
                         <div class="genres" v-if="movie && movie.genres">
-                            <div class="chip" v-for="genre in movie.genres">
+                            <md-chip v-for="genre in movie.genres" :key="genre.id">
                                 {{ genre.name }}
-                            </div>
+                            </md-chip>
                         </div>
                     </div>
                 </div>
