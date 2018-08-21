@@ -1,25 +1,7 @@
 <template>
     <div>
         <md-datepicker md-immediately v-model="customDate" id="movie-date-picker" style="height: 0; visibility: hidden; position: fixed"/>
-        <div>
-            <md-dialog :md-active.sync="showUserModal">
-                <md-dialog-title>Borrow to</md-dialog-title>
-                <md-dialog-content>
-                    <md-list>
-                        <md-list-item v-for="user in users" @click="selectUser(user)" :key="user.id">{{ user.name }}</md-list-item>
-                    </md-list>
-                    <md-divider></md-divider>
-                    <md-field :class="{'md-invalid': usernameInvalid}">
-                        <label>New user</label>
-                        <md-input v-model="username" @keyup.enter="selectNewUser"></md-input>
-                        <span class="md-error">User already exists</span>
-                    </md-field>
-                </md-dialog-content>
-                <md-dialog-actions>
-                    <md-button class="md-accent" @click="showUserModal = false">Cancel</md-button>
-                </md-dialog-actions>
-            </md-dialog>
-        </div>
+        <user-modal @userSelected="selectUser" :show.sync="showUserModal"></user-modal>
         <!--<div id="retrieve-modal" class="modal">-->
             <!--<div class="modal-content">-->
                 <!--<h4>Retrieve Movie</h4>-->
@@ -190,9 +172,7 @@
                 retrieveDate: null,
                 retrieveSlider: null,
                 customDate: null,
-                showUserModal: false,
-                usernameInvalid: false,
-                username: ''
+                showUserModal: false
             }
         },
         created() {
@@ -271,20 +251,6 @@
             chooseCurrentRetrievalDate() {
                 this.retrieveDatepicker.setDate(new Date());
                 this.retrieveDate = this.retrieveDatepicker.toString();
-            },
-            selectNewUser() {
-                if (this.usernameInvalid || this.username === '') { return }
-                this.$store.dispatch('USERS_ACTION_CREATE_USER', this.username).then(user => {
-                    this.selectUser(user);
-                });
-            },
-            usernameIsInvalid() {
-                for (let user of this.$store.getters.USERS_GET_ALL) {
-                    if (user.name === this.username) {
-                        return true;
-                    }
-                }
-                return false;
             }
         },
         computed: {
@@ -320,9 +286,6 @@
 
                 let date = moment(this.movie.pending_rental[0].created_at);
                 return date.fromNow();
-            },
-            users() {
-                return this.$store.getters.USERS_GET_ALL;
             }
         },
         watch: {
@@ -330,9 +293,6 @@
                 if (oldVal !== newVal && (newVal.getHours() + newVal.getMinutes() + newVal.getSeconds()) === 0 && (!oldVal || newVal.valueOf() !== oldVal.valueOf())) {
                     this.updateLastSeen(moment(newVal).format('YYYY-MM-DD hh:mm:ss'));
                 }
-            },
-            username() {
-                this.usernameInvalid = this.usernameIsInvalid();
             }
         },
         components: {

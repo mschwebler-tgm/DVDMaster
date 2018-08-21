@@ -1,40 +1,49 @@
 <template>
-    <div id="user-modal" class="modal">
-        <div class="modal-content">
-            <ul class="collection">
-                <a href="#" class="collection-item" v-for="user in users" @click="$emit('userSelected', user)">{{ user.name }}</a>
-            </ul>
-            <div class="flex-box flex-justify-center">
-                <div style="width: 200px" >
-                    <input placeholder="Name" :class="{invalid}" id="new-user" type="text" @keyup.enter="selectNewUser" ref="input" v-model="username">
-                    <span id="helper-text" v-show="invalid">User already exists</span>
-                </div>
-            </div>
-        </div>
+    <div id="user-modal">
+        <md-dialog :md-active.sync="showModal">
+            <md-dialog-title>Borrow to</md-dialog-title>
+            <md-dialog-content>
+                <md-list>
+                    <md-list-item v-for="user in users" @click="$emit('userSelected', user)" :key="user.id">{{ user.name }}</md-list-item>
+                </md-list>
+                <md-divider></md-divider>
+                <md-field :class="{'md-invalid': invalid}">
+                    <label>New user</label>
+                    <md-input v-model="username" @keyup.enter="selectNewUser"></md-input>
+                    <span class="md-error">User already exists</span>
+                </md-field>
+            </md-dialog-content>
+            <md-dialog-actions>
+                <md-button class="md-accent" @click="showModal = false">Cancel</md-button>
+            </md-dialog-actions>
+        </md-dialog>
     </div>
 </template>
 
 <script>
     export default {
         name: 'UserModal',
+        props: ['show'],
         data() {
             return {
                 invalid: false,
-                username: ''
+                username: '',
+                showModal: false,
             }
         },
         created() {
             this.$store.dispatch('USERS_ACTION_GET_All_EXCEPT_ME');
+            this.showModal = this.show;
         },
         methods: {
             selectNewUser() {
                 if (this.invalid || this.username === '') { return }
-                this.$store.dispatch('USERS_ACTION_CREATE_USER', this.$refs.input.value).then(user => {
+                this.$store.dispatch('USERS_ACTION_CREATE_USER', this.username).then(user => {
                     this.$emit('userSelected', user);
                 });
             },
             usernameIsInvalid() {
-                let name = this.$refs.input.value;
+                let name = this.username;
                 for (let user of this.$store.getters.USERS_GET_ALL) {
                     if (user.name === name) {
                         return true;
@@ -46,6 +55,12 @@
         watch: {
             username() {
                 this.invalid = this.usernameIsInvalid();
+            },
+            showModal(show) {
+                this.$emit('update:show', show);
+            },
+            show(show) {
+                this.showModal = show;
             }
         },
         computed: {
