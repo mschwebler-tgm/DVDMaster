@@ -1,7 +1,25 @@
 <template>
     <div>
         <md-datepicker md-immediately v-model="customDate" id="movie-date-picker" style="height: 0; visibility: hidden; position: fixed"/>
-        <!--<user-modal @userSelected="selectUser"></user-modal>-->
+        <div>
+            <md-dialog :md-active.sync="showUserModal">
+                <md-dialog-title>Borrow to</md-dialog-title>
+                <md-dialog-content>
+                    <md-list>
+                        <md-list-item v-for="user in users" @click="selectUser(user)" :key="user.id">{{ user.name }}</md-list-item>
+                    </md-list>
+                    <md-divider></md-divider>
+                    <md-field :class="{'md-invalid': usernameInvalid}">
+                        <label>New user</label>
+                        <md-input v-model="username" @keyup.enter="selectNewUser"></md-input>
+                        <span class="md-error">User already exists</span>
+                    </md-field>
+                </md-dialog-content>
+                <md-dialog-actions>
+                    <md-button class="md-accent" @click="showUserModal = false">Cancel</md-button>
+                </md-dialog-actions>
+            </md-dialog>
+        </div>
         <!--<div id="retrieve-modal" class="modal">-->
             <!--<div class="modal-content">-->
                 <!--<h4>Retrieve Movie</h4>-->
@@ -70,8 +88,9 @@
                         <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center"><md-icon>edit</md-icon>&nbsp;&nbsp;Edit</div>
                         <template v-if="movie">
                             <template v-if="movie.pending_rental.length === 0">
-                                <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center">
-                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrow</div>
+                                <div @click="showUserModal = true" class="flex flex-justify-center flex-align-center">
+                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrow
+                                </div>
                             </template>
                             <template v-else>
                                 <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center">
@@ -125,20 +144,25 @@
                 </div>
             </div>
             <div class="col s12 no-padding" id="actors">   <!-- actors -->
-                <swiper :options="swiperOption" v-if="readyToShowActors && movie && movie.actors">
-                    <swiper-slide v-for="actor in movie.actors" :key="actor.id">
-                        <div class="actor" :style="{ 'backgroundImage': 'url(' + $root.getImagePath(actor.profile_path, 'w185') + ')'}">
-                            <div class="actor-name">
-                                {{ actor.name }}
+                <template v-if="readyToShowActors && movie && movie.actors && !showUserModal">
+                    <swiper :options="swiperOption">
+                        <swiper-slide v-for="actor in movie.actors" :key="actor.id">
+                            <div class="actor" :style="{ 'backgroundImage': 'url(' + $root.getImagePath(actor.profile_path, 'w185') + ')'}">
+                                <div class="actor-name">
+                                    {{ actor.name }}
+                                </div>
                             </div>
-                        </div>
-                    </swiper-slide>
-                    <swiper-slide>
-                        <div class="add-actor" style="display: flex; justify-content: center; align-items: center;">
-                            Add actor
-                        </div>
-                    </swiper-slide>
-                </swiper>
+                        </swiper-slide>
+                        <swiper-slide>
+                            <div class="add-actor" style="display: flex; justify-content: center; align-items: center;">
+                                Add actor
+                            </div>
+                        </swiper-slide>
+                    </swiper>
+                </template>
+                <template v-else> <!-- placeholder -->
+                    <div style="height: 278px;"></div>
+                </template>
             </div>
         </div>
         <input type="text" class="datepicker" id="last-seen-date-picker" style="display: none;" @change="updateLastSeen($event.target.value)">
@@ -161,66 +185,20 @@
                     spaceBetween: 50,
                 },
                 readyToShowActors: false,
-                userModal: null,
                 retrieveModal: null,
                 retrieveDatepicker: null,
                 retrieveDate: null,
                 retrieveSlider: null,
-                customDate: null
+                customDate: null,
+                showUserModal: false,
+                usernameInvalid: false,
+                username: ''
             }
         },
-        mounted() {
-            this.initM();
-            this.retrieveSlider = document.getElementById('retrieve-state');
-            noUiSlider.create(this.retrieveSlider, {
-                start: 3,
-                range: {
-                    min: 0,
-                    max: 3
-                },
-                step: 1,
-                connect: [true, false],
-                format: {
-                    to(value) {
-                        switch (value) {
-                            case 0: return 'DVD was lost';
-                            case 1: return 'Bad';
-                            case 2: return 'Good';
-                            case 3: return 'Original';
-                        }
-                        return value;
-                    },
-                    from: value => { return value }
-                }
-            });
+        created() {
+            this.$store.dispatch('USERS_ACTION_GET_All_EXCEPT_ME');
         },
         methods: {
-            initM() {
-                let elems = document.querySelectorAll('.dropdown-trigger');
-                M.Dropdown.init(elems, {
-                    constrainWidth: false
-                });
-                elems = document.querySelectorAll('.datepicker');
-                let currentDate = new Date();
-                let instances = M.Datepicker.init(elems, {
-                    autoclose: true,
-                    yearRange: [(new Date()).getFullYear() - 3, (new Date()).getFullYear()],
-                    firstDay: 1,
-                    format: 'yyyy-mm-dd',
-                    disableDayFn: date => {
-                        return date > currentDate;
-                    }
-                });
-                this.retrieveDatepicker = instances[0];
-                this.waitForEl('#actors', el => {
-                    this.swiperOption.slidesPerView = el.width() / 185;
-                    this.readyToShowActors = true;
-                });
-                elems = document.querySelectorAll('.modal');
-                instances = M.Modal.init(elems, {});
-                this.userModal = instances[0];
-                this.retrieveModal = instances[1];
-            },
             deleteMovie() {
                 axios.get('/api/movie/' + this.movie.id + '/delete').then(() => {
                     M.toast({html: 'Movie deleted', classes: 'complete-toast'});
@@ -261,7 +239,7 @@
                 }
             },
             selectUser(user) {
-                this.userModal.close();
+                this.showUserModal = false;
                 axios.post('/api/movie/' + this.movie.id + '/borrowTo/' + user.id).then(res => {
                     Vue.set(this.movie, 'rented_by', [user]);
                     Vue.set(this.movie, 'pending_rental', [res.data]);
@@ -293,6 +271,20 @@
             chooseCurrentRetrievalDate() {
                 this.retrieveDatepicker.setDate(new Date());
                 this.retrieveDate = this.retrieveDatepicker.toString();
+            },
+            selectNewUser() {
+                if (this.usernameInvalid || this.username === '') { return }
+                this.$store.dispatch('USERS_ACTION_CREATE_USER', this.username).then(user => {
+                    this.selectUser(user);
+                });
+            },
+            usernameIsInvalid() {
+                for (let user of this.$store.getters.USERS_GET_ALL) {
+                    if (user.name === this.username) {
+                        return true;
+                    }
+                }
+                return false;
             }
         },
         computed: {
@@ -328,6 +320,9 @@
 
                 let date = moment(this.movie.pending_rental[0].created_at);
                 return date.fromNow();
+            },
+            users() {
+                return this.$store.getters.USERS_GET_ALL;
             }
         },
         watch: {
@@ -335,6 +330,9 @@
                 if (oldVal !== newVal && (newVal.getHours() + newVal.getMinutes() + newVal.getSeconds()) === 0 && (!oldVal || newVal.valueOf() !== oldVal.valueOf())) {
                     this.updateLastSeen(moment(newVal).format('YYYY-MM-DD hh:mm:ss'));
                 }
+            },
+            username() {
+                this.usernameInvalid = this.usernameIsInvalid();
             }
         },
         components: {
@@ -535,6 +533,17 @@
 
     .hover-effect:hover {
         background-color: var(--md-theme-default-highlight-on-background, rgba(0,0,0,0.08));
+    }
+
+    #helper-text {
+        color: #F44336;
+    }
+
+    .invalid {
+        border-bottom: 1px solid #F44336;
+        -webkit-box-shadow: 0 1px 0 0 #F44336;
+        -moz-box-shadow: 0 1px 0 0 #F44336;
+        box-shadow: 0 1px 0 0 #F44336;
     }
 
 </style>
