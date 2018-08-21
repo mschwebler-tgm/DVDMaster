@@ -2,6 +2,7 @@
     <div>
         <md-datepicker md-immediately v-model="customDate" id="movie-date-picker" style="height: 0; visibility: hidden; position: fixed"/>
         <user-modal @userSelected="selectUser" :show.sync="showUserModal"></user-modal>
+        <retrieval-modal :show.sync="showRetrieveModal"></retrieval-modal>
         <!--<div id="retrieve-modal" class="modal">-->
             <!--<div class="modal-content">-->
                 <!--<h4>Retrieve Movie</h4>-->
@@ -75,8 +76,8 @@
                                 </div>
                             </template>
                             <template v-else>
-                                <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center">
-                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrowed by {{ movie.pending_rental[0].name }}
+                                <div @click="showRetrieveModal = true" class="flex flex-justify-center flex-align-center">
+                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrowed by {{ movie.rented_by[0].name }}
                                 </div>
                             </template>
                         </template>
@@ -126,7 +127,7 @@
                 </div>
             </div>
             <div class="col s12 no-padding" id="actors">   <!-- actors -->
-                <template v-if="readyToShowActors && movie && movie.actors && !showUserModal">
+                <template v-if="readyToShowActors && movie && movie.actors && !showUserModal && !showRetrieveModal">
                     <swiper :options="swiperOption">
                         <swiper-slide v-for="actor in movie.actors" :key="actor.id">
                             <div class="actor" :style="{ 'backgroundImage': 'url(' + $root.getImagePath(actor.profile_path, 'w185') + ')'}">
@@ -172,7 +173,8 @@
                 retrieveDate: null,
                 retrieveSlider: null,
                 customDate: null,
-                showUserModal: false
+                showUserModal: false,
+                showRetrieveModal: false
             }
         },
         created() {

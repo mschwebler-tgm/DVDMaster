@@ -14,6 +14,7 @@ import 'vue-material/dist/vue-material.min.css';
 Vue.component('movie-cards', require('./components/MovieCards.vue'));
 Vue.component('movie-card', require('./components/MovieCard.vue'));
 Vue.component('user-modal', require('./components/UserModal.vue'));
+Vue.component('retrieval-modal', require('./components/RetrievalModal.vue'));
 Vue.component('movie-rating', require('./components/common/MovieRating.vue'));
 Vue.component('actors-input', require('./components/common/ActorsInput.vue'));
 Vue.component('genres-input', require('./components/common/GenresInput.vue'));
