@@ -2,56 +2,7 @@
     <div>
         <md-datepicker md-immediately v-model="customDate" id="movie-date-picker" style="height: 0; visibility: hidden; position: fixed"/>
         <user-modal @userSelected="selectUser" :show.sync="showUserModal"></user-modal>
-        <retrieval-modal :show.sync="showRetrieveModal"></retrieval-modal>
-        <!--<div id="retrieve-modal" class="modal">-->
-            <!--<div class="modal-content">-->
-                <!--<h4>Retrieve Movie</h4>-->
-                <!--<hr>-->
-                <!--<template v-if="movie && movie.rented_by.length > 0">-->
-                    <!--Borrowed by {{ movie.rented_by[0].name }} {{ rentalTime }}-->
-                <!--</template>-->
-
-                <!--<div class="row" style="margin-top: 50px; margin-bottom: 25px;">-->
-                    <!--<div class="col s2"></div>-->
-                    <!--<div class="col s8">-->
-                        <!--<h5>Date</h5>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="row" style="margin-bottom: 70px;">-->
-                    <!--<div class="col s2"></div>-->
-                    <!--<div class="col s4">-->
-                        <!--<input type="text" class="datepicker" id="retrieve-date" v-model="retrieveDate">-->
-                        <!--<label for="retrieve-date">Date</label>-->
-                    <!--</div>-->
-                    <!--<div class="col s4">-->
-                        <!--<a class="waves-effect waves-light btn" @click="chooseCurrentRetrievalDate()">Now</a>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="row" style="margin-bottom: 25px;">-->
-                    <!--<div class="col s2"></div>-->
-                    <!--<div class="col s8">-->
-                        <!--<h5>Quality</h5>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="row shape-slider">-->
-                    <!--<div class="col s2 center-align">-->
-                        <!--<span>DVD lost</span>-->
-                    <!--</div>-->
-                    <!--<div class="col s8">-->
-                        <!--<div id="retrieve-state"></div>-->
-                    <!--</div>-->
-                    <!--<div class="col s2 center-align">-->
-                        <!--<span>Original</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="row" style="margin-top: 60px;">-->
-                    <!--<div class="col s2"></div>-->
-                    <!--<div class="col s8">-->
-                        <!--<a class="waves-effect waves-light btn right" @click="retrieveMovie">Save</a>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
+        <retrieval-modal @retrieved="retrieveMovie" :show.sync="showRetrieveModal"></retrieval-modal>
         <div class="md-elevation-3" v-show="movie">
             <div class="col s12 no-padding" v-if="movie">
                 <div class="backdrop-image"
@@ -210,16 +161,6 @@
                 });
                 $datePicker.trigger('click');
             },
-            waitForEl(selector, callback) {
-                let el = $(selector);
-                if (el.width()) {
-                    callback(el);
-                } else {
-                    setTimeout(() => {
-                        this.waitForEl(selector, callback);
-                    }, 100);
-                }
-            },
             selectUser(user) {
                 this.showUserModal = false;
                 axios.post('/api/movie/' + this.movie.id + '/borrowTo/' + user.id).then(res => {
@@ -228,32 +169,24 @@
                     M.toast({html: 'Borrowed to: ' + user.name, classes: 'complete-toast'});
                 })
             },
-            retrieveMovie() {
-                let quality = this.retrieveSlider.noUiSlider.get();
-                switch (quality) {
-                    case 'DVD was lost': quality = 'lost';
+            retrieveMovie(params) {
+                switch (params.quality) {
+                    case 'DVD lost': params.quality = 'lost';
                         break;
-                    case 'Bad': quality = 'bad';
+                    case 'Bad Shape': params.quality = 'bad';
                         break;
-                    case 'Good': quality = 'good';
+                    case 'Some damage': params.quality = 'meh';
                         break;
-                    case 'Original': quality = 'original';
+                    case 'Minor scratches': params.quality = 'okay';
+                        break;
+                    case 'Original': params.quality = 'good';
                         break;
                 }
-                axios.post('/api/movie/' + this.movie.id + '/retrieve', {
-                    quality,
-                    date: this.retrieveDate
-                }).then(res => {
-                    Vue.set(this.movie, 'rented_by', []);
+                params.date = moment(params.data).format('YYYY-MM-DD');
+                this.$store.dispatch('MOVIES_ACTION_RETRIEVE', {id: this.movie.id, payload: params}).then(() => {
                     Vue.set(this.movie, 'pending_rental', []);
-                    this.retrieveModal.close();
-                    M.toast({html: 'Movie retrieved', classes: 'complete-toast'});
                 });
             },
-            chooseCurrentRetrievalDate() {
-                this.retrieveDatepicker.setDate(new Date());
-                this.retrieveDate = this.retrieveDatepicker.toString();
-            }
         },
         computed: {
             lastSeen() {
@@ -281,14 +214,6 @@
 
                 return table;
             },
-            rentalTime() {
-                if (!this.movie || !this.movie.pending_rental[0]) {
-                    return '';
-                }
-
-                let date = moment(this.movie.pending_rental[0].created_at);
-                return date.fromNow();
-            }
         },
         watch: {
             customDate(newVal, oldVal) {

@@ -66,6 +66,17 @@ const actions = {
         }).catch(() => {
             M.toast({ html: 'Error while saving movie', classes: 'complete-toast' });
         });
+    },
+    MOVIES_ACTION_RETRIEVE ({commit}, {payload, id}) {
+        return new Promise((resolve, reject) => {
+            axios.post('/api/movie/' + id + '/retrieve', payload).then(res => {
+                M.toast({ html: 'Movie retrieved', classes: 'complete-toast' });
+                resolve(res);
+            }).catch(err => {
+                M.toast({ html: 'Error while retrieving movie', classes: 'complete-toast' });
+                reject(err);
+            });
+        });
     }
 };
 

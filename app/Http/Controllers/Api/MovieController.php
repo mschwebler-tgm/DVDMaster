@@ -94,7 +94,7 @@ class MovieController extends Controller
             abort(404);
         }
 
-        return $this->movieDao->retrieve($movie, $request->get('date'), $request->get('quality'));
+        return $this->movieDao->retrieve($movie, $request->get('like'), $request->get('date'), $request->get('quality'));
     }
 
     public function rateMovie($movieId, Request $request)
