@@ -4,7 +4,7 @@
             <md-dialog-title>Borrow to</md-dialog-title>
             <md-dialog-content>
                 <md-list>
-                    <md-list-item v-for="user in users" @click="$emit('userSelected', user)" :key="user.id">{{ user.name }}</md-list-item>
+                    <md-list-item v-for="user in users" @click="$emit('likeSelected', user)" :key="user.id">{{ user.name }}</md-list-item>
                 </md-list>
                 <md-divider></md-divider>
                 <md-field :class="{'md-invalid': invalid}">
@@ -39,7 +39,7 @@
             selectNewUser() {
                 if (this.invalid || this.username === '') { return }
                 this.$store.dispatch('USERS_ACTION_CREATE_USER', this.username).then(user => {
-                    this.$emit('userSelected', user);
+                    this.$emit('likeSelected', user);
                 });
             },
             usernameIsInvalid() {

@@ -3,75 +3,102 @@
         <md-dialog :md-active.sync="showModal">
             <md-dialog-content>
                 <md-steppers :md-active-step.sync="active" md-linear>
-                    <md-step id="user" md-label="Select User" :md-done.sync="userSelected">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat nulla.</p>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat nulla.</p>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat nulla.</p>
-                        <md-button class="md-raised md-primary" @click="setDone('userSelected', 'date')">Continue</md-button>
+                    <md-step id="user" md-label="Recommendation" :md-description="like !== null ? (like ? 'Like' : 'Dislike') : ''" :md-done.sync="likeSelected">
+                        <div class="custom-step">
+                            <br>
+                            <span class="md-display-1">Did the person like it?</span>
+                            <br>
+                            <br>
+                            <br>
+                            <div class="flex flex-justify-center">
+                                <div style="flex: 1;" class="flex flex-justify-end"><md-content class="like-emoji md-primary" @click="dislikeIt"><md-icon class="md-size-5x">sentiment_very_dissatisfied</md-icon></md-content></div>
+                                <div style="flex: 1;" class="flex flex-justify-start"><md-content class="like-emoji md-primary" @click="likeIt"><md-icon class="md-size-5x">sentiment_satisfied_alt</md-icon></md-content></div>
+                            </div>
+                            <md-button class="md-primary step-button" @click="setDone('likeSelected', 'date')" style="float: right;">Skip</md-button>
+                        </div>
                     </md-step>
-
-                    <md-step id="date" md-label="Retrieval date" :md-done.sync="dateSelected">
-                        <br>
-                        <span class="md-display-1">Choose a retrieval date</span>
-                        <br>
-                        <br>
-                        <div class="flex">
-                            <div class="flex" style="flex-direction: column">
-                                <div>
-                                    <md-button class="md-raised" @click="setDate">Today</md-button>
-                                    <md-button class="md-raised" @click="setDate(7, 'days')">Last Week</md-button>
-                                    <md-button class="md-raised" @click="setDate(1, 'month')">Last Month</md-button>
-                                </div>
-                                <div style="padding-left: 10px; padding-right: 10px">
-                                    <md-datepicker v-model="date" md-immediately>
-                                        <label>Select date</label>
-                                    </md-datepicker>
+                    <md-step id="date" class="custom-step" :md-description="formattedDate" md-label="Retrieval date" :md-done.sync="dateSelected">
+                        <div class="custom-step">
+                            <br>
+                            <span class="md-display-1">Choose a retrieval date</span>
+                            <br>
+                            <br>
+                            <br>
+                            <div class="flex flex-justify-center flex-align-center">
+                                <div class="flex" style="flex-direction: column">
+                                    <div>
+                                        <md-button class="md-raised" @click="setDate">Today</md-button>
+                                        <md-button class="md-raised" @click="setDate(7, 'days')">Last Week</md-button>
+                                        <md-button class="md-raised" @click="setDate(1, 'month')">Last Month</md-button>
+                                    </div>
+                                    <div style="padding-left: 10px; padding-right: 10px">
+                                        <md-datepicker v-model="date" md-immediately>
+                                            <label>Select date</label>
+                                        </md-datepicker>
+                                    </div>
                                 </div>
                             </div>
+                            <br>
+                            <md-button class="md-raised md-primary step-button" @click="setDone('dateSelected', 'quality')" style="float: right">Continue</md-button>
                         </div>
-                        <br>
-                        <md-button class="md-raised md-primary" @click="setDone('dateSelected', 'quality')">Continue</md-button>
                     </md-step>
+                    <md-step id="quality" class="custom-step" md-label="Quality" :md-description="quality || ''" :md-done.sync="qualitySelected">
+                        <div class="custom-step">
+                            <br>
+                            <span class="md-display-1">In which shape was the DVD?</span>
+                            <br>
+                            <br>
+                            <br>
+                            <div style="height: 100px" class="flex flex-justify-center flex-align-center">
+                                <vue-slider v-model="quality" v-bind="sliderOptions" ref="slider">
+                                    <div class="vue-slider-tooltip" slot="tooltip" slot-scope="{ value }" style="background-color: var(--md-theme-default-primary, #448aff);">
+                                        {{ value }}
+                                    </div>
+                                    <div slot="label" slot-scope="{ label, active }">
+                                        <span class="vue-slider-piecewise-label" v-if="active" style="color: var(--md-theme-default-primary, #448aff);">{{ label }}</span>
+                                        <span class="md-caption" v-else style="
+                                        position: absolute;
+                                        display: inline-block;
+                                        top: 100%;
+                                        left: 50%;
+                                        white-space: nowrap;
+                                        font-size: 12px;
+                                        transform: translate(-50%,8px);
+                                        visibility: visible;">{{ label }}</span>
+                                    </div>
+                                </vue-slider>
+                            </div>
 
-                    <md-step id="quality" md-label="Quality" md-description="Optional" :md-done.sync="qualitySelected">
-                        <div style="height: 100px" class="flex flex-justify-center flex-align-center">
-                            <vue-slider v-model="quality"
-                                        v-bind="options">
-
-                            </vue-slider>
+                            <md-button class="md-raised md-primary step-button" @click="setDone('qualitySelected')" style="float: right">Done</md-button>
                         </div>
-
-                        <md-button class="md-raised md-primary" @click="setDone('qualitySelected')">Done</md-button>
                     </md-step>
                 </md-steppers>
             </md-dialog-content>
-            <md-dialog-actions>
-                <md-button class="md-accent" @click="showModal = false">Cancel</md-button>
-            </md-dialog-actions>
         </md-dialog>
     </div>
 </template>
 
 <script>
     import moment from 'moment';
-    import vueSlider from 'vue-slider-component/dist/index';
+    import vueSlider from 'vue-slider-component';
 
     export default {
         name: 'RetrievalModal',
         props: ['show'],
         data() {
             return {
-                width: '80%',
                 invalid: false,
                 username: '',
                 showModal: false,
                 active: 'user',
-                userSelected: false,
+                likeSelected: false,
                 dateSelected: false,
                 qualitySelected: false,
+                like: null,
                 date: null,
-                quality: 3,
+                quality: 'Original',
                 sliderOptions: {
+                    width: '80%',
                     tooltip: 'always',
                     piecewise: true,
                     piecewiseLabel: true,
@@ -98,9 +125,6 @@
             }
         },
         created() {
-            this.sliderOptions = {
-
-            };
             this.$store.dispatch('USERS_ACTION_GET_All_EXCEPT_ME');
             this.showModal = this.show;
         },
@@ -111,6 +135,15 @@
                 if (index) {
                     this.active = index
                 }
+
+                if (this.likeSelected && this.dateSelected && this.qualitySelected) {
+                    this.showModal = false;
+                    this.$emit('retrieved', {
+                        like: this.like,
+                        date: this.date,
+                        quality: this.quality
+                    });
+                }
             },
             setDate(amount, unit) {
                 if (!amount) {
@@ -118,6 +151,14 @@
                 } else {
                     this.date = moment().subtract(amount, unit).format('YYYY-MM-DD');
                 }
+            },
+            likeIt() {
+                this.like = true;
+                this.setDone('likeSelected', 'date');
+            },
+            dislikeIt() {
+                this.like = false;
+                this.setDone('likeSelected', 'date');
             }
         },
         watch: {
@@ -129,11 +170,19 @@
             },
             show(show) {
                 this.showModal = show;
+            },
+            active(state) {
+                if (state === 'quality') {
+                    setTimeout(this.$refs.slider.refresh, 1000);
+                }
             }
         },
         computed: {
             users() {
                 return this.$store.getters.USERS_GET_ALL;
+            },
+            formattedDate() {
+                return this.date ? moment(this.date).format('YYYY-MM-DD') : '';
             }
         },
         components: {
@@ -143,14 +192,35 @@
 </script>
 
 <style scoped>
-    #helper-text {
-        color: #F44336;
+    .custom-step {
+        min-height: 350px;
+        position: relative;
     }
 
-    .invalid {
-        border-bottom: 1px solid #F44336;
-        -webkit-box-shadow: 0 1px 0 0 #F44336;
-        -moz-box-shadow: 0 1px 0 0 #F44336;
-        box-shadow: 0 1px 0 0 #F44336;
+    .like-emoji {
+        padding: 30px;
+        margin: 5px;
+        cursor: pointer;
+        -webkit-transition: all .3s;
+        -moz-transition: all .3s;
+        -ms-transition: all .3s;
+        -o-transition: all .3s;
+        transition: all .3s;
+        border: 10px solid white;
     }
+    
+    .like-emoji:hover {
+        -webkit-transform: scale(1.2);
+        -moz-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        -o-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+
+    .step-button {
+        position: absolute;
+        bottom: 25px;
+        right: 25px;
+    }
+
 </style>
