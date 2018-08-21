@@ -11,9 +11,9 @@
                     </template>
                 </div>
             </div>
-            <div class="hints">
+            <div class="hints toMovie">
                 <span class="md-title toMovie" style="opacity: 0;">A</span>
-                <div class="flex">
+                <div class="flex toMovie">
                     <div v-if="rentedBy">
                         <md-icon>import_export</md-icon>
                         <md-tooltip md-direction="bottom">Borrowed by {{ rentedBy.name }}</md-tooltip>

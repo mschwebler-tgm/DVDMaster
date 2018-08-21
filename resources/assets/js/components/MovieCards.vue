@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-s-12 z-depth-3"> <!-- toolbar -->
                     <div class="toolbar">
-                        <movie-filter></movie-filter> <!-- left -->
+                        <!--<movie-filter></movie-filter> &lt;!&ndash; left &ndash;&gt;-->
                         <div class="view-mode"> <!-- right -->
                             <i class="material-icons" @click="setViewMode('list')" :class="{ active: viewMode === 'list' }">view_list</i>
                             <i class="material-icons" @click="setViewMode('grid')" :class="{ active: viewMode === 'grid' }">view_module</i>

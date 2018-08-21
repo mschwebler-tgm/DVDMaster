@@ -101,13 +101,11 @@
                 <div class="movie-body">
                     <div class="poster-spacer movie-params-table">
                         <div style="width: 185px;"> <!-- width of poster -->
-                            <table class="striped">
-                                <tbody>
-                                    <tr v-for="row in tableContents">
-                                        <td v-html="row" class="right-align"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <md-table>
+                                <md-table-row v-for="(row, index) in tableContents" :key="index">
+                                    <md-table-cell v-html="row" style="float: right;"></md-table-cell>
+                                </md-table-row>
+                            </md-table>
                         </div>
                     </div>
                     <div class="overview">
@@ -386,6 +384,7 @@
         position: absolute;
         left: calc(10% + 185px + 20px);
         align-self: flex-end;
+        line-height: 55px;
     }
 
     .movie-title span {
