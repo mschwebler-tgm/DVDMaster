@@ -150,15 +150,20 @@
     }
 
     .icon-filters i {
-        color: var(--md-theme-demo-light-text-accent-on-background-variant, rgba(0,0,0,.24)) !important;
+        /*color: var(--md-theme-demo-light-text-accent-on-background-variant, rgba(0,0,0,.24)) !important;*/
     }
 
     .icon-filters:hover i {
-        color: var(--md-theme-default-icon-on-background, rgba(0,0,0,0.54)) !important;
+        color: var(--md-theme-default-accent, rgba(0,0,0,0.54)) !important;
+        -webkit-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -moz-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -ms-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -o-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .icon-filters.icon-filter-active i {
-        color: var(--md-theme-default-icon-on-background, rgba(0,0,0,0.54)) !important;
+        color: var(--md-theme-default-accent, rgba(0,0,0,0.54)) !important;
     }
 
     /* Animations */

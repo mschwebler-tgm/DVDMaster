@@ -114,10 +114,6 @@
         padding-right: 11%;
     }
 
-    .actors-container i {
-        color: var(--md-theme-default-divider, rgba(0,0,0,0.12)) !important;
-    }
-
     .actors {
         padding-right: 10px;
         margin-right: 10px;
@@ -127,11 +123,17 @@
 
     .actors span {
         float: right;
-        white-space: nowrap
+        white-space: nowrap;
+        -webkit-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -moz-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -ms-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -o-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .actors span:hover {
-        color: rgba(0, 0, 0, 0.64);
+        color: var(--md-theme-default-accent, rgba(0,0,0,0.87));
+        /*color: rgba(0, 0, 0, 0.64);*/
     }
 
     .hints {
@@ -141,13 +143,19 @@
     }
 
     .hints i {
-        color: var(--md-theme-default-divider, rgba(0,0,0,0.12)) !important;
+        /*color: var(--md-theme-default-divider, rgba(0,0,0,0.12)) !important;*/
         padding-left: 15px;
         padding-right: 15px;
+        -webkit-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -moz-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -ms-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -o-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: default;
     }
 
     .hints i:hover {
-        color: var(--md-theme-default-text-primary-on-background, rgba(0,0,0,0.87)) !important;
+        color: var(--md-theme-default-accent, rgba(0,0,0,0.87)) !important;
     }
 
     @media only screen and (max-width: 960px) {

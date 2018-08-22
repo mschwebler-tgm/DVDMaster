@@ -2,8 +2,9 @@
 @import "~vue-material/dist/theme/engine"; // Import the theme engine
 
 @include md-register-theme("default", (
-        primary: #673AB7, // The primary color of your brand
-        accent: #D1C4E9// The secondary color of your brand
+        primary: #3e50b4, // The primary color of your brand
+        accent: #ff3f80,// The secondary color of your brand
+        theme: dark
 ));
 
 @import "~vue-material/dist/theme/all"; // Apply the theme
