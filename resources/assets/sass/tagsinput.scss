@@ -1,6 +1,6 @@
 .custom-tag {
-  background-color: var(--md-theme-default-highlight, rgba(0,0,0,0.12));
-  color: var(--md-theme-default-text-primary, rgba(0,0,0,0.87)) !important;
+  background-color: var(--md-theme-default-highlight, #E0E0E0);
+  color: var(--md-theme-default-text-primary, rgba(0, 0, 0, 0.87)) !important;
   font-size: 12px;
   padding: 2px 6px;
   border-radius: 0.4em;
@@ -14,10 +14,14 @@
   -moz-box-shadow: none !important;
   box-shadow: none !important;
   padding: 0 !important;
+  background-color: transparent !important;
 }
 
 .tt-input {
   min-width: 150px;
+  bottom: 5px;
+  padding-bottom: 5px !important;
+  border-bottom: 1px solid rgba(.5, .5, .5, .5) !important;
 }
 
 .tt-menu {

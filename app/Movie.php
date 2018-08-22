@@ -10,6 +10,12 @@ class Movie extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $casts = [
+        'based_on_book' => 'boolean',
+        'blue_ray' => 'boolean',
+        'belongs_to_collection' => 'boolean',
+        'true_story' => 'boolean',
+    ];
 
     public function rentedBy()
     {
