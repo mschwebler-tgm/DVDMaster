@@ -1,4 +1,5 @@
 const state = {
+    $root: null,
     movies: {
         data: []
     },
@@ -53,27 +54,57 @@ const actions = {
             });
         });
     },
-    MOVIES_ACTION_SAVE ({commit}, payload) {
+    MOVIES_ACTION_SAVE ({state, commit}, payload) {
         axios.post('/api/movie', payload).then(res => {
-            M.toast({ html: 'Movie saved', classes: 'complete-toast' });
+            state.$root.toast('Movie saved');
         }).catch(() => {
-            M.toast({ html: 'Error while saving movie', classes: 'complete-toast' });
+            state.$root.toast('Error while saving movie');
         });
     },
-    MOVIES_ACTION_UPDATE ({commit}, {payload, id}) {
+    MOVIES_ACTION_UPDATE ({state, commit}, {payload, id}) {
         axios.post('/api/movie/' + id + '/update', payload).then(res => {
-            M.toast({ html: 'Movie saved', classes: 'complete-toast' });
+            state.$root.toast('Movie updated');
         }).catch(() => {
-            M.toast({ html: 'Error while saving movie', classes: 'complete-toast' });
+            state.$root.toast('Error while updating movie');
         });
     },
-    MOVIES_ACTION_RETRIEVE ({commit}, {payload, id}) {
+    MOVIES_ACTION_RETRIEVE ({state, commit}, {payload, id}) {
         return new Promise((resolve, reject) => {
             axios.post('/api/movie/' + id + '/retrieve', payload).then(res => {
-                M.toast({ html: 'Movie retrieved', classes: 'complete-toast' });
+                state.$root.toast('Movie retrieved');
                 resolve(res);
             }).catch(err => {
-                M.toast({ html: 'Error while retrieving movie', classes: 'complete-toast' });
+                state.$root.toast('Error while retrieving movie');
+                reject(err);
+            });
+        });
+    },
+    MOVIES_ACTION_DELETE ({state, commit}, id) {
+        axios.get('/api/movie/' + id + '/delete').then(() => {
+            state.$root.toast('Movie deleted');
+            state.$root.$router.go(-1);
+        }).catch(() => {
+            state.$root.toast('Error while deleting movie');
+        });
+    },
+    MOVIES_ACTION_UPDATE_LAST_SEEN ({state, commit}, {id, date}) {
+        return new Promise((resolve, reject) => {
+            axios.get('/api/movie/' + id + '/lastSeen/' + date).then(res => {
+                state.$root.toast('Updated last seen');
+                resolve(res);
+            }).catch(err => {
+                state.$root.toast('Error while updating last seen');
+                reject(err);
+            });
+        });
+    },
+    MOVIES_ACTION_BORROW ({state, commit}, {id, user}) {
+        return new Promise((resolve, reject) => {
+            axios.post('/api/movie/' + id + '/borrowTo/' + user.id).then(res => {
+                state.$root.toast('Borrowed to: ' + user.name);
+                resolve(res);
+            }).catch(err => {
+                state.$root.toast('Error while borrowing movie');
                 reject(err);
             });
         });
@@ -93,6 +124,9 @@ const mutations = {
     },
     MOVIES_COMMIT_FILTER_UPDATE (state, {type, data}) {
         state.filter[type] = data;
+    },
+    MOVIES_SET_ROOT (state, vueInstance) {
+        state.$root = vueInstance;
     }
 };
 

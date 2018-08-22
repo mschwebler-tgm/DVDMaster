@@ -133,19 +133,11 @@
         },
         methods: {
             deleteMovie() {
-                axios.get('/api/movie/' + this.movie.id + '/delete').then(() => {
-                    M.toast({html: 'Movie deleted', classes: 'complete-toast'});
-                    this.$root.$router.go(-1);
-                }).catch(() => {
-                    M.toast({html: 'Error while deleting movie', classes: 'complete-toast'});
-                });
+                this.$store.dispatch('MOVIES_ACTION_DELETE', this.movie.id);
             },
             updateLastSeen(date) {
-                axios.get('/api/movie/' + this.movie.id + '/lastSeen/' + date).then(res => {
+                this.$store.dispatch('MOVIES_ACTION_UPDATE_LAST_SEEN', {id: this.movie.id, date}).then(res => {
                     this.movie.last_seen = res.data;
-                    M.toast({html: 'Updated last seen.', classes: 'complete-toast'});
-                }).catch(() => {
-                    M.toast({html: 'Error while updating last seen', classes: 'complete-toast'});
                 });
             },
             updateLastSeenCustom(amount, type) {
@@ -163,11 +155,10 @@
             },
             selectUser(user) {
                 this.showUserModal = false;
-                axios.post('/api/movie/' + this.movie.id + '/borrowTo/' + user.id).then(res => {
+                this.$store.dispatch('MOVIES_ACTION_BORROW', {id: this.movie.id, user}).then(res => {
                     Vue.set(this.movie, 'rented_by', [user]);
                     Vue.set(this.movie, 'pending_rental', [res.data]);
-                    M.toast({html: 'Borrowed to: ' + user.name, classes: 'complete-toast'});
-                })
+                });
             },
             retrieveMovie(params) {
                 switch (params.quality) {

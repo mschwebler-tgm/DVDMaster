@@ -67,7 +67,10 @@
             </md-list-item>
         </md-list>
     </md-drawer>
-
+    <md-snackbar md-position="center" :md-duration="toastDuration" :md-active.sync="toastShow" md-persistent>
+        <span v-text="toastText"></span>
+        <md-button class="md-primary" @click="toastShow = false">Close</md-button>
+    </md-snackbar>
     <form id="logout-form" action="/logout" method="POST"
           style="display: none;">
         @csrf

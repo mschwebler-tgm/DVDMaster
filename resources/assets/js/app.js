@@ -46,8 +46,14 @@ const app = new Vue({
             tmdbImagePath: 'https://image.tmdb.org/t/p/',
             showLoading: false,
             showSidepanel: false,
-            remember: false  // remember checbox on login page needs a model
+            remember: false , // remember checbox on login page needs a model
+            toastShow: false,
+            toastDuration: 3000,
+            toastText: ''
         }
+    },
+    created() {
+        this.injectRootInstanceIntoStore();
     },
     methods: {
         getImagePath(path, resolution) {
@@ -69,6 +75,20 @@ const app = new Vue({
             axios.post('/logout').then(() => {
                 window.location = '/login';
             });
+        },
+        toast(str, duration) {
+            this.toastText = str;
+            let oldDuration = this.duration;
+            if (duration) { this.duration = duration }
+
+            this.toastShow = true;
+            setTimeout(() => {
+                this.duration = oldDuration;
+                this.str = '';
+            }, this.duration + 100);
+        },
+        injectRootInstanceIntoStore() {
+            this.$store.commit('MOVIES_SET_ROOT', this);
         }
     }
 });

@@ -11,10 +11,10 @@
                             <br>
                             <br>
                             <div class="flex flex-justify-center">
-                                <div style="flex: 1;" class="flex flex-justify-end"><md-content class="like-emoji md-primary" @click="dislikeIt"><md-icon class="md-size-5x">sentiment_very_dissatisfied</md-icon></md-content></div>
-                                <div style="flex: 1;" class="flex flex-justify-start"><md-content class="like-emoji md-primary" @click="likeIt"><md-icon class="md-size-5x">sentiment_satisfied_alt</md-icon></md-content></div>
+                                <div style="flex: 1;" class="flex flex-justify-end"><md-content class="like-emoji md-accent" @click="dislikeIt"><md-icon class="md-size-5x">sentiment_very_dissatisfied</md-icon></md-content></div>
+                                <div style="flex: 1;" class="flex flex-justify-start"><md-content class="like-emoji md-accent" @click="likeIt"><md-icon class="md-size-5x">sentiment_satisfied_alt</md-icon></md-content></div>
                             </div>
-                            <md-button class="md-primary step-button" @click="setDone('likeSelected', 'date')" style="float: right;">Skip</md-button>
+                            <md-button class="md-accent step-button" @click="setDone('likeSelected', 'date')" style="float: right;">Skip</md-button>
                         </div>
                     </md-step>
                     <md-step id="date" class="custom-step" :md-description="formattedDate" md-label="Retrieval date" :md-done.sync="dateSelected">
@@ -27,9 +27,9 @@
                             <div class="flex flex-justify-center flex-align-center">
                                 <div class="flex" style="flex-direction: column">
                                     <div>
-                                        <md-button class="md-raised" @click="setDate">Today</md-button>
-                                        <md-button class="md-raised" @click="setDate(7, 'days')">Last Week</md-button>
-                                        <md-button class="md-raised" @click="setDate(1, 'month')">Last Month</md-button>
+                                        <md-button class="md-accent md-raised" @click="setDate">Today</md-button>
+                                        <md-button class="md-accent md-raised" @click="setDate(7, 'days')">Last Week</md-button>
+                                        <md-button class="md-accent md-raised" @click="setDate(1, 'month')">Last Month</md-button>
                                     </div>
                                     <div style="padding-left: 10px; padding-right: 10px">
                                         <md-datepicker v-model="date" md-immediately>
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                             <br>
-                            <md-button class="md-raised md-primary step-button" @click="setDone('dateSelected', 'quality')" style="float: right">Continue</md-button>
+                            <md-button class="md-raised md-accent step-button" @click="setDone('dateSelected', 'quality')" style="float: right">Continue</md-button>
                         </div>
                     </md-step>
                     <md-step id="quality" class="custom-step" md-label="Quality" :md-description="quality || ''" :md-done.sync="qualitySelected">
@@ -51,11 +51,13 @@
                             <br>
                             <div style="height: 100px" class="flex flex-justify-center flex-align-center">
                                 <vue-slider v-model="quality" v-bind="sliderOptions" ref="slider">
-                                    <div class="vue-slider-tooltip" slot="tooltip" slot-scope="{ value }" style="background-color: var(--md-theme-default-primary, #448aff);">
+                                    <div class="vue-slider-tooltip" slot="tooltip" slot-scope="{ value }"
+                                         style="background-color: var(--md-theme-default-accent, #448aff);
+                                                border: 1px solid var(--md-theme-default-accent, #448aff)">
                                         {{ value }}
                                     </div>
                                     <div slot="label" slot-scope="{ label, active }">
-                                        <span class="vue-slider-piecewise-label" v-if="active" style="color: var(--md-theme-default-primary, #448aff);">{{ label }}</span>
+                                        <span class="vue-slider-piecewise-label" v-if="active" style="color: var(--md-theme-default-accent, #448aff);">{{ label }}</span>
                                         <span class="md-caption" v-else style="
                                         position: absolute;
                                         display: inline-block;
@@ -116,10 +118,14 @@
                         'height': '12px'
                     },
                     piecewiseActiveStyle: {
-                        'backgroundColor': '#3498db'
+                        'backgroundColor': 'var(--md-theme-default-accent, #448aff)',
                     },
                     labelActiveStyle: {
-                        'color': '#3498db'
+                        'color': 'var(--md-theme-default-accent, #448aff)',
+                        'border': '1px solid var(--md-theme-default-accent, #448aff)'
+                    },
+                    processStyle: {
+                        'background-color': 'var(--md-theme-default-accent, #448aff)'
                     }
                 }
             }
