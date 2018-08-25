@@ -1,7 +1,7 @@
 <template>
-    <div class="md-elevation-3 movie-edit">
+    <div class="md-elevation-3" style="position: relative">
         <div class="pictures"> <!-- images -->
-            <div class="movie-cover" :style="{'background-image': coverSrc}"
+            <div class="movie-cover" :style="{'background-image': coverSrc}" id="custom_poster_preview"
                  @click="openCustomCoverDialog()">
                 <div class="darken">
                     <h5 class="grey-text">Cover</h5>
@@ -16,39 +16,56 @@
                 <input type="file" id="custom_backdrop" style="display: none" accept="image/*" @change="previewBackdrop">
             </div>
         </div>
-        <div class="pad" style="position: relative;">
-            <md-field id="title">
+        <div class="pad">
+            <md-field>
                 <label>Title</label>
-                <md-input v-model="movie.title" placeholder="Title"></md-input>
+                <md-input v-model="customMovie.title" placeholder="Title"></md-input>
             </md-field>
-            <div style="position: absolute; top: 15px; right: 15px;">
-                <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
-            </div>
+            <md-field>
+                <label>Duration</label>
+                <md-input v-model="customMovie.duration" type="number"></md-input>
+                <span class="md-suffix">min</span>
+            </md-field>
+            <star-rating :increment="0.5" style="z-index: 1000; position: absolute; top: 15px; right: 15px;" inactive-color="#e6e6e6" class="right"
+                         active-color="var(--md-theme-default-accent, #ff5252)" v-model="customMovie.custom_rating" :show-rating="false"
+                         :border-width="0" :star-size="40"></star-rating>
             <md-field>
                 <label>Overview</label>
-                <md-textarea v-model="movie.overview" md-autogrow></md-textarea>
+                <md-textarea v-model="customMovie.overview" md-autogrow></md-textarea>
             </md-field>
-            <md-field id="comment">
-                <label>Comment</label>
-                <md-input v-model="movie.comment" placeholder="Comment"></md-input>
-            </md-field>
-            <div style="margin-bottom: 24px;">
-                <label>Actors</label>
-                <actors-input @change="updateActors" :initial="movie.actors"></actors-input>
-            </div>
             <div style="margin-bottom: 24px;">
                 <label>Genres</label>
-                <genres-input @change="updateGenres" :initial="movie.genres"></genres-input>
+                <genres-input @change="genres => customMovie.genres = genres"></genres-input>
             </div>
-            <md-datepicker v-model="movie.release_date" md-immediately id="release-date">
+            <div style="margin-bottom: 24px;">
+                <label>Actors</label>
+                <actors-input @change="actors => customMovie.actors = actors"></actors-input>
+            </div>
+            <md-datepicker v-model="customMovie.release_date" md-immediately id="release-date">
                 <label>Release date</label>
             </md-datepicker>
-            <md-checkbox v-model="movie.blue_ray"><md-icon>album</md-icon>&nbsp;&nbsp;Blue-Ray</md-checkbox><br>
-            <md-checkbox v-model="movie.based_on_book"><md-icon>event</md-icon>&nbsp;&nbsp;Based on book</md-checkbox><br>
-            <md-checkbox v-model="movie.true_story"><md-icon>book</md-icon>&nbsp;&nbsp;True Story</md-checkbox><br>
+            <md-checkbox v-model="customMovie.blue_ray"><md-icon>album</md-icon>&nbsp;&nbsp;Blue-Ray</md-checkbox><br>
+            <md-checkbox v-model="customMovie.based_on_book"><md-icon>event</md-icon>&nbsp;&nbsp;Based on book</md-checkbox><br>
+            <md-checkbox v-model="customMovie.true_story"><md-icon>book</md-icon>&nbsp;&nbsp;True Story</md-checkbox><br>
             <div class="flex flex-justify-end">
                 <md-button class="md-raised md-accent" @click="save">Save</md-button>
             </div>
+            <!--<div class="row">-->
+                <!--<div class="col s6">-->
+                    <!--<a class="waves-effect waves-light btn" @click="openCustomBackdropDialog()"><i class="material-icons left">collections</i>Background</a>-->
+                    <!--<a class="waves-effect waves-light btn" @click="clearBackdrop()" v-if="custom_backdrop_preview"><i class="material-icons left">clear</i>Clear</a>-->
+                    <!--<input type="file" id="custom_backdrop" style="display: none" accept="image/*" @change="previewBackdrop">-->
+                    <!--<img :src="custom_backdrop_preview" id="custom_backdrop_preview" />-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="row">-->
+                <!--<div class="col s6">-->
+                    <!--<a class="waves-effect waves-light btn" @click="openCustomCoverDialog()"><i class="material-icons left">collections_bookmark</i>Cover</a>-->
+                    <!--<a class="waves-effect waves-light btn" @click="clearCover()" v-if="custom_poster_preview"><i class="material-icons left">clear</i>Clear</a>-->
+                    <!--<input type="file" id="custom_cover" style="display: none" accept="image/*" @change="previewCover">-->
+                    <!--<img :src="custom_poster_preview" id="custom_cover_preview" />-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
 </template>
@@ -58,9 +75,9 @@
     import moment from 'moment';
 
     export default {
-        props: ['movie'],
         data() {
             return {
+                customMovie: {},
                 custom_backdrop_preview: null,
                 custom_poster_preview: null
             }
@@ -95,19 +112,11 @@
                 $('#custom_backdrop').val(null);
                 this.custom_backdrop_preview = null;
             },
-            updateActors(actors) {
-                this.movie.actors = actors;
-            },
-            updateGenres(genres) {
-                this.movie.genres = genres;
-            },
             save() {
+                this.customMovie.release_date = moment(this.customMovie.release_date).format('YYYY-MM-DD');
                 let payload = new FormData();
-                if (this.movie.release_date) {
-                    this.movie.release_date = moment(this.movie.release_date).format('YYYY-MM-DD');
-                }
-
-                payload.set('movie', JSON.stringify(this.movie));
+                payload.set('movie', JSON.stringify(this.customMovie));
+                payload.set('is_custom', 'true');
                 let coverInput = $('#custom_cover')[0];
                 if (coverInput.files && coverInput.files[0]) {
                     payload.append('custom_poster', coverInput.files[0], coverInput.files[0].name);
@@ -116,15 +125,15 @@
                 if (backdropInput.files && backdropInput.files[0]) {
                     payload.append('custom_backdrop', backdropInput.files[0], backdropInput.files[0].name);
                 }
-                this.$store.dispatch('MOVIES_ACTION_UPDATE', {payload, id: this.movie.id});
+                this.$store.dispatch('MOVIES_ACTION_SAVE', payload);
             }
         },
         computed: {
             backdropSrc() {
-                return 'url(' + (this.custom_backdrop_preview || this.$root.getImagePath(this.movie.backdrop_path, 'original')) + ')';
+                return 'url(' + this.custom_backdrop_preview + ')';
             },
             coverSrc() {
-                return 'url(' + (this.custom_poster_preview || this.$root.getImagePath(this.movie.poster_path, 'original')) + ')';
+                return 'url(' + this.custom_poster_preview + ')';
             }
         },
         components: {
@@ -134,11 +143,6 @@
 </script>
 
 <style scoped>
-
-    .movie-edit > .row{
-        padding: 0 15px;
-    }
-
     .pictures {
         width: 100%;
         display: flex;
@@ -177,28 +181,9 @@
         justify-content: center;
         align-items: center;
     }
-    
+
     .movie-backdrop:hover .darken, .movie-cover:hover .darken {
         display: none;
     }
 
-    .save {
-        display: flex;
-        justify-content: flex-end;
-        padding: 0 15px 15px 15px;
-    }
-
-    #title, #comment, #release-date {
-        width: 50%;
-    }
-
-    @media only screen and (max-width: 600px){
-        #title {
-            margin-top: 55px;
-        }
-
-        #title, #comment, #release-date {
-            width: 100%;
-        }
-    }
 </style>

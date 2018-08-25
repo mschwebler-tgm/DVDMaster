@@ -29,6 +29,10 @@ Vue.component('movie-list', require('./components/HomePage/ListView.vue'));
 Vue.component('movie-list-item', require('./components/HomePage/ListViewItem.vue'));
 Vue.component('home-filter', require('./components/HomePage/Filter.vue'));
 
+
+// Add movie
+Vue.component('add-movie-custom', require('./components/AddMoviePage/Custom.vue'));
+
 // static
 Vue.component('root', require('./components/static/Root.vue'));
 
