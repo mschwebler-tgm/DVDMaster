@@ -50,22 +50,6 @@
             <div class="flex flex-justify-end">
                 <md-button class="md-raised md-accent" @click="save">Save</md-button>
             </div>
-            <!--<div class="row">-->
-                <!--<div class="col s6">-->
-                    <!--<a class="waves-effect waves-light btn" @click="openCustomBackdropDialog()"><i class="material-icons left">collections</i>Background</a>-->
-                    <!--<a class="waves-effect waves-light btn" @click="clearBackdrop()" v-if="custom_backdrop_preview"><i class="material-icons left">clear</i>Clear</a>-->
-                    <!--<input type="file" id="custom_backdrop" style="display: none" accept="image/*" @change="previewBackdrop">-->
-                    <!--<img :src="custom_backdrop_preview" id="custom_backdrop_preview" />-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="row">-->
-                <!--<div class="col s6">-->
-                    <!--<a class="waves-effect waves-light btn" @click="openCustomCoverDialog()"><i class="material-icons left">collections_bookmark</i>Cover</a>-->
-                    <!--<a class="waves-effect waves-light btn" @click="clearCover()" v-if="custom_poster_preview"><i class="material-icons left">clear</i>Clear</a>-->
-                    <!--<input type="file" id="custom_cover" style="display: none" accept="image/*" @change="previewCover">-->
-                    <!--<img :src="custom_poster_preview" id="custom_cover_preview" />-->
-                <!--</div>-->
-            <!--</div>-->
         </div>
     </div>
 </template>
