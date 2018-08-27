@@ -16,7 +16,7 @@
                                 </div>
                                 <div :class="{'show-search mobile-search-grow': searchActive}" class="mobile-search mobile-only">
                                     <md-field class="md-custom-input" style="margin: 0; top: -6px">
-                                        <md-input placeholder="Search" class="white-text" v-model="query"></md-input>
+                                        <md-input placeholder="Search" class="white-text" v-model="query" @keyup.enter="search"></md-input>
                                     </md-field>
                                 </div>
                             </div>
@@ -29,7 +29,7 @@
                                 <div class="desktop-only">
                                     <div class="flex flex-align-center" style="padding-right: 15px;">
                                         <md-field class="md-custom-input" style="margin: 0; top: -6px">
-                                            <md-input placeholder="Search" class="white-text" v-model="query"></md-input>
+                                            <md-input placeholder="Search" class="white-text" v-model="query" @keyup.enter="search"></md-input>
                                             <md-icon>search</md-icon>
                                         </md-field>
                                     </div>
@@ -72,6 +72,10 @@
         methods: {
             navigate(event) {
                 this.$router.push(event);
+            },
+            search() {
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'title', data: this.query});
+                this.$store.dispatch('MOVIES_ACTION_SEARCH');
             }
         },
         computed: {

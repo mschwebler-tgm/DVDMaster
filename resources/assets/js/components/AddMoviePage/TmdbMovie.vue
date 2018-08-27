@@ -232,7 +232,7 @@
 
     .white-text, .white-text::placeholder {
         color: white !important;
-        -webkit-text-fill-color: white !important;;
+        -webkit-text-fill-color: white !important;
     }
 
     .input-fields {

@@ -32,6 +32,11 @@ html, body {
   border-color: white !important;
 }
 
+.white-text::placeholder {
+  color: rgba(255, 255, 255, 0.81) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.81) !important;
+}
+
 .md-custom-input label {
   color: white !important;
 }
