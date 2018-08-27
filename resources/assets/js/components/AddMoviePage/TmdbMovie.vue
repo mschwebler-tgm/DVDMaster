@@ -9,7 +9,7 @@
                     </div>
                     <div class="pad input-fields">
                         <div class="flex">
-                            <div style="width: 300px">
+                            <div style="width: calc(100% - 15px)">
                                 <md-field class="md-custom-input">
                                     <label class="white-text">Title</label>
                                     <md-input v-model="movie.title" placeholder="Title" id="title" class="white-text"
@@ -46,10 +46,25 @@
                                 </md-content>
                             </div>
                         </div>
-                        <md-field v-if="showTextarea" style="width: calc(100% - 15px);" class="md-custom-input">
+                        <md-field v-if="showTextarea" style="width: calc(100% - 15px);" class="overview md-custom-input">
                             <label class="white-text">Overview</label>
                             <md-textarea v-model="movie.overview" class="white-text" md-autogrow ref="overview"></md-textarea>
                         </md-field>
+                    </div>
+                    <div class="xlarge-poster-container pad flex flex-align-center">
+                        <div class="flex">
+                            <div>
+                                <img :src="movie.poster_path ? ($root.getImagePath(movie.poster_path, 'w185'))
+                                                           : ('https://dentallabor-gruettner.de/wp-content/uploads/2017/05/placeholder.gif')"
+                                     class="movie-poster background-center">
+                            </div>
+                            <md-content class="md-accent pad white-text" style="background-color: transparent">
+                                <template v-if="movie.release_date"><p><md-icon>calendar_today</md-icon>&nbsp;&nbsp;{{ movie.release_date }}</p></template>
+                                <template v-if="movie.runtime"><p><md-icon>timer</md-icon>&nbsp;&nbsp;{{ movie.runtime }} min</p></template>
+                                <template v-if="movie.homepage"><p><a :href="movie.homepage" target="_blank"><md-icon class="white-text" style="text-decoration: none">web</md-icon>&nbsp;&nbsp;<span style="color: var(--md-theme-default-text-primary-on-accent, #fff); text-decoration: underline;">Homepage</span></a></p></template>
+                                <md-chip v-for="genre in movie.genres" :key="genre.id" class="md-accent" style="margin-bottom: 5px;">{{ genre.name }}</md-chip>
+                            </md-content>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -133,28 +148,8 @@
                     res = JSON.parse(res);
                     if (res.results && res.results.length > 0) {
                         this.suggestions = res.results;
-                        this.$root.theMovieDb.common.client({
-                                url: "movie/" + res.results.shift().id + this.$root.theMovieDb.common.generateQuery()
-                            },
-                            res => {
-                                let movieRes = JSON.parse(res);
-                                if (movieRes) {
-                                    this.showTextarea = false;
-                                    this.movie = movieRes;
-                                    this.$nextTick(() => {
-                                        this.showTextarea = true;
-                                    });
-                                    this.lastSearchTerm = title;
-                                    this.searchTermChanged = false;
-                                    this.hideDetails = false;
-                                }
-                            },
-                            err => {
-                                this.$root.toast(err);
-                            }
-                        );
+                        this.getMovieDetails(res.results.shift().id);
                         $('#suggestions li:not(.active) #suggestionsTrigger').trigger('click');
-                        $('.movie-overview label').addClass('active');
                     } else {
                         this.$root.toast('No search results');
                     }
@@ -162,12 +157,35 @@
                     this.$root.toast(err);
                 });
             },
+            getMovieDetails(id) {
+                this.$root.theMovieDb.common.client({
+                        url: "movie/" + id + this.$root.theMovieDb.common.generateQuery()
+                    },
+                    res => {
+                        let movieRes = JSON.parse(res);
+                        if (movieRes) {
+                            this.showTextarea = false;
+                            this.movie = movieRes;
+                            this.$nextTick(() => {
+                                this.showTextarea = true;
+                            });
+                            this.lastSearchTerm = title;
+                            this.searchTermChanged = false;
+                            this.hideDetails = false;
+                        }
+                    },
+                    err => {
+                        this.$root.toast(err);
+                    }
+                );
+            },
             selectMovie(movie) {
                 this.showTextarea = false;
                 this.movie = movie;
                 this.$nextTick(() => {
                     this.showTextarea = true;
                 });
+                this.getMovieDetails(movie.id);
             },
             clearMovie() {
                 this.movie = {};
@@ -185,7 +203,12 @@
                 let payload = new FormData();
                 payload.set('movie', JSON.stringify(this.movie));
                 payload.set('is_custom', 'false');
-                this.$store.dispatch('MOVIES_ACTION_SAVE', payload);
+                this.$store.dispatch('MOVIES_ACTION_SAVE', payload).then(() => {
+                    this.movie.comment = null;
+                    this.movie.blue_ray = null;
+                    this.movie.true_story = null;
+                    this.movie.based_on_book = null;
+                });
             },
             toggleDetails() {
                 this.hideDetails = !this.hideDetails;
@@ -227,10 +250,6 @@
 
     #title {
         font-size: 26px;
-    }
-
-    .stage {
-        padding: 0;
     }
 
     .suggestions {
@@ -339,59 +358,6 @@
         );
     }
 
-    .clear-movie {
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 15px;
-        color: white;
-        font-size: 34px;
-    }
-
-    .ratings {
-        position: relative;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-    }
-
-    .ratings i {
-        padding-left: 10px;
-    }
-
-    .movie-overview {
-        position: absolute;
-        bottom: 15px;
-        left: 15px;
-        max-height: 170px;
-        overflow: scroll;
-    }
-
-    .movie-overview::-webkit-scrollbar {
-        background-color: rgba(0,0,0,0);
-        width: 8px;
-        height: 8px;
-    }
-    .movie-overview::-webkit-scrollbar-button {
-        display: none;
-    }
-    .movie-overview::-webkit-scrollbar-track {
-        display: none;
-    }
-    .movie-overview::-webkit-scrollbar-track-piece {
-    }
-    .movie-overview::-webkit-scrollbar-thumb {
-        background-color: rgba(125,125,125,0.5);
-        border-radius: 10px;
-    }
-    .movie-overview::-webkit-scrollbar-corner {
-        display: none;
-    }
-    .movie-overview::-webkit-resizer {
-        display: none;
-    }
-
     .poster-container {
         height: calc(278px + 45px);
         position: absolute;
@@ -410,7 +376,22 @@
         top: calc(-278px - 45px);
     }
 
-    #custom_cover_preview, #custom_backdrop_preview {
-        max-width: 100%;
+    .overview {
+        width: calc(100% - 15px);
     }
+
+    .xlarge-poster-container {
+        display: none;
+    }
+
+    @media only screen and (min-width: 1904px){
+        .input-fields {
+            float: left;
+            width: 57%;
+        }
+        .xlarge-poster-container {
+            display: block;
+        }
+    }
+
 </style>

@@ -55,10 +55,14 @@ const actions = {
         });
     },
     MOVIES_ACTION_SAVE ({state, commit}, payload) {
-        axios.post('/api/movie', payload).then(res => {
-            state.$root.toast('Movie saved');
-        }).catch(() => {
-            state.$root.toast('Error while saving movie');
+        return new Promise((resolve, reject) => {
+            axios.post('/api/movie', payload).then(res => {
+                state.$root.toast('Movie saved');
+                resolve()
+            }).catch(() => {
+                state.$root.toast('Error while saving movie');
+                reject();
+            });
         });
     },
     MOVIES_ACTION_UPDATE ({state, commit}, {payload, id}) {
