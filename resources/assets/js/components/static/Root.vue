@@ -21,12 +21,12 @@
                                 </div>
                             </div>
                             <div class="md-layout-item md-xsmall-size-20 md-small-size-40 flex flex-align-center flex-justify-end">
-                                <div class="mobile-only">
+                                <div class="mobile-only" v-if="userIsLogged">
                                     <md-button class="md-icon-button" @click="searchActive = !searchActive">
                                         <md-icon>search</md-icon>
                                     </md-button>
                                 </div>
-                                <div class="desktop-only">
+                                <div class="desktop-only" v-if="userIsLogged">
                                     <div class="flex flex-align-center" style="padding-right: 15px;">
                                         <md-field class="md-custom-input" style="margin: 0; top: -6px">
                                             <md-input placeholder="Search" class="white-text" v-model="query" @keyup.enter="search"></md-input>
