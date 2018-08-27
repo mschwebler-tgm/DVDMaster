@@ -9,7 +9,7 @@
                     </div>
                     <div class="pad input-fields">
                         <div class="flex">
-                            <div style="width: calc(100% - 15px)">
+                            <div style="width: 270px">
                                 <md-field class="md-custom-input">
                                     <label class="white-text">Title</label>
                                     <md-input v-model="movie.title" placeholder="Title" id="title" class="white-text"
