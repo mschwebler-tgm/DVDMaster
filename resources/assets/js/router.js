@@ -5,7 +5,7 @@ const Foo = {template: '<div>Foo</div>'};
 
 // lazy load components
 const MovieCards = (resolve) => require(['./components/MovieCards'], resolve);
-const AddMovie = (resolve) => require(['./components/AddMovie'], resolve);
+const AddMovie = (resolve) => require(['./components/AddMoviePage/AddMovie'], resolve);
 const MoviePage = (resolve) => require(['./components/MoviePage/MoviePage'], resolve);
 const MovieEdit = (resolve) => require(['./components/MoviePage/Edit'], resolve);
 const MovieView = (resolve) => require(['./components/MoviePage/View'], resolve);

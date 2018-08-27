@@ -294,6 +294,15 @@
         color: darkgrey;
     }
 
+    .tool-bar > div:hover, .tool-bar > div:hover i {
+        -webkit-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -moz-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -ms-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        -o-transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color .2s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--md-theme-default-accent, #ff5252) !important;
+    }
+
     .overview {
         flex: 1;
         padding: 10px;
