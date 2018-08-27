@@ -59,8 +59,11 @@
             movies() {
                 return this.$store.getters.MOVIES_GET_ALL;
             },
-            loaded() {
-                return this.$store.getters.MOVIES_GET_ALL.length > 0;
+            loaded: {
+                get() {
+                    return this.$store.getters.MOVIES_GET_ALL.length > 0;
+                },
+                set() {}
             }
         },
         components: {
