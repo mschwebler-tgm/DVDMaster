@@ -26,6 +26,25 @@ html, body {
   width: 0;
 }
 
+// Add Movie Page
+
+.white-text div:not(.md-checked) .md-checkbox-container {
+  border-color: white !important;
+}
+
+.md-custom-input label {
+  color: white !important;
+}
+
+.md-custom-input.md-field::before {
+  background-color: white !important;
+}
+
+.md-custom-input input {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
+
 .material-icons, .icon-text {
   vertical-align: middle;
 }

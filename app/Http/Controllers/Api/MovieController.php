@@ -31,7 +31,7 @@ class MovieController extends Controller
             abort(500);
         }
 
-        $isCustom = (bool) $request->get('is_custom');
+        $isCustom = $request->get('is_custom') === 'true';
         if ($isCustom) {
             $posterPath = null;
             $posterPath = $this->savePoster($request);
@@ -39,7 +39,16 @@ class MovieController extends Controller
             $backdropPath = $this->saveBackdropImage($request);
             $this->movieDao->insertFromCustomArray($request->all(), $posterPath, $backdropPath);
         } else if ($isCustom === false) {
-            Artisan::call('import:movie', ['tmdbId' => $movie['id']]);
+            $reqMovie = json_decode($movie, true);
+            $movie = new Movie();
+            $movie->tmdb_id = $reqMovie['id'];
+            $movie->title = isset($reqMovie['title']) ? $reqMovie['title'] : '';
+            $movie->comment = isset($reqMovie['comment']) ? $reqMovie['comment'] : null;
+            $movie->blue_ray = isset($reqMovie['blue_ray']) ? $reqMovie['blue_ray'] : false;
+            $movie->based_on_book = isset($reqMovie['based_on_book']) ? $reqMovie['based_on_book'] : false;
+            $movie->true_story = isset($reqMovie['true_story']) ? $reqMovie['true_story'] : false;
+            $movie->save();
+            Artisan::call('import:movie', ['tmdbId' => $reqMovie['id']]);
         }
     }
 

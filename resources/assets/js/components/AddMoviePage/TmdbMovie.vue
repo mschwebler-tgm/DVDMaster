@@ -1,77 +1,99 @@
 <template>
     <div style="overflow: hidden">
-        <div class="movie-backdrop" :style="{'background-image': movie.backdrop_path ? 'url(' + $root.getImagePath(movie.backdrop_path, 'original') + ')' : ''}">
-            <div>
-                <md-icon class="pointer clear-icon" @click="clearMovie">clear</md-icon>
-                <div class="pad input-fields">
-                    <div class="flex">
-                        <div style="width: 300px">
-                            <md-field>
-                                <label class="white-text">Title</label>
-                                <md-input v-model="movie.title" placeholder="Title" id="title" class="white-text"
-                                          @blur="searchMovie" @keydown.enter="searchMovie" @keydown.tab="searchMovie" @keydown="registerChange"></md-input>
-                            </md-field>
-                            <div class="flex flex-align-center">
-                                <movie-rating :movie="movie" style="width: 200px; height: 46px"></movie-rating>
-                                <fade-transition :duration="200">
-                                    <div v-show="movie.vote_count && !movie.custom_rating">
-                                        <md-icon style="color: darkgrey; margin-left: 10px">info</md-icon>
-                                        <md-tooltip md-direction="right">{{ movie.vote_count }} users rated on themoviedb.org</md-tooltip>
+        <div class="md-elevation-3">
+            <div class="movie-backdrop" :style="{'background-image': movie.backdrop_path ? 'url(' + $root.getImagePath(movie.backdrop_path, 'original') + ')' : ''}">
+                <div>
+                    <div class="clear-icon" @click="clearMovie">
+                        <md-icon class="pointer white-text">clear</md-icon>
+                        <md-tooltip md-direction="right">Clear</md-tooltip>
+                    </div>
+                    <div class="pad input-fields">
+                        <div class="flex">
+                            <div style="width: 300px">
+                                <md-field class="md-custom-input">
+                                    <label class="white-text">Title</label>
+                                    <md-input v-model="movie.title" placeholder="Title" id="title" class="white-text"
+                                              @blur="searchMovie" @keydown.enter="searchMovie" @keydown.tab="searchMovie" @keydown="registerChange"></md-input>
+                                </md-field>
+                                <div class="flex flex-align-center">
+                                    <movie-rating :movie="movie" :showCustomRating="!!movie.custom_rating" style="width: 200px; height: 46px"></movie-rating>
+                                    <fade-transition :duration="200">
+                                        <div v-show="movie.vote_count && !movie.custom_rating">
+                                            <md-icon style="color: darkgrey; margin-left: 10px">info</md-icon>
+                                            <md-tooltip md-direction="right">{{ movie.vote_count }} users rated on themoviedb.org</md-tooltip>
+                                        </div>
+                                    </fade-transition>
+                                </div>
+                            </div>
+                            <div style="position: relative; flex: 1">
+                                <md-content class="poster-container md-xsmall-hide md-xlarge-hide flex md-accent md-elevation-3" :class="{'hide': hideDetails}">
+                                    <div>
+                                        <img :src="movie.poster_path ? ($root.getImagePath(movie.poster_path, 'w185'))
+                                                           : ('https://dentallabor-gruettner.de/wp-content/uploads/2017/05/placeholder.gif')"
+                                             class="movie-poster background-center">
                                     </div>
-                                    <!--<i class="material-icons white-text pointer tooltipped" data-position="right"-->
-                                    <!--:data-tooltip="movie.vote_count + ' users rated on themoviedb.org'"-->
-                                    <!--v-show="movie.vote_count && !movie.custom_rating">info</i>-->
-                                </fade-transition>
+                                    <div style="flex: 1" class="pad">
+                                        <template v-if="movie.release_date"><p><md-icon>calendar_today</md-icon>&nbsp;&nbsp;{{ movie.release_date }}</p></template>
+                                        <template v-if="movie.runtime"><p><md-icon>timer</md-icon>&nbsp;&nbsp;{{ movie.runtime }} min</p></template>
+                                        <template v-if="movie.homepage"><p><a :href="movie.homepage" target="_blank"><md-icon style="text-decoration: none">web</md-icon>&nbsp;&nbsp;<span style="color: var(--md-theme-default-text-primary-on-accent, #fff); text-decoration: underline;">Homepage</span></a></p></template>
+                                        <md-chip v-for="genre in movie.genres" :key="genre.id" style="margin-bottom: 5px">{{ genre.name }}</md-chip>
+                                    </div>
+                                    <div class="flex flex-justify-center" style="position: absolute; left: 0; bottom: -24px; width: 100%; height: 24px; z-index: 100">
+                                        <md-content class="md-accent">
+                                            <md-icon class="pointer" id="detailsToggle">{{ hideDetails ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</md-icon>
+                                        </md-content>
+                                    </div>
+                                </md-content>
                             </div>
                         </div>
-                        <div style="position: relative; flex: 1">
-                            <div class="poster-container" :class="{'hide': hideDetails}">
-                                <img :src="movie.poster_path ? ($root.getImagePath(movie.poster_path, 'w185'))
-                                                       : ('https://dentallabor-gruettner.de/wp-content/uploads/2017/05/placeholder.gif')"
-                                class="movie-poster background-center">
-                                <p v-if="movie.release_date" class="grey-text" style="font-size: 14px;">
-                                    {{ movie.release_date.substring(0, 4) }}
-                                </p>
-                                <div class="flex flex-justify-center" style="position: absolute; left: 0; bottom: -20px; width: 100%; height: 20px;">
-                                    <md-icon style="color: white; background-color: rgba(0, 0, 0, 0.67);" class="pointer" @click="toggleDetails">keyboard_arrow_up</md-icon>
-                                </div>
+                        <md-field v-if="showTextarea" style="width: calc(100% - 15px);" class="md-custom-input">
+                            <label class="white-text">Overview</label>
+                            <md-textarea v-model="movie.overview" class="white-text" md-autogrow ref="overview"></md-textarea>
+                        </md-field>
+                    </div>
+                </div>
+            </div>
+            <md-content class="pad md-accent">
+                <span class="md-caption">Custom</span>
+                <div class="pad">
+                    <div class="white-text flex">
+                        <md-checkbox v-model="movie.blue_ray"><md-icon>album</md-icon>&nbsp;&nbsp;Blue-Ray</md-checkbox><br>
+                        <md-checkbox v-model="movie.based_on_book"><md-icon>event</md-icon>&nbsp;&nbsp;Based on book</md-checkbox><br>
+                        <md-checkbox v-model="movie.true_story"><md-icon>book</md-icon>&nbsp;&nbsp;True Story</md-checkbox><br>
+                    </div>
+                    <md-field class="md-custom-input">
+                        <label>Comment</label>
+                        <md-input v-model="movie.comment" placeholder="Comment"></md-input>
+                    </md-field>
+                </div>
+            </md-content>
+            <div>
+                <div class="collapsible-header" id="suggestionsTrigger"></div>
+                <div class="collapsible-body">
+                    <div class="row">
+                        <div class="col s12 suggestions" style="background-color: black;">
+                            <!-- swiper -->
+                            <swiper :options="swiperOption" v-if="readyForSuggestions">
+                                <swiper-slide v-for="suggestion in suggestions" :key="suggestion.id"
+                                              v-if="suggestion.poster_path">
+                                    <div class="movie-sugg">
+                                        <div class="movie-sugg-cover" :class="{'movie-sugg-active': movie.id === suggestion.id}">
+                                            <img :src="$root.getImagePath(suggestion.poster_path, 'w185')"
+                                                 class="background-center" @click="selectMovie(suggestion)"/>
+                                        </div>
+                                    </div>
+                                </swiper-slide>
+                            </swiper>
+                            <div class="hide-indicator center" @click="readyForSuggestions = false">
+                                <i class="material-icons">keyboard_arrow_up</i>
                             </div>
                         </div>
                     </div>
-                    <md-field v-if="showTextarea" style="width: calc(100% - 15px);">
-                        <label class="white-text">Overview</label>
-                        <md-textarea v-model="movie.overview" class="white-text" md-autogrow ref="overview"></md-textarea>
-                    </md-field>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <ul class="collapsible" id="suggestions">
-                <li>
-                    <div class="collapsible-header" id="suggestionsTrigger"></div>
-                    <div class="collapsible-body">
-                        <div class="row">
-                            <div class="col s12 suggestions" style="background-color: black;">
-                                <!-- swiper -->
-                                <swiper :options="swiperOption" v-if="readyForSuggestions">
-                                    <swiper-slide v-for="suggestion in suggestions" :key="suggestion.id"
-                                                  v-if="suggestion.poster_path">
-                                        <div class="movie-sugg">
-                                            <div class="movie-sugg-cover" :class="{'movie-sugg-active': movie.id === suggestion.id}">
-                                                <img :src="$root.getImagePath(suggestion.poster_path, 'w185')"
-                                                     class="background-center" @click="selectMovie(suggestion)"/>
-                                            </div>
-                                        </div>
-                                    </swiper-slide>
-                                </swiper>
-                                <div class="hide-indicator center" @click="readyForSuggestions = false">
-                                    <i class="material-icons">keyboard_arrow_up</i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+        <div class="flex flex-justify-end">
+            <md-button class="md-raised md-accent" @click="save">Save</md-button>
         </div>
     </div>
 </template>
@@ -101,6 +123,7 @@
         mounted() {
             this.swiperOption.slidesPerView = Math.floor($('#suggestions').width() / 135);
             this.readyForSuggestions = true;
+            $('#detailsToggle').on('click', this.toggleDetails);
         },
         methods: {
             searchMovie() {
@@ -110,20 +133,33 @@
                     res = JSON.parse(res);
                     if (res.results && res.results.length > 0) {
                         this.suggestions = res.results;
-                        this.showTextarea = false;
-                        this.movie = res.results.shift();
-                        this.$nextTick(() => {
-                            this.showTextarea = true;
-                        });
-                        this.lastSearchTerm = title;
-                        this.searchTermChanged = false;
-                        this.hideDetails = false;
-
+                        this.$root.theMovieDb.common.client({
+                                url: "movie/" + res.results.shift().id + this.$root.theMovieDb.common.generateQuery()
+                            },
+                            res => {
+                                let movieRes = JSON.parse(res);
+                                if (movieRes) {
+                                    this.showTextarea = false;
+                                    this.movie = movieRes;
+                                    this.$nextTick(() => {
+                                        this.showTextarea = true;
+                                    });
+                                    this.lastSearchTerm = title;
+                                    this.searchTermChanged = false;
+                                    this.hideDetails = false;
+                                }
+                            },
+                            err => {
+                                this.$root.toast(err);
+                            }
+                        );
                         $('#suggestions li:not(.active) #suggestionsTrigger').trigger('click');
                         $('.movie-overview label').addClass('active');
+                    } else {
+                        this.$root.toast('No search results');
                     }
                 }, err => {
-                    console.log(err);
+                    this.$root.toast(err);
                 });
             },
             selectMovie(movie) {
@@ -146,28 +182,13 @@
                 }
             },
             save() {
-                let payload = {
-                    movie: this.movie,
-                    is_custom: false
-                };
-                if (!this.autocomplete) {
-                    payload = new FormData();
-                    payload.set('movie', JSON.stringify(this.customMovie));
-                    payload.set('is_custom', 'true');
-                    let coverInput = $('#custom_cover')[0];
-                    if (coverInput.files && coverInput.files[0]) {
-                        payload.append('custom_poster', coverInput.files[0], coverInput.files[0].name);
-                    }
-                    let backdropInput = $('#custom_backdrop')[0];
-                    if (backdropInput.files && backdropInput.files[0]) {
-                        payload.append('custom_backdrop', backdropInput.files[0], backdropInput.files[0].name);
-                    }
-                }
+                let payload = new FormData();
+                payload.set('movie', JSON.stringify(this.movie));
+                payload.set('is_custom', 'false');
                 this.$store.dispatch('MOVIES_ACTION_SAVE', payload);
             },
             toggleDetails() {
                 this.hideDetails = !this.hideDetails;
-                console.log('click');
             }
         },
         components: {
@@ -376,7 +397,7 @@
         position: absolute;
         top: 0;
         left: 15px;
-        background-color: rgba(0, 0, 0, 0.67);
+        background-color: rgba(128, 128, 128, 1);
         padding: 30px 15px 15px;
         margin-right: 15px;
         margin-top: -30px;
