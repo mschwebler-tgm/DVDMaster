@@ -11,24 +11,21 @@ import VueMaterial from 'vue-material';
 
 import 'vue-material/dist/vue-material.min.css';
 
-Vue.component('movie-cards', require('./components/MovieCards.vue'));
-Vue.component('movie-card', require('./components/MovieCard.vue'));
 Vue.component('user-modal', require('./components/MoviePage/UserModal.vue'));
 Vue.component('retrieval-modal', require('./components/MoviePage/RetrievalModal.vue'));
 Vue.component('movie-rating', require('./components/common/MovieRating.vue'));
 Vue.component('actors-input', require('./components/common/ActorsInput.vue'));
 Vue.component('genres-input', require('./components/common/GenresInput.vue'));
 Vue.component('search-bar', require('./components/SearchBar.vue'));
-// Vue.component('movie-filter', require('./components/MovieFilter.vue'));
 Vue.component('paginator', require('./components/common/Paginator.vue'));
-Vue.component('loader', require('./components/common/Loader.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
 
 // Home page
 Vue.component('movie-list', require('./components/HomePage/ListView.vue'));
 Vue.component('movie-list-item', require('./components/HomePage/ListViewItem.vue'));
 Vue.component('home-filter', require('./components/HomePage/Filter.vue'));
-
+Vue.component('movie-cards', require('./components/HomePage/MovieCards.vue'));
+Vue.component('movie-card', require('./components/HomePage/MovieCard.vue'));
 
 // Add movie
 Vue.component('add-movie-custom', require('./components/AddMoviePage/Custom.vue'));

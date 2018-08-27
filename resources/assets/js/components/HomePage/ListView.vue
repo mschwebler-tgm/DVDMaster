@@ -4,10 +4,6 @@
             <movie-list-item :movie="movie"></movie-list-item>
         </div>
         <paginator identifier="movie-list" toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE"></paginator>
-        <div class="sk-double-bounce" v-show="loading">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-        </div>
     </div>
 </template>
 

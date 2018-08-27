@@ -1,17 +1,15 @@
 <template>
     <div :id="identifier" style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center;">
-        <loader v-show="loading"></loader>
+        <div class="sk-double-bounce" v-show="loading">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
         props: ['toDispatch', 'identifier'],
-        data() {
-            return {
-                loading: false
-            }
-        },
         mounted() {
             this.initScrollSpy();
         },
@@ -34,6 +32,11 @@
                 if (!this.$store.getters.MOVIES_GET_LOADING && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
                     this.$store.dispatch(this.toDispatch);
                 }
+            }
+        },
+        computed: {
+            loading() {
+                return this.$store.getters.MOVIES_GET_LOADING;
             }
         }
     }
