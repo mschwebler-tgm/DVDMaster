@@ -9,7 +9,7 @@
                     </div>
                 </div>
             </div>
-            <div v-for="n in placeholders" style="flex: 1"></div>
+            <div v-if="placeholders" v-for="n in placeholders" style="flex: 1"></div>
         </div>
         <paginator identifier="movie-cards" toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE"></paginator>
     </div>
@@ -22,7 +22,7 @@
         data() {
             return {
                 viewMode: localStorage.getItem('viewMode') || 'grid',
-                placeholders: 0
+                placeholders: false
             }
         },
         created() {
@@ -45,7 +45,7 @@
             updatePlaceholders() {
                 let moviesAmount = this.$store.getters.MOVIES_GET_ALL.length;
                 let perRow = Math.floor(this.$refs.cardsContainer.offsetWidth / 154);
-                this.placeholders = moviesAmount % perRow === 0 ? 0 : perRow - moviesAmount % perRow;
+                this.placeholders = perRow === 0 || moviesAmount % perRow === 0 ? 0 : perRow - (moviesAmount % perRow);
             }
         },
         watch: {

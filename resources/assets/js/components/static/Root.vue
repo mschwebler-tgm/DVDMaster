@@ -18,7 +18,7 @@
             </div>
         </md-app-toolbar>
 
-        <md-app-content>
+        <md-app-content class="no-pad-mobile">
             <div class="md-layout">
                 <div class="md-layout-item md-xsmall-hide md-small-size-5 md-xsmall-hide"></div>
                 <div class="md-layout-item md-xsmall-size-100 md-small-size-90 md-medium-size-66 md-large-size-66 md-xlarge-size-66">
