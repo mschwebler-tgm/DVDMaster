@@ -14,7 +14,7 @@
                                         <md-tab :id="tab.url" :md-label="tab.label" :key="tab.label" v-for="tab in tabs"></md-tab>
                                     </md-tabs>
                                 </div>
-                                <div :class="{'show-search mobile-search-grow': searchActive}" class="mobile-search mobile-only">
+                                <div :class="{'show-search mobile-search-grow': searchActive}" class="mobile-search mobile-only" v-if="userIsLogged">
                                     <md-field class="md-custom-input" style="margin: 0; top: -6px">
                                         <md-input placeholder="Search" class="white-text" v-model="query" @keyup.enter="search"></md-input>
                                     </md-field>
