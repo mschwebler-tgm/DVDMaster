@@ -13,10 +13,15 @@ class AlterRentalQualityStates extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE rentals MODIFY COLUMN quality ENUM('lost', 'bad', 'meh', 'okay', 'good')");
+        DB::statement("ALTER TABLE rentals MODIFY COLUMN quality ENUM('lost', 'bad', 'meh', 'okay', 'good', 'original')");
         Schema::table('rentals', function (Blueprint $table) {
             $table->boolean('like')->nullable();
         });
+
+        \App\Rental::where('quality', 'good')->update(['quality' => 'okay']);
+        \App\Rental::where('quality', 'original')->update(['quality' => 'good']);
+
+        DB::statement("ALTER TABLE rentals MODIFY COLUMN quality ENUM('lost', 'bad', 'meh', 'okay', 'good')");
     }
 
     /**
