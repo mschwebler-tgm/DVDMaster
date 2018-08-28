@@ -18,7 +18,7 @@
             <div class="col s12"> <!-- toolbar -->
                 <div class="movie-header">
                     <div class="poster-spacer"></div>
-                    <div class="tool-bar">
+                    <div class="tool-bar" v-if="$root.isAdmin">
                         <div @click="$root.$router.push('/movie/' + movie.id + '/edit')" class="flex flex-justify-center flex-align-center"><md-icon>edit</md-icon>&nbsp;&nbsp;Edit</div>
                         <template v-if="movie">
                             <template v-if="movie.pending_rental.length === 0">
@@ -53,7 +53,7 @@
             <div class="col s12">
                 <div class="movie-body">
                     <div class="poster-spacer movie-params-table">
-                        <div style="width: 185px;"> <!-- width of poster -->
+                        <div style="width: 185px;" :style="$root.isAdmin ? '' : 'padding-top: 55px'"> <!-- width of poster -->
                             <md-table>
                                 <md-table-row v-for="(row, index) in tableContents" :key="index">
                                     <md-table-cell v-html="row" style="float: right;"></md-table-cell>
@@ -78,7 +78,7 @@
                 </div>
             </div>
             <div class="col s12 no-padding" id="actors">   <!-- actors -->
-                <template v-if="readyToShowActors && movie && movie.actors && !showUserModal && !showRetrieveModal">
+                <template v-if="readyToShowActors && showActors && movie && movie.actors && !showUserModal && !showRetrieveModal">
                     <swiper :options="swiperOption">
                         <swiper-slide v-for="actor in movie.actors" :key="actor.id">
                             <div class="actor" :style="{ 'backgroundImage': 'url(' + $root.getImagePath(actor.profile_path, 'w185') + ')'}">
@@ -130,6 +130,10 @@
         },
         created() {
             this.$store.dispatch('USERS_ACTION_GET_All_EXCEPT_ME');
+        },
+        mounted() {
+            this.swiperOption.slidesPerView = $('#actors').width() / 185;
+            this.readyToShowActors = true;
         },
         methods: {
             deleteMovie() {
@@ -205,6 +209,9 @@
 
                 return table;
             },
+            showActors() {
+                return !this.showUserModal && !this.showRetrieveModal;
+            }
         },
         watch: {
             customDate(newVal, oldVal) {
