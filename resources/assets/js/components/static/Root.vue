@@ -1,5 +1,5 @@
 <template>
-    <md-app>
+    <md-app md-mode="fixed" style="height: 100vh;" id="test">
         <md-app-toolbar class="md-primary" style="overflow: hidden;">
             <div style="width: 100%">
                 <div class="md-layout">
@@ -44,7 +44,7 @@
             </div>
         </md-app-toolbar>
 
-        <md-app-content class="no-pad-mobile">
+        <md-app-content class="no-pad-mobile" id="app-content">
             <div class="md-layout">
                 <div class="md-layout-item md-xsmall-hide md-small-size-5 md-xsmall-hide"></div>
                 <div class="md-layout-item md-xsmall-size-100 md-small-size-90 md-medium-size-66 md-large-size-66 md-xlarge-size-66">

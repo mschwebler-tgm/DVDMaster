@@ -25,7 +25,7 @@
     <link href="/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css" rel="stylesheet">
 </head>
 <body>
-<div id="app" style="overflow-x: hidden">
+<div id="app">
     <div id="loadingscreen" v-if="showLoading">
         <div class="preloader-wrapper active">
             <div class="spinner-layer spinner-red-only">
