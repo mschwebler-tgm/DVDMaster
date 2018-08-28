@@ -34,9 +34,9 @@
             }
         },
         created() {
-            this.$store.dispatch('MOVIES_ACTION_GET_FIRSTPAGE').then(() => {
-                this.loaded = true;
-            });
+            if (this.$store.getters.MOVIES_GET_ALL.length === 0) {
+                this.$store.dispatch('MOVIES_ACTION_GET_FIRSTPAGE');
+            }
         },
         methods: {
             toggleFilters() {

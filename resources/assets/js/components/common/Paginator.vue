@@ -30,6 +30,7 @@
             },
             paginate() {
                 if (!this.$store.getters.MOVIES_GET_LOADING && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
+                    console.log('paginate!');
                     this.$store.dispatch(this.toDispatch);
                 }
             }

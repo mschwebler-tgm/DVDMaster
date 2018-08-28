@@ -25,11 +25,6 @@
                 placeholders: false
             }
         },
-        created() {
-            this.$store.dispatch('MOVIES_ACTION_GET_FIRSTPAGE').then(() => {
-                this.loaded = true;
-            });
-        },
         mounted() {
             let update;
             window.onresize = () => {
