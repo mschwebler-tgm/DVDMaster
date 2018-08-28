@@ -12,7 +12,7 @@
         props: ['movies'],
         methods: {
             navigateToMovie(event, movie) {
-                if (event.target.classList.value.indexOf('toMovie') !== -1) {
+                if (event.target.classList.value.indexOf('toMovie') !== -1 || this.$root.isMobile) {
                     this.$router.push('/movie/' + movie.id);
                 }
             }

@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
+        <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)" class="desktop-only"></movie-rating>
     </div>
 </template>
 
