@@ -52,6 +52,11 @@
                 </div>
                 <div class="md-layout-item md-xsmall-hide md-small-size-5 md-xsmall-hide"></div>
             </div>
+            <fade-transition>
+                <md-button class="md-icon-button md-raised md-accent" id="backtotop" v-show="showBackToTop" @click="toTop">
+                    <md-icon>keyboard_arrow_up</md-icon>
+                </md-button>
+            </fade-transition>
         </md-app-content>
     </md-app>
 </template>
@@ -66,8 +71,12 @@
                     {label: 'Rentals', url: '/rentals'}
                 ],
                 searchActive: false,
-                query: ''
+                query: '',
+                showBackToTop: false
             }
+        },
+        mounted() {
+            this.initScrollSpy();
         },
         methods: {
             navigate(event) {
@@ -76,6 +85,18 @@
             search() {
                 this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'title', data: this.query});
                 this.$store.dispatch('MOVIES_ACTION_SEARCH');
+            },
+            initScrollSpy() {
+                let scrollContainer = $('#app-content').parent();
+                scrollContainer.scroll(() => {
+                    this.showBackToTop = scrollContainer.scrollTop() > 100;
+                });
+            },
+            toTop() {
+                let scrollContainer = $('#app-content').parent();
+                scrollContainer.animate({
+                    scrollTop: 0
+                }, 1000, 'swing');
             }
         },
         computed: {
@@ -88,6 +109,12 @@
 
 <style lang="scss" scoped>
     @import "~vue-material/src/components/MdAnimation/variables";
+
+    #backtotop {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+    }
 
     .menu {
         position: relative;
