@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-align-center toMovie" v-if="movie">
+    <div class="flex flex-align-center toMovie" v-if="movie" :style="'background: ' + (rentedBy ? notAvailableBackground : '')">
         <div class="flex flex-align-center flex-justify-space-between toMovie" style="flex: 1;">
             <div class="flex flex-align-center title toMovie">
                 <img class="cover toMovie" :src="$root.getImagePath(movie.poster_path, 'w92')" width="92" height="138">
@@ -16,7 +16,9 @@
                 <div class="flex toMovie">
                     <div v-if="rentedBy">
                         <md-icon>import_export</md-icon>
-                        <md-tooltip md-direction="bottom">Borrowed by {{ rentedBy.name }}</md-tooltip>
+                        <md-tooltip md-direction="bottom">
+                            Borrowed by {{ rentedBy.name }} {{ rentalTimeAgo }}
+                        </md-tooltip>
                     </div>
                     <div v-if="isBlueRay">
                         <md-icon>album</md-icon>
@@ -50,8 +52,15 @@
 </template>
 
 <script>
+    import moment from 'moment';
+
     export default {
         props: ['movie'],
+        data() {
+            return {
+                notAvailableBackground: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAM0lEQVQoU2NkIBIwEqmOgSoKpRgYGJ7BbMRlIooikGJsCjEUYVOIVREuE7EGBFV8jWIyACo2BAs4XVWOAAAAAElFTkSuQmCC)'
+            }
+        },
         methods: {
             getGenreNames(movie) {
                 let names = [];
@@ -86,6 +95,9 @@
             },
             isBasedOnBook() {
                 return !!this.movie.based_on_book;
+            },
+            rentalTimeAgo() {
+                return moment(this.movie.pending_rental[0].created_at).fromNow();
             }
         }
     }
