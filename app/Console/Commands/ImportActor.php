@@ -60,6 +60,7 @@ class ImportActor extends Command
         $actor->birthday = $actorRes['birthday'] ? $actorRes['birthday'] : null;
         $actor->deathday = $actorRes['deathday'] ? $actorRes['deathday'] : null;
         $actor->imdb_id = $actorRes['imdb_id'] ? $actorRes['imdb_id'] : null;
+        $actor->tmdb_id = $actorRes['id'] ? $actorRes['id'] : null;
         $actor->name = $actorRes['name'] ? $actorRes['name'] : null;
         $actor->also_known_as = $actorRes['also_known_as'] && count($actorRes['also_known_as']) > 0 ? $actorRes['also_known_as'][0] : null;
         $actor->gender = $actorRes['gender'] ? $actorRes['gender'] : null;
