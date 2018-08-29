@@ -21,7 +21,7 @@ class MovieController extends Controller
     public function index()
     {
         return Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')
-            ->orderBy('popularity', 'desc')->paginate();
+            ->orderBy('title', 'asc')->paginate();
     }
 
     public function store(Request $request)

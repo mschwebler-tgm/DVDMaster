@@ -29,7 +29,7 @@ class SearchController extends Controller
         if ($boolFilters = $request->get('bool')) {
             $this->applyBoolfilters($movies, $boolFilters);
         }
-        return $movies->paginate();
+        return $movies->orderBy('title', 'asc')->paginate();
     }
 
     private function applyBoolfilters(&$movies, $boolFilters)
