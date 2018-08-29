@@ -5,10 +5,10 @@
                 <div class="content">
                     <div class="tag-filters">
                         <div class="flex flex-align-center">
-                            <md-icon>bookmark</md-icon>&nbsp;&nbsp;<genres-input classes="custom-tag filter-tag" @change="updateGenreFilter"></genres-input> <span class="md-caption">Genres</span>
+                            <md-icon>bookmark</md-icon>&nbsp;&nbsp;<genres-input ref="genresFilter" classes="custom-tag filter-tag" @change="updateGenreFilter"></genres-input> <span class="md-caption">Genres</span>
                         </div>
                         <div class="flex flex-align-center">
-                            <md-icon>person</md-icon>&nbsp;&nbsp;<actors-input classes="custom-tag filter-tag" @change="updateActorFilter"></actors-input> <span class="md-caption">Actors</span>
+                            <md-icon>person</md-icon>&nbsp;&nbsp;<actors-input ref="actorsFilter" classes="custom-tag filter-tag" @change="updateActorFilter"></actors-input> <span class="md-caption">Actors</span>
                         </div>
                     </div>
                 </div>
@@ -16,14 +16,14 @@
                     <table>
                         <tr>
                             <td>
-                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('borrowed') !== -1)}"
+                                <span class="icon-filters" :class="{'icon-filter-active': (filters.bool && filters.bool.indexOf('borrowed') !== -1)}"
                                       @click="toggleFilter('borrowed')">
                                     <md-icon>import_export</md-icon>
                                     <md-tooltip md-direction="left">Borrowed</md-tooltip>
                                 </span>
                             </td>
                             <td>
-                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('blue_ray') !== -1)}"
+                                <span class="icon-filters" :class="{'icon-filter-active': (filters.bool && filters.bool.indexOf('blue_ray') !== -1)}"
                                       @click="toggleFilter('blue_ray')">
                                     <md-icon>album</md-icon>
                                     <md-tooltip md-direction="right">Blue Ray</md-tooltip>
@@ -32,14 +32,14 @@
                         </tr>
                         <tr>
                             <td>
-                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('true_story') !== -1)}"
+                                <span class="icon-filters" :class="{'icon-filter-active': (filters.bool && filters.bool.indexOf('true_story') !== -1)}"
                                       @click="toggleFilter('true_story')">
                                     <md-icon>event</md-icon>
                                     <md-tooltip md-direction="left">True story</md-tooltip>
                                 </span>
                             </td>
                             <td>
-                                <span class="icon-filters" :class="{'icon-filter-active': (boolFilters.indexOf('based_on_book') !== -1)}"
+                                <span class="icon-filters" :class="{'icon-filter-active': (filters.bool && filters.bool.indexOf('based_on_book') !== -1)}"
                                       @click="toggleFilter('based_on_book')">
                                     <md-icon>book</md-icon>
                                     <md-tooltip md-direction="right">Based on book</md-tooltip>
@@ -64,6 +64,13 @@
                 boolFilters: []
             }
         },
+        created() {
+            this.$store.watch(state => state.movies.filter, this.handleFilterUpdate, {deep: true});
+        },
+        mounted() {
+            this.$refs.genresFilter.update(this.$store.getters.MOVIES_GET_FILTER.genres);
+            this.$refs.actorsFilter.update(this.$store.getters.MOVIES_GET_FILTER.actors);
+        },
         methods: {
             toggleFilter(boolFilter) {
                 if (this.boolFilters.indexOf(boolFilter) !== -1) {
@@ -74,23 +81,29 @@
                 this._updateBoolFilters();
             },
             updateGenreFilter(genres) {
-                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'genres', data: this._pluckNames(genres)});
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'genres', data: genres});
                 this.$store.dispatch('MOVIES_ACTION_SEARCH');
             },
             updateActorFilter(actors) {
-                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'actors', data: this._pluckNames(actors)});
+                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'actors', data: actors});
                 this.$store.dispatch('MOVIES_ACTION_SEARCH');
             },
             _updateBoolFilters() {
                 this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'bool', data: this.boolFilters});
                 this.$store.dispatch('MOVIES_ACTION_SEARCH');
             },
-            _pluckNames(dataArray) {
-                let names = [];
-                for (let data of dataArray) {
-                    names.push(data.name);
+            handleFilterUpdate(newFilters) {
+                if (newFilters.genres && newFilters.genres.length === 0) {
+                    this.$refs.genresFilter && this.$refs.genresFilter.update(newFilters.genres);
                 }
-                return names;
+                if (newFilters.actors && newFilters.actors.length === 0) {
+                    this.$refs.actorsFilter && this.$refs.actorsFilter.update(newFilters.actors);
+                }
+            }
+        },
+        computed: {
+            filters() {
+                return this.$store.getters.MOVIES_GET_FILTER;
             }
         }
     }

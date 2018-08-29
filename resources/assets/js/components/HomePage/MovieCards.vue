@@ -48,6 +48,11 @@
                 if (this.$store.getters.MOVIES_GET_ALL.length > 0) {
                     this.updatePlaceholders();
                 }
+            },
+            '$parent.listView'(isListView) {
+                if (!isListView) {
+                    this.updatePlaceholders();
+                }
             }
         },
         computed: {

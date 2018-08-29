@@ -1,9 +1,6 @@
 <template>
     <div :id="identifier" style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding-bottom: 1px">
-        <div class="sk-double-bounce" v-show="loading">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-        </div>
+        <loader v-show="loading"></loader>
     </div>
 </template>
 

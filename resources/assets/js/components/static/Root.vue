@@ -11,7 +11,7 @@
                             <div class="md-layout-item md-xsmall-size-80 md-small-size-60" style="position: relative;">
                                 <div :class="{'menu-hide': searchActive}" class="menu">
                                     <md-tabs class="md-primary" style="padding: 0;" @md-changed="navigate" v-if="userIsLogged">
-                                        <md-tab :id="tab.url" :md-label="tab.label" :key="tab.label" v-for="tab in tabs"></md-tab>
+                                        <md-tab :id="tab.url" :md-label="tab.label" :key="tab.label" v-for="tab in tabs" @click="tabClicked(tab)"></md-tab>
                                     </md-tabs>
                                 </div>
                                 <div :class="{'show-search mobile-search-grow': searchActive}" class="mobile-search mobile-only" v-if="userIsLogged">
@@ -81,6 +81,15 @@
         methods: {
             navigate(event) {
                 this.$router.push(event);
+            },
+            tabClicked(event) {
+                if (event.label === 'Home') {
+                    this.query = '';
+                    this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'genres', data: []});
+                    this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'actors', data: []});
+                    this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'bool', data: []});
+                    this.search();
+                }
             },
             search() {
                 this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'title', data: this.query});

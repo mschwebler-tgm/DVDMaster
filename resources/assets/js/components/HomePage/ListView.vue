@@ -1,8 +1,9 @@
 <template>
     <div>
-        <div class="movie-row toMovie" v-if="movies" v-for="movie in movies" @click="navigateToMovie($event, movie)" :key="movie.id">
+        <div class="movie-row toMovie" v-if="movies && !searchingActive" v-for="movie in movies" @click="navigateToMovie($event, movie)" :key="movie.id">
             <movie-list-item :movie="movie"></movie-list-item>
         </div>
+        <loader v-if="searchingActive"></loader>
         <paginator identifier="movie-list" toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE"></paginator>
     </div>
 </template>
@@ -20,6 +21,9 @@
         computed: {
             loading() {
                 return this.$store.getters.MOVIES_GET_LOADING;
+            },
+            searchingActive() {
+                return this.$store.getters.MOVIES_GET_SEARCHING;
             }
         }
     }

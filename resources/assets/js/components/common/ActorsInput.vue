@@ -10,6 +10,9 @@
         mounted() {
             this.initTagsinput();
         },
+        mounted() {
+            this.initTagsinput();
+        },
         methods: {
             initTagsinput() {
                 let actors = new Bloodhound({
@@ -31,16 +34,23 @@
                     }
                 });
 
-                this.initValues(input);
+                this.initValues(input, this.initial);
 
-                input.on('itemAdded', () => this.$emit('change', input.tagsinput('items')));
-                input.on('itemRemoved', () => this.$emit('change', input.tagsinput('items')));
+                input.on('itemAdded', () => !this.preventEmit && this.$emit('change', input.tagsinput('items')));
+                input.on('itemRemoved', () => !this.preventEmit && this.$emit('change', input.tagsinput('items')));
             },
-            initValues(input) {
-                if (!this.initial || !input) return;
-                for (let actor of this.initial) {
+            initValues(input, values) {
+                if (!values || !input) return;
+                this.preventEmit = true;
+                for (let actor of values) {
                     input.tagsinput('add', actor);
                 }
+                this.preventEmit = false;
+            },
+            update(actors) {
+                let input = $('#custom_actors');
+                input.tagsinput('removeAll');
+                this.initValues(input, actors);
             }
         }
     }

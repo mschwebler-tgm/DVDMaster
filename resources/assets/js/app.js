@@ -19,6 +19,7 @@ Vue.component('genres-input', require('./components/common/GenresInput.vue'));
 Vue.component('search-bar', require('./components/SearchBar.vue'));
 Vue.component('paginator', require('./components/common/Paginator.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
+Vue.component('loader', require('./components/common/loader.vue'));
 
 // Home page
 Vue.component('movie-list', require('./components/HomePage/ListView.vue'));

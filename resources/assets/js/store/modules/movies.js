@@ -5,7 +5,8 @@ const state = {
     },
     movie: {},
     filter: {},
-    loading: false
+    loading: false,
+    searching: false
 };
 
 const actions = {
@@ -37,11 +38,26 @@ const actions = {
         });
     },
     MOVIES_ACTION_SEARCH ({commit, state}) {
+        state.searching = true;
+        function _pluckNames(dataArray) {
+            let names = [];
+            for (let data of dataArray) {
+                names.push(data.name);
+            }
+            return names;
+        }
+        let filter = _.clone(state.filter);
+        filter.genres && (filter.genres = _pluckNames(filter.genres));
+        filter.actors && (filter.actors = _pluckNames(filter.actors));
         return new Promise((resolve, reject) => {
-            axios.get('/api/customSearch/movies', {params: state.filter}).then(res => {
+            axios.get('/api/customSearch/movies', {params: filter}).then(res => {
                 commit('MOVIES_COMMIT_SET_MOVIESDATA', res.data);
+                state.searching = false;
                 resolve();
-            }).catch(reject);
+            }).catch(() => {
+                state.searching = false;
+                reject();
+            });
         });
     },
     MOVIES_ACTION_GET_BY_ID ({commit}, id) {
@@ -127,7 +143,7 @@ const mutations = {
         state.movie = movie;
     },
     MOVIES_COMMIT_FILTER_UPDATE (state, {type, data}) {
-        state.filter[type] = data;
+        Vue.set(state.filter, type, data);
     },
     MOVIES_SET_ROOT (state, vueInstance) {
         state.$root = vueInstance;
@@ -138,7 +154,9 @@ const getters = {
     MOVIES_GET_ALL: state => state.movies.data,
     MOVIES_GET_NEXT_PAGE_URL: state => state.movies.next_page_url,
     MOVIES_GET: state => state.movie,
+    MOVIES_GET_FILTER: state => state.filter,
     MOVIES_GET_LOADING: state => state.loading,
+    MOVIES_GET_SEARCHING: state => state.searching,
 };
 
 export default {
