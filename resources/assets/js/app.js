@@ -96,6 +96,11 @@ const app = new Vue({
         injectRootInstanceIntoStore() {
             this.$store.commit('MOVIES_SET_ROOT', this);
         }
+    },
+    computed: {
+        isAdmin() {
+            return window.isAdmin;
+        }
     }
 });
 

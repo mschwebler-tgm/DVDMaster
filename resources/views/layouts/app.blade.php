@@ -81,6 +81,7 @@
     window.user_id = {{ isset(Auth::user()->id) ? Auth::user()->id : 0 }};
     window.isAdmin = !!{{ isset(Auth::user()->role) && Auth::user()->role === 'admin'? 1 : 0 }};
     window.isLogged = !!{{ Auth::user() != null ? 1 : 0 }};
+    window.user_key = '{{ isset(Auth::user()->api_key) ? Auth::user()->api_key : null }}';
 </script>
 </body>
 </html>
