@@ -130,6 +130,7 @@ class MovieDao
         $rental = Rental::where([['movie_id', '=', $movie->id], ['user_id', '=', $user->id], ['state', '=', 'pending']])->first();
         $rental->setCreatedAt(Carbon::now());
         $rental->save();
+        $rental->load('user');
         return $rental;
     }
 

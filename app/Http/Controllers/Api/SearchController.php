@@ -12,7 +12,7 @@ class SearchController extends Controller
 
     public function movies(Request $request)
     {
-        $movies = Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')
+        $movies = Movie::with('actors', 'genres', 'pendingRental.user')
             ->orderBy('popularity', 'desc');
 
         $movies->where('title', 'like', "%{$request->get('title', '')}%");

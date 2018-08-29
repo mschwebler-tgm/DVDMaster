@@ -28,7 +28,7 @@
                             </template>
                             <template v-else>
                                 <div @click="showRetrieveModal = true" class="flex flex-justify-center flex-align-center">
-                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrowed by {{ movie.rented_by[0].name }}
+                                    <md-icon>assignment_ind</md-icon>&nbsp;&nbsp;Borrowed by {{ movie.pending_rental[0].user.name }}
                                 </div>
                             </template>
                         </template>
@@ -160,8 +160,8 @@
             selectUser(user) {
                 this.showUserModal = false;
                 this.$store.dispatch('MOVIES_ACTION_BORROW', {id: this.movie.id, user}).then(res => {
-                    Vue.set(this.movie, 'rented_by', [user]);
                     Vue.set(this.movie, 'pending_rental', [res.data]);
+                    // Vue.set(this.movie.pending_rental, 'rented_by', [user]);
                 });
             },
             retrieveMovie(params) {

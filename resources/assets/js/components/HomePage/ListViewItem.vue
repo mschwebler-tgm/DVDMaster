@@ -82,8 +82,8 @@
         },
         computed: {
             rentedBy() {
-                if (this.movie.rented_by.length > 0) {
-                    return this.movie.rented_by[0];
+                if (this.movie.pending_rental.length > 0) {
+                    return this.movie.pending_rental[0].user;
                 }
                 return null;
             },

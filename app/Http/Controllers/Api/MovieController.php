@@ -20,7 +20,7 @@ class MovieController extends Controller
 
     public function index()
     {
-        return Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')
+        return Movie::with('actors', 'genres', 'pendingRental.user')
             ->orderBy('title', 'asc')->paginate();
     }
 
@@ -54,7 +54,7 @@ class MovieController extends Controller
 
     public function show($id)
     {
-        $movie = Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')->find($id);
+        $movie = Movie::with('actors', 'genres', 'pendingRental.user')->find($id);
         if (!$movie) {
             abort(404);
         }
@@ -87,7 +87,7 @@ class MovieController extends Controller
 
     public function borrowTo($movieId, $userId)
     {
-        $movie = Movie::find($movieId);
+        $movie = Movie::with('pendingRental.user')->where('id', $movieId)->first();
         $user = User::find($userId);
         if (!$movie || !$user) {
             abort(404);
