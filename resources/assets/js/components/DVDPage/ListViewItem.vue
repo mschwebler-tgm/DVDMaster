@@ -1,14 +1,16 @@
 <template>
     <div class="flex flex-align-center toMovie" v-if="movie" :style="'background: ' + (rentedBy ? notAvailableBackground : '')">
         <div class="flex flex-align-center flex-justify-space-between toMovie" style="flex: 1;">
-            <div class="flex flex-align-center title toMovie">
+            <div class="title toMovie">
                 <img class="cover toMovie" :src="$root.getImagePath(movie.poster_path, 'w92')" width="92" height="138">
-                <div>
-                    <span class="md-title">{{ movie.title }}</span>
-                    <div style="margin-bottom: 8px"></div>
-                    <template v-for="genre in getGenreNames(movie)">
-                        <md-chip class="genre-chip">{{ genre }}</md-chip>
-                    </template>
+                <div class="flex flex-column flex-justify-center" style="height: 130px; position: relative">
+                    <span class="md-title" style="margin-bottom: 8px">{{ movie.title }}</span>
+                    <div>
+                        <template v-for="genre in getGenreNames(movie)">
+                            <md-chip class="genre-chip">{{ genre }}</md-chip>
+                        </template>
+                    </div>
+                    <div class="duration md-caption desktop-only">{{ movie.duration }} min.</div>
                 </div>
             </div>
             <div class="hints toMovie">
@@ -116,10 +118,17 @@
         margin-right: 20px;
         height: 130px;
         width: 92px;
+        float: left;
     }
 
     .genre-chip {
         margin-bottom: 4px;
+    }
+
+    .duration{
+        position: absolute;
+        bottom: 0;
+        left: 0;
     }
 
     .actors-container {
