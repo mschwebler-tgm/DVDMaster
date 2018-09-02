@@ -31,6 +31,7 @@ Vue.component('movie-card', require('./components/DVDPage/MovieCard.vue'));
 // Add movie
 Vue.component('add-movie-custom', require('./components/AddMoviePage/Custom.vue'));
 Vue.component('add-move-tmdb', require('./components/AddMoviePage/TmdbMovie.vue'));
+Vue.component('add-series-tmdb', require('./components/AddMoviePage/TmdbSeries.vue'));
 
 // static
 Vue.component('root', require('./components/static/Root.vue'));

@@ -2,19 +2,19 @@
     <div style="margin-top: 20px;">
         <div class="container flex-box flex-justify-space-between" style="padding-bottom: 15px">
             <span class="pointer" @click="$router.push('/')"><i class="material-icons">arrow_back</i> Back</span>
-            <div class="flex-box">
-                <md-switch v-model="autocomplete" style="margin: 0;">Autocomplete from Movie DB</md-switch>
-            </div>
         </div>
-        <div v-show="!autocomplete">
-            <add-movie-custom></add-movie-custom>
-        </div>
-
-        <div class="container hide-on-small-only z-depth-3" v-show="autocomplete">
-            <add-move-tmdb></add-move-tmdb>
-
-
-        </div>
+        <md-tabs>
+            <md-tab id="tmdbSeries" class="nopad" md-label="Series (DB)">
+                <add-series-tmdb></add-series-tmdb>
+            </md-tab>
+            <md-tab id="tmdbMovie" class="nopad" md-label="Movie (DB)">
+                <add-move-tmdb></add-move-tmdb>
+            </md-tab>
+            <md-tab id="customMovie" class="nopad" md-label="Custom Movie">
+                <add-movie-custom></add-movie-custom>
+            </md-tab>
+            <md-tab id="customSeries" class="nopad" md-label="Custom Series"></md-tab>
+        </md-tabs>
     </div>
 </template>
 

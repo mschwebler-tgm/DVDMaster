@@ -10,8 +10,8 @@
                         <div class="md-layout">
                             <div class="md-layout-item md-xsmall-size-80 md-small-size-60" style="position: relative;">
                                 <div :class="{'menu-hide': searchActive}" class="menu">
-                                    <md-tabs class="md-primary" style="padding: 0;" @md-changed="navigate" v-if="userIsLogged">
-                                        <md-tab :id="tab.url" :md-label="tab.label" :key="tab.label" v-for="tab in tabs" @click="tabClicked(tab)"></md-tab>
+                                    <md-tabs class="md-primary" style="padding: 0;" v-if="userIsLogged" md-sync-router>
+                                        <md-tab :id="tab.url" :md-label="tab.label" :key="tab.label" v-for="tab in tabs" @click="tabClicked(tab)" :to="tab.url"></md-tab>
                                     </md-tabs>
                                 </div>
                                 <div :class="{'show-search mobile-search-grow': searchActive}" class="mobile-search mobile-only" v-if="userIsLogged">
@@ -79,9 +79,6 @@
             this.initScrollSpy();
         },
         methods: {
-            navigate(event) {
-                this.$router.push(event);
-            },
             tabClicked(event) {
                 if (event.label === 'Home') {
                     this.query = '';
