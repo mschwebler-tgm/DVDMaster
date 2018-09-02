@@ -66,9 +66,9 @@
         data() {
             return {
                 tabs: [
-                    {label: 'Home', url: '/'},
-                    {label: 'Add Movie', url: '/addMovie'},
-                    {label: 'Rentals', url: '/rentals'}
+                    {label: 'Movies', url: '/movies'},
+                    {label: 'Series', url: '/series'},
+                    {label: 'Add Movie/Series', url: '/addMovie'}
                 ],
                 searchActive: false,
                 query: '',
