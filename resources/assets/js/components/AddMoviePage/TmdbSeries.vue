@@ -11,8 +11,8 @@
                         <div class="flex">
                             <div style="width: 270px">
                                 <md-field class="md-custom-input">
-                                    <label class="white-text">Title</label>
-                                    <md-input v-model="series.title" placeholder="Title" id="title" class="white-text"
+                                    <label class="white-text">Name</label>
+                                    <md-input v-model="series.name" placeholder="Name" id="tmdb_series_name" class="white-text"
                                               @blur="searchSeries" @keydown.enter="searchSeries" @keydown.tab="searchSeries" @keydown="registerChange"></md-input>
                                 </md-field>
                                 <div class="flex flex-align-center">
@@ -33,14 +33,16 @@
                                              class="movie-poster background-center">
                                     </div>
                                     <div style="flex: 1" class="pad">
-                                        <template v-if="series.release_date"><p><md-icon>calendar_today</md-icon>&nbsp;&nbsp;{{ series.release_date }}</p></template>
                                         <template v-if="series.episode_run_time && series.episode_run_time.length > 0"><p><md-icon>timer</md-icon>&nbsp;&nbsp;{{ series.episode_run_time[0] }} min / episode</p></template>
                                         <template v-if="series.homepage"><p><a :href="series.homepage" target="_blank"><md-icon style="text-decoration: none">web</md-icon>&nbsp;&nbsp;<span style="color: var(--md-theme-default-text-primary-on-accent, #fff); text-decoration: underline;">Homepage</span></a></p></template>
                                         <md-chip v-for="genre in series.genres" :key="genre.id" style="margin-bottom: 5px">{{ genre.name }}</md-chip>
+                                        <template v-if="series.status"><p>Status: {{ series.status }}</p></template>
                                     </div>
                                     <div class="flex flex-justify-center" style="position: absolute; left: 0; bottom: -24px; width: 100%; height: 24px; z-index: 100">
                                         <md-content class="md-accent">
-                                            <md-icon class="pointer" id="detailsToggle">{{ hideDetails ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</md-icon>
+                                            <div @click="toggleDetails">
+                                                <md-icon class="pointer">{{ hideDetails ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</md-icon>
+                                            </div>
                                         </md-content>
                                     </div>
                                 </md-content>
@@ -59,10 +61,10 @@
                                      class="movie-poster background-center">
                             </div>
                             <md-content class="md-accent pad white-text" style="background-color: transparent">
-                                <template v-if="series.release_date"><p><md-icon>calendar_today</md-icon>&nbsp;&nbsp;{{ series.release_date }}</p></template>
-                                <template v-if="series.runtime"><p><md-icon>timer</md-icon>&nbsp;&nbsp;{{ series.runtime }} min</p></template>
+                                <template v-if="series.episode_run_time && series.episode_run_time.length > 0"><p><md-icon>timer</md-icon>&nbsp;&nbsp;{{ series.episode_run_time }} min / episode</p></template>
                                 <template v-if="series.homepage"><p><a :href="series.homepage" target="_blank"><md-icon class="white-text" style="text-decoration: none">web</md-icon>&nbsp;&nbsp;<span style="color: var(--md-theme-default-text-primary-on-accent, #fff); text-decoration: underline;">Homepage</span></a></p></template>
                                 <md-chip v-for="genre in series.genres" :key="genre.id" class="md-accent" style="margin-bottom: 5px;">{{ genre.name }}</md-chip>
+                                <template v-if="series.status"><p>Status: {{ series.status }}</p></template>
                             </md-content>
                         </div>
                     </div>
@@ -82,14 +84,21 @@
                     </md-field>
                 </div>
             </md-content>
-            <div class="col s12 seasons" style="background-color: black;">
+            <div class="seasons" id="seasons" style="background-color: black;">
                 <!-- swiper -->
                 <swiper :options="swiperOption" v-if="readyForSeasons">
                     <swiper-slide v-for="season in series.seasons" :key="season.id"
                                   v-if="season.poster_path">
-                        <div class="movie-sugg">
-                            <div class="movie-sugg-cover">
+                        <div class="season-sugg">
+                            <div class="season-sugg-cover">
                                 <img :src="$root.getImagePath(season.poster_path, 'w185')" class="background-center"/>
+                                <div class="episode-params">
+                                    <div class="white-text" style="padding: 5px 15px;">
+                                        <span class="md-title">{{ season.name }}</span>
+                                        <br>
+                                        <span class="md-caption">{{ season.episode_count }} Episodes</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </swiper-slide>
@@ -111,13 +120,11 @@
         data() {
             return {
                 series: {},
-                seasons: [],
                 swiperOption: {
                     slidesPerView: window.innerWidth / 230,
                     freeMode: true,
                     spaceBetween: 0,
                 },
-                readyForSeasons: true,
                 lastSearchTerm: '',
                 searchTermChanged: false,
                 showTextarea: true,
@@ -125,13 +132,17 @@
             }
         },
         mounted() {
-            this.swiperOption.slidesPerView = Math.floor($('#seasons').width() / 135);
-            this.readyForSeasons = true;
-            $('#detailsToggle').on('click', this.toggleDetails);
+            let $seasons = $('#seasons');
+            let interval = setInterval(() => {
+                this.swiperOption.slidesPerView = $seasons.width() / 176;
+                if (this.swiperOption.slidesPerView > 0) {
+                    clearInterval(interval);
+                }
+            }, 100);
         },
         methods: {
             searchSeries() {
-                let title = $('#title').val();
+                let title = $('#tmdb_series_name').val();
                 if (title === this.lastSearchTerm || !this.searchTermChanged) { return }
                 this.$root.theMovieDb.search.getTv({query: title}, res => {
                     res = JSON.parse(res);
@@ -156,7 +167,6 @@
                             this.$nextTick(() => {
                                 this.showTextarea = true;
                             });
-                            this.lastSearchTerm = title;
                             this.searchTermChanged = false;
                             this.hideDetails = false;
                         }
@@ -190,6 +200,11 @@
             },
             toggleDetails() {
                 this.hideDetails = !this.hideDetails;
+            }
+        },
+        computed: {
+            readyForSeasons() {
+                return this.series.seasons && this.series.seasons.length > 0;
             }
         },
         components: {
@@ -226,18 +241,13 @@
         border: 3px groove #adbfbf;
     }
 
-    #title {
+    #tmdb_series_name {
         font-size: 26px;
     }
 
     .seasons {
-        -webkit-transition: height .35s ease-in-out;
-        -moz-transition: height .35s ease-in-out;
-        -ms-transition: height .35s ease-in-out;
-        -o-transition: height .35s ease-in-out;
-        transition: height .35s ease-in-out;
-        overflow: hidden;
-        position: relative;
+        height: 250px;
+        width: 100%;
     }
 
     .swiper-container {
@@ -250,26 +260,36 @@
         align-items: center;
     }
 
-    .movie-sugg {
+    .season-sugg {
         width: 100%;
         height: 100%;
         position: relative;
     }
 
-    .movie-sugg-cover {
+    .season-sugg-cover {
         margin: 15px;
     }
 
-    .movie-sugg-cover:hover {
+    .season-sugg-cover:hover {
         outline: 2px solid white;
         border: 2px solid white;
         transition: all .15s ease-in-out;
         cursor: pointer;
     }
 
-    .movie-sugg-active {
+    .season-sugg-active {
         outline: 2px solid white;
         border: 2px solid white;
+    }
+
+    .episode-params {
+        position: absolute;
+        left: 15px;
+        bottom: 15px;
+        background-color: #0000008f;
+        line-height: 26px;
+        color: white;
+        width: calc(100% - 30px);
     }
 
     .hide-indicator {

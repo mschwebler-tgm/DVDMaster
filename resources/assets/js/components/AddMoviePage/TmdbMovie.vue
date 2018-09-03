@@ -12,7 +12,7 @@
                             <div style="width: 270px">
                                 <md-field class="md-custom-input">
                                     <label class="white-text">Title</label>
-                                    <md-input v-model="movie.title" placeholder="Title" id="title" class="white-text"
+                                    <md-input v-model="movie.title" placeholder="Title" id="tmdb_movie_title" class="white-text"
                                               @blur="searchMovie" @keydown.enter="searchMovie" @keydown.tab="searchMovie" @keydown="registerChange"></md-input>
                                 </md-field>
                                 <div class="flex flex-align-center">
@@ -40,7 +40,9 @@
                                     </div>
                                     <div class="flex flex-justify-center" style="position: absolute; left: 0; bottom: -24px; width: 100%; height: 24px; z-index: 100">
                                         <md-content class="md-accent">
-                                            <md-icon class="pointer" id="detailsToggle">{{ hideDetails ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</md-icon>
+                                            <div @click="toggleDetails">
+                                                <md-icon class="pointer">{{ hideDetails ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</md-icon>
+                                            </div>
                                         </md-content>
                                     </div>
                                 </md-content>
@@ -142,13 +144,13 @@
         },
         methods: {
             searchMovie() {
-                let title = $('#title').val();
+                let title = $('#tmdb_movie_title').val();
                 if (title === this.lastSearchTerm || !this.searchTermChanged) { return }
                 this.$root.theMovieDb.search.getMovie({query: title}, res => {
                     res = JSON.parse(res);
                     if (res.results && res.results.length > 0) {
                         this.suggestions = res.results;
-                        this.getMovieDetails(res.results.shift().id);
+                        this.getMovieDetails(res.results.shift());
                         $('#suggestions li:not(.active) #suggestionsTrigger').trigger('click');
                     } else {
                         this.$root.toast('No search results');
@@ -157,9 +159,9 @@
                     this.$root.toast(err);
                 });
             },
-            getMovieDetails(id) {
+            getMovieDetails(movie) {
                 this.$root.theMovieDb.common.client({
-                        url: "movie/" + id + this.$root.theMovieDb.common.generateQuery()
+                        url: "movie/" + movie.id + this.$root.theMovieDb.common.generateQuery()
                     },
                     res => {
                         let movieRes = JSON.parse(res);
@@ -169,7 +171,7 @@
                             this.$nextTick(() => {
                                 this.showTextarea = true;
                             });
-                            this.lastSearchTerm = title;
+                            this.lastSearchTerm = movie.title;
                             this.searchTermChanged = false;
                             this.hideDetails = false;
                         }
@@ -248,7 +250,7 @@
         border: 3px groove #adbfbf;
     }
 
-    #title {
+    #tmdb_movie_title {
         font-size: 26px;
     }
 
