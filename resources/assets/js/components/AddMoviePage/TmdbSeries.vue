@@ -90,13 +90,18 @@
                     <swiper-slide v-for="season in series.seasons" :key="season.id"
                                   v-if="season.poster_path">
                         <div class="season-sugg">
-                            <div class="season-sugg-cover">
-                                <img :src="$root.getImagePath(season.poster_path, 'w185')" class="background-center"/>
+                            <div class="season-sugg-cover background-image-center" :style="'background-image: url(' + $root.getImagePath(season.poster_path, 'w185') + ')'">
+                                <!--<img :src="$root.getImagePath(season.poster_path, 'w185')" class="background-center"/>-->
                                 <div class="episode-params">
                                     <div class="white-text" style="padding: 5px 15px;">
                                         <span class="md-title">{{ season.name }}</span>
                                         <br>
                                         <span class="md-caption">{{ season.episode_count }} Episodes</span>
+                                    </div>
+                                </div>
+                                <div class="season-remove">
+                                    <div class="season-remove-icon">
+                                        <md-icon class="md-accent md-size-2x">remove_circle_outline</md-icon>
                                     </div>
                                 </div>
                             </div>
@@ -268,6 +273,7 @@
 
     .season-sugg-cover {
         margin: 15px;
+        height: 220px;
     }
 
     .season-sugg-cover:hover {
@@ -277,12 +283,26 @@
         cursor: pointer;
     }
 
+    .season-sugg-cover:hover .episode-params {
+        opacity: 0;
+    }
+
+    .season-sugg-cover:hover .season-remove {
+        display: flex;
+    }
+
     .season-sugg-active {
         outline: 2px solid white;
         border: 2px solid white;
     }
 
     .episode-params {
+        opacity: 1;
+        -webkit-transition: opacity .3s;
+        -moz-transition: opacity .3s;
+        -ms-transition: opacity .3s;
+        -o-transition: opacity .3s;
+        transition: opacity .3s;
         position: absolute;
         left: 15px;
         bottom: 15px;
@@ -290,6 +310,57 @@
         line-height: 26px;
         color: white;
         width: calc(100% - 30px);
+    }
+
+    .season-remove {
+        background-color: #0000008f;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .season-remove-icon:hover {
+        animation: pulse 2s infinite;
+        -webkit-animation: pulse 2s infinite;
+    }
+
+    @-webkit-keyframes pulse {
+        from {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+
+        50% {
+            -webkit-transform: scale3d(1.25, 1.25, 1.25);
+            transform: scale3d(1.25, 1.25, 1.25);
+        }
+
+        to {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+    }
+
+    @keyframes pulse {
+        from {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+
+        50% {
+            -webkit-transform: scale3d(1.25, 1.25, 1.25);
+            transform: scale3d(1.25, 1.25, 1.25);
+        }
+
+        to {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
     }
 
     .hide-indicator {

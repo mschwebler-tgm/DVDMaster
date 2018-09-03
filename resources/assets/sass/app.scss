@@ -61,6 +61,11 @@ html, body {
   overflow: hidden;
 }
 
+.background-image-center {
+  background-size: cover;
+  background-position: center center;
+}
+
 #loadingscreen{
   background-color: rgba(0, 0, 0, 0.56);
   display: flex;
