@@ -159,7 +159,10 @@
                 console.log('update slides');
                 this.forceHideSeasons = true;
                 this.swiperOption.slidesPerView = $seasons.width() / 176;
-                setTimeout(this.forceHideSeasons = false, 100);
+                setTimeout(() => {
+                    this.forceHideSeasons = false;
+                    this.$nextTick(() => this.$forceUpdate());
+                }, 100);
             },
             searchSeries() {
                 let title = $('#tmdb_series_name').val();
