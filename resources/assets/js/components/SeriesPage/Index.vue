@@ -17,7 +17,7 @@
         </div>
         <home-filter :show="showFilters"></home-filter>
         <div class="pad no-pad-mobile">
-            <series-list v-show="listView"></series-list>
+            <content-list v-show="listView" :data="series" type="series"></content-list>
             <series-cards v-show="!listView"></series-cards>
         </div>
     </div>
@@ -40,6 +40,11 @@
             toggleFilters() {
                 this.showFilters = !this.showFilters;
                 localStorage.setItem('showFilters_home', this.showFilters ? 'true' : 'false');
+            }
+        },
+        computed: {
+            series() {
+                return this.$store.getters.SERIES_GET_ALL;
             }
         },
         watch: {

@@ -1,21 +1,21 @@
 <template>
-    <div class="flex flex-align-center toMovie" v-if="movie" :style="'background: ' + (rentedBy ? notAvailableBackground : '')">
-        <div class="flex flex-align-center flex-justify-space-between toMovie" style="flex: 1;">
-            <div class="title toMovie">
-                <img class="cover toMovie" :src="$root.getImagePath(movie.poster_path, 'w92')" width="92" height="138">
+    <div class="flex flex-align-center toContent" v-if="content" :style="'background: ' + (rentedBy ? notAvailableBackground : '')">
+        <div class="flex flex-align-center flex-justify-space-between toContent" style="flex: 1;">
+            <div class="title toContent">
+                <img class="cover toContent" :src="$root.getImagePath(content.poster_path, 'w92')" width="92" height="138">
                 <div class="flex flex-column flex-justify-center" style="height: 130px; position: relative">
-                    <span class="md-title" style="margin-bottom: 8px">{{ movie.title }}</span>
+                    <span class="md-title" style="margin-bottom: 8px">{{ content.title }}</span>
                     <div>
-                        <template v-for="genre in getGenreNames(movie)">
+                        <template v-for="genre in getGenreNames()">
                             <md-chip class="genre-chip">{{ genre }}</md-chip>
                         </template>
                     </div>
-                    <div class="duration md-caption desktop-only">{{ movie.duration }} min.</div>
+                    <div class="duration md-caption desktop-only">{{ content.duration }} min. {{ (type === 'series' ? '/ Episode' : '') }}</div>
                 </div>
             </div>
-            <div class="hints toMovie">
-                <span class="md-title toMovie" style="opacity: 0;">A</span>
-                <div class="flex toMovie">
+            <div class="hints toContent">
+                <span class="md-title toContent" style="opacity: 0;">A</span>
+                <div class="flex toContent">
                     <div v-if="rentedBy">
                         <md-icon>import_export</md-icon>
                         <md-tooltip md-direction="bottom">
@@ -36,20 +36,20 @@
                     </div>
                 </div>
             </div>
-            <div class="actors-container flex flex-align-center toMovie">
+            <div class="actors-container flex flex-align-center toContent">
                 <div class="actors">
-                    <template v-for="actor in getActorNames(movie)">
+                    <template v-for="actor in getActorNames()">
                         <span class="md-caption pointer">{{ actor }}</span>
                         <br>
                     </template>
                 </div>
                 <div>
-                    <md-icon :style="'opacity: ' + (movie.actors.length !== 0 ? 1 : 0)">person</md-icon>
+                    <md-icon :style="'opacity: ' + (content.actors.length !== 0 ? 1 : 0)">person</md-icon>
                     <md-tooltip md-direction="right">Actors</md-tooltip>
                 </div>
             </div>
         </div>
-        <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)" class="desktop-only"></movie-rating>
+        <movie-rating :movie="content" @newCustomRating="updateRating($event)" class="desktop-only"></movie-rating>
     </div>
 </template>
 
@@ -57,49 +57,49 @@
     import moment from 'moment';
 
     export default {
-        props: ['movie'],
+        props: ['content', 'type'],
         data() {
             return {
                 notAvailableBackground: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAM0lEQVQoU2NkIBIwEqmOgSoKpRgYGJ7BbMRlIooikGJsCjEUYVOIVREuE7EGBFV8jWIyACo2BAs4XVWOAAAAAElFTkSuQmCC)'
             }
         },
         methods: {
-            getGenreNames(movie) {
+            getGenreNames() {
                 let names = [];
-                for (let i = 0; movie.genres && i < movie.genres.length && names.length < 3; i++) {
-                    names.push(movie.genres[i].name);
+                for (let i = 0; this.content.genres && i < this.content.genres.length && names.length < 3; i++) {
+                    names.push(this.content.genres[i].name);
                 }
                 return names;
             },
-            getActorNames(movie) {
+            getActorNames() {
                 let names = [];
-                for (let i = 0; movie.actors && i < movie.actors.length && names.length < 4; i++) {
-                    names.push(movie.actors[i].name);
+                for (let i = 0; this.content.actors && i < this.content.actors.length && names.length < 4; i++) {
+                    names.push(this.content.actors[i].name);
                 }
                 return names;
             },
-            updateRating(movie, rating) {
-                axios.post('/api/movie/' + movie.id + '/rate', {rating});
+            updateRating(rating) {
+                axios.post(this.content.api + '/rate', {rating});
             }
         },
         computed: {
             rentedBy() {
-                if (this.movie.pending_rental.length > 0) {
-                    return this.movie.pending_rental[0].user;
+                if (this.content.pending_rental.length > 0) {
+                    return this.content.pending_rental[0].user;
                 }
                 return null;
             },
             isBlueRay() {
-                return !!this.movie.blue_ray;
+                return !!this.content.blue_ray;
             },
             isTrueStory() {
-                return !!this.movie.true_story;
+                return !!this.content.true_story;
             },
             isBasedOnBook() {
-                return !!this.movie.based_on_book;
+                return !!this.content.based_on_book;
             },
             rentalTimeAgo() {
-                return moment(this.movie.pending_rental[0].created_at).fromNow();
+                return moment(this.content.pending_rental[0].created_at).fromNow();
             }
         }
     }

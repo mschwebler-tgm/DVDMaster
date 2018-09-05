@@ -85,46 +85,23 @@
                 </div>
             </md-content>
             <div class="seasons" id="seasons" style="background-color: black;" v-show="readyForSeasons">
-                <!-- swiper -->
-                <swiper :options="swiperOption" v-if="readyForSeasons">
-                    <swiper-slide v-for="(season, index) in series.seasons" :key="season.id"
-                                  v-if="season.poster_path">
-                        <div class="season-sugg">
-                            <div class="season-sugg-cover background-image-center"
-                                 :style="'background-image: url(' + $root.getImagePath(season.poster_path, 'w185') + ')'">
-                                <!--<img :src="$root.getImagePath(season.poster_path, 'w185')" class="background-center"/>-->
-                                <div class="episode-params">
-                                    <div style="padding: 5px 15px;">
-                                        <span class="md-title">{{ season.name }}</span>
-                                        <br>
-                                        <span class="md-caption">{{ season.episode_count }} Episodes</span>
-                                    </div>
-                                </div>
-                                <div class="season-remove">
-                                    <div class="season-remove-icon" @click="removeSeason(index)">
-                                        <md-icon class="md-accent md-size-2x">remove_circle_outline</md-icon>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </swiper-slide>
-                </swiper>
                 <template v-if="readyForSeasons && !forceHideSeasons">
-                    <swiper :options="swiperOption" ref="swiper">
-                        <swiper-slide v-for="season in series.seasons" :key="season.id"
+                    <swiper :options="swiperOption" v-if="readyForSeasons">
+                        <swiper-slide v-for="(season, index) in series.seasons" :key="season.id" ref="swiper"
                                       v-if="season.poster_path">
                             <div class="season-sugg">
-                                <div class="season-sugg-cover background-image-center" :style="'background-image: url(' + $root.getImagePath(season.poster_path, 'w185') + ')'">
+                                <div class="season-sugg-cover background-image-center"
+                                     :style="'background-image: url(' + $root.getImagePath(season.poster_path, 'w185') + ')'">
                                     <!--<img :src="$root.getImagePath(season.poster_path, 'w185')" class="background-center"/>-->
                                     <div class="episode-params">
-                                        <div class="white-text" style="padding: 5px 15px;">
+                                        <div style="padding: 5px 15px;">
                                             <span class="md-title">{{ season.name }}</span>
                                             <br>
                                             <span class="md-caption">{{ season.episode_count }} Episodes</span>
                                         </div>
                                     </div>
                                     <div class="season-remove">
-                                        <div class="season-remove-icon">
+                                        <div class="season-remove-icon" @click="removeSeason(index)">
                                             <md-icon class="md-accent md-size-2x">remove_circle_outline</md-icon>
                                         </div>
                                     </div>
