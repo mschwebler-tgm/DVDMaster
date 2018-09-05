@@ -84,23 +84,24 @@
                     </md-field>
                 </div>
             </md-content>
-            <div class="seasons" id="seasons" style="background-color: black;">
+            <div class="seasons" id="seasons" style="background-color: black;" v-show="readyForSeasons">
                 <!-- swiper -->
                 <swiper :options="swiperOption" v-if="readyForSeasons">
-                    <swiper-slide v-for="season in series.seasons" :key="season.id"
+                    <swiper-slide v-for="(season, index) in series.seasons" :key="season.id"
                                   v-if="season.poster_path">
                         <div class="season-sugg">
-                            <div class="season-sugg-cover background-image-center" :style="'background-image: url(' + $root.getImagePath(season.poster_path, 'w185') + ')'">
+                            <div class="season-sugg-cover background-image-center"
+                                 :style="'background-image: url(' + $root.getImagePath(season.poster_path, 'w185') + ')'">
                                 <!--<img :src="$root.getImagePath(season.poster_path, 'w185')" class="background-center"/>-->
                                 <div class="episode-params">
-                                    <div class="white-text" style="padding: 5px 15px;">
+                                    <div style="padding: 5px 15px;">
                                         <span class="md-title">{{ season.name }}</span>
                                         <br>
                                         <span class="md-caption">{{ season.episode_count }} Episodes</span>
                                     </div>
                                 </div>
                                 <div class="season-remove">
-                                    <div class="season-remove-icon">
+                                    <div class="season-remove-icon" @click="removeSeason(index)">
                                         <md-icon class="md-accent md-size-2x">remove_circle_outline</md-icon>
                                     </div>
                                 </div>
@@ -205,6 +206,9 @@
             },
             toggleDetails() {
                 this.hideDetails = !this.hideDetails;
+            },
+            removeSeason(index) {
+                this.series.seasons.splice(index, 1);
             }
         },
         computed: {
@@ -278,17 +282,22 @@
 
     .season-sugg-cover:hover {
         outline: 2px solid white;
-        border: 2px solid white;
         transition: all .15s ease-in-out;
         cursor: pointer;
     }
 
     .season-sugg-cover:hover .episode-params {
-        opacity: 0;
+        /*opacity: 0;*/
+        background-color: transparent;
+    }
+
+    .season-sugg-cover:hover .episode-params span {
+        color: rgba(255, 255, 255, 0.45) !important;
     }
 
     .season-sugg-cover:hover .season-remove {
         display: flex;
+        background-color: rgba(0, 0, 0, 0.56);
     }
 
     .season-sugg-active {
@@ -298,22 +307,26 @@
 
     .episode-params {
         opacity: 1;
-        -webkit-transition: opacity .3s;
-        -moz-transition: opacity .3s;
-        -ms-transition: opacity .3s;
-        -o-transition: opacity .3s;
-        transition: opacity .3s;
         position: absolute;
         left: 15px;
         bottom: 15px;
-        background-color: #0000008f;
+        background-color: rgba(0, 0, 0, 0.56);
         line-height: 26px;
-        color: white;
         width: calc(100% - 30px);
+        z-index: 2;
+    }
+
+    .episode-params span {
+        color: white;
+        -webkit-transition: color .3s;
+        -moz-transition: color .3s;
+        -ms-transition: color .3s;
+        -o-transition: color .3s;
+        transition: color .3s;
     }
 
     .season-remove {
-        background-color: #0000008f;
+        background-color: transparent;
         position: absolute;
         top: 15px;
         left: 15px;
@@ -322,6 +335,11 @@
         display: none;
         justify-content: center;
         align-items: center;
+        -webkit-transition: background-color .3s;
+        -moz-transition: background-color .3s;
+        -ms-transition: background-color .3s;
+        -o-transition: background-color .3s;
+        transition: background-color .3s;
     }
 
     .season-remove-icon:hover {
