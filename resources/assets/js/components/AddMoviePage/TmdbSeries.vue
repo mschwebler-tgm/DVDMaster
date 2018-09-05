@@ -61,7 +61,7 @@
                                      class="movie-poster background-center">
                             </div>
                             <md-content class="md-accent pad white-text" style="background-color: transparent">
-                                <template v-if="series.episode_run_time && series.episode_run_time.length > 0"><p><md-icon>timer</md-icon>&nbsp;&nbsp;{{ series.episode_run_time }} min / episode</p></template>
+                                <template v-if="series.episode_run_time && series.episode_run_time.length > 0"><p><md-icon>timer</md-icon>&nbsp;&nbsp;{{ series.episode_run_time[0] }} min / episode</p></template>
                                 <template v-if="series.homepage"><p><a :href="series.homepage" target="_blank"><md-icon class="white-text" style="text-decoration: none">web</md-icon>&nbsp;&nbsp;<span style="color: var(--md-theme-default-text-primary-on-accent, #fff); text-decoration: underline;">Homepage</span></a></p></template>
                                 <md-chip v-for="genre in series.genres" :key="genre.id" class="md-accent" style="margin-bottom: 5px;">{{ genre.name }}</md-chip>
                                 <template v-if="series.status"><p>Status: {{ series.status }}</p></template>
@@ -109,6 +109,30 @@
                         </div>
                     </swiper-slide>
                 </swiper>
+                <template v-if="readyForSeasons && !forceHideSeasons">
+                    <swiper :options="swiperOption" ref="swiper">
+                        <swiper-slide v-for="season in series.seasons" :key="season.id"
+                                      v-if="season.poster_path">
+                            <div class="season-sugg">
+                                <div class="season-sugg-cover background-image-center" :style="'background-image: url(' + $root.getImagePath(season.poster_path, 'w185') + ')'">
+                                    <!--<img :src="$root.getImagePath(season.poster_path, 'w185')" class="background-center"/>-->
+                                    <div class="episode-params">
+                                        <div class="white-text" style="padding: 5px 15px;">
+                                            <span class="md-title">{{ season.name }}</span>
+                                            <br>
+                                            <span class="md-caption">{{ season.episode_count }} Episodes</span>
+                                        </div>
+                                    </div>
+                                    <div class="season-remove">
+                                        <div class="season-remove-icon">
+                                            <md-icon class="md-accent md-size-2x">remove_circle_outline</md-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </swiper-slide>
+                    </swiper>
+                </template>
             </div>
         </div>
         <div class="flex flex-justify-end">
@@ -134,19 +158,35 @@
                 lastSearchTerm: '',
                 searchTermChanged: false,
                 showTextarea: true,
-                hideDetails: true
+                hideDetails: true,
+                forceHideSeasons: false
             }
         },
         mounted() {
             let $seasons = $('#seasons');
             let interval = setInterval(() => {
-                this.swiperOption.slidesPerView = $seasons.width() / 176;
+                this.updateSlidesPerView($seasons);
                 if (this.swiperOption.slidesPerView > 0) {
                     clearInterval(interval);
                 }
             }, 100);
+
+            let update;
+            window.onresize = () => {
+                clearTimeout(update);
+                update = setTimeout(() => this.updateSlidesPerView($seasons), 100);
+            }
         },
         methods: {
+            updateSlidesPerView($seasons) {
+                console.log('update slides');
+                this.forceHideSeasons = true;
+                this.swiperOption.slidesPerView = $seasons.width() / 176;
+                setTimeout(() => {
+                    this.forceHideSeasons = false;
+                    this.$nextTick(() => this.$forceUpdate());
+                }, 100);
+            },
             searchSeries() {
                 let title = $('#tmdb_series_name').val();
                 if (title === this.lastSearchTerm || !this.searchTermChanged) { return }
@@ -213,7 +253,7 @@
         },
         computed: {
             readyForSeasons() {
-                return this.series.seasons && this.series.seasons.length > 0;
+                return this.series.seasons && this.series.seasons.length > 0 && !this.forceHideSeasons;
             }
         },
         components: {
