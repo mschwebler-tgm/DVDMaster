@@ -5,12 +5,14 @@ namespace App\Console\Commands;
 use App\Actor;
 use App\Movie;
 use App\MovieHasActor;
+use App\Series;
+use App\SeriesHasActor;
 use Illuminate\Console\Command;
 use Tmdb\Repository\MovieRepository;
 
 class ImportActor extends Command
 {
-    protected $signature = 'import:actor {tmdbId} {appendToMovie?}';
+    protected $signature = 'import:actor {tmdbId} {appendToMovie?} {appendToSeries?}';
     protected $description = 'Command description';
 
     private $movieDb;
@@ -45,6 +47,16 @@ class ImportActor extends Command
                     MovieHasActor::firstOrCreate([
                         'actor_id' => $actor->id,
                         'movie_id' => $dbMovie->id
+                    ]);
+                }
+            }
+            $seriesId = $this->argument('appendToSeries');
+            if ($seriesId) {
+                $dbSeries = Series::where('tmdb_id', $seriesId)->first();
+                if ($dbSeries) {
+                    SeriesHasActor::firstOrCreate([
+                        'actor_id' => $actor->id,
+                        'series_id' => $dbSeries->id
                     ]);
                 }
             }
