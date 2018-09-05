@@ -15,11 +15,7 @@ class SeriesController extends Controller
         $series = Series::with('actors', 'genres', 'pendingRental.user')
             ->orderBy('name', 'asc')
             ->addSelect(DB::raw('series.*, "series" as data_type'))->paginate();
-        ContentTransformer::transformContentList($series, 'series');
-
-        return Series::with('actors', 'genres', 'pendingRental.user')
-            ->orderBy('name', 'asc')
-            ->addSelect(DB::raw('series.*, "series" as data_type'))->paginate();
+        return ContentTransformer::transformContentPaginaton($series, 'series');
     }
 
     public function store(Request $request)

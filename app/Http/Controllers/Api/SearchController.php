@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Movie;
+use App\Service\Facades\ContentTransformer;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,8 @@ class SearchController extends Controller
         if ($boolFilters = $request->get('bool')) {
             $this->applyBoolfilters($movies, $boolFilters);
         }
-        return $movies->orderBy('title', 'asc')->paginate();
+        $movies = $movies->orderBy('title', 'asc')->paginate();
+        return ContentTransformer::transformContentPaginaton($movies, 'movies');
     }
 
     private function applyBoolfilters(&$movies, $boolFilters)

@@ -24,8 +24,6 @@ class MovieController extends Controller
         $movies = Movie::with('actors', 'genres', 'pendingRental.user')
             ->orderBy('title', 'asc')->paginate();
         return ContentTransformer::transformContentPaginaton($movies, 'movies');
-        return Movie::with('actors', 'genres', 'pendingRental.user')
-            ->orderBy('title', 'asc')->paginate();
     }
 
     public function store(Request $request)
