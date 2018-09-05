@@ -21,12 +21,17 @@ Vue.component('paginator', require('./components/common/Paginator.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
 Vue.component('loader', require('./components/common/Loader.vue'));
 
-// Home page
+// Movies
 Vue.component('movie-list', require('./components/DVDPage/ListView.vue'));
 Vue.component('movie-list-item', require('./components/DVDPage/ListViewItem.vue'));
 Vue.component('home-filter', require('./components/DVDPage/Filter.vue'));
 Vue.component('movie-cards', require('./components/DVDPage/MovieCards.vue'));
 Vue.component('movie-card', require('./components/DVDPage/MovieCard.vue'));
+
+// Series
+Vue.component('series-list', require('./components/SeriesPage/ListView.vue'));
+Vue.component('series-list-item', require('./components/SeriesPage/ListViewItem.vue'));
+Vue.component('series-cards', require('./components/SeriesPage/CardView.vue'));
 
 // Add movie
 Vue.component('add-movie-custom', require('./components/AddMoviePage/Custom.vue'));

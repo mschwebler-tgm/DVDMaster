@@ -34,11 +34,15 @@ Route::group(['middleware' => ['adminOnly']], function () {
     Route::post('/users', 'UserController@create');
 });
 
+// movies
 Route::get('/movies', 'MovieController@index');
 Route::get('/movie/{id}', 'MovieController@show');
-Route::get('/genres', 'GenreController@genres');
+
+//series
+Route::get('/series', 'SeriesController@index');
+
 Route::get('/actors', 'ActorController@actors');
-Route::get('/movie/{id}', 'MovieController@show');
+Route::get('/genres', 'GenreController@genres');
 Route::get('/users/{id}', 'UserController@getAllExcept');
 Route::get('/stats', 'StatsController@index');
 

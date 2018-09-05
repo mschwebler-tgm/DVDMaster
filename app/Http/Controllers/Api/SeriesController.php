@@ -3,13 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Series;
+use App\Service\Facades\ContentTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
 {
     public function index()
     {
+        $series = Series::with('actors', 'genres', 'pendingRental.user')
+            ->orderBy('name', 'asc')
+            ->addSelect(DB::raw('series.*, "series" as data_type'))->paginate();
+        ContentTransformer::transformContentList($series, 'series');
+
+        return Series::with('actors', 'genres', 'pendingRental.user')
+            ->orderBy('name', 'asc')
+            ->addSelect(DB::raw('series.*, "series" as data_type'))->paginate();
     }
 
     public function store(Request $request)

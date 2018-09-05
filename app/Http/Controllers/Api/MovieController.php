@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Movie;
 use App\Service\Dao\MovieDao;
+use App\Service\Facades\ContentTransformer;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,6 +21,9 @@ class MovieController extends Controller
 
     public function index()
     {
+        $movies = Movie::with('actors', 'genres', 'pendingRental.user')
+            ->orderBy('title', 'asc')->paginate();
+        return ContentTransformer::transformContentPaginaton($movies, 'movies');
         return Movie::with('actors', 'genres', 'pendingRental.user')
             ->orderBy('title', 'asc')->paginate();
     }
