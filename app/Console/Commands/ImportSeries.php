@@ -85,6 +85,7 @@ class ImportSeries extends Command
         $series->vote_count = $seriesRes->getVoteCount();
         $series->backdrop_path = $seriesRes->getBackdropPath();
         $series->poster_path = $seriesRes->getPosterPath();
+        $series->episode_runtime = count($seriesRes->getEpisodeRunTime()) > 0 ? $seriesRes->getEpisodeRunTime()[0] : null;
     }
 
     private function actorNotComplete(Actor $actor)
