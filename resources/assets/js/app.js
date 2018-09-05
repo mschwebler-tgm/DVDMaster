@@ -97,6 +97,7 @@ const app = new Vue({
         },
         injectRootInstanceIntoStore() {
             this.$store.commit('MOVIES_SET_ROOT', this);
+            this.$store.commit('SERIES_SET_ROOT', this);
         }
     },
     computed: {
