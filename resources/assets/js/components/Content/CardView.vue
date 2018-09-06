@@ -1,22 +1,23 @@
 <template>
     <div>
-        <div class="movie-cards" ref="cardsContainer">
-            <div v-for="movie in movies" style="flex: 1">
-                <div class="image" :style="'background-image: url(' + $root.getImagePath(movie.poster_path, 'w154') + ')'">
-                    <div class="darkener pointer pad" @click="$router.push('/movie/' + movie.id)">
-                        <span class="md-headline">{{ movie.title }}</span>
-                        <movie-rating :movie="movie" :starSize="20"></movie-rating>
+        <div class="content-cards" ref="cardsContainer">
+            <div v-for="content in data" v-if="data && !searchingActive" style="flex: 1">
+                <div class="image" :style="'background-image: url(' + $root.getImagePath(content.poster_path, 'w154') + ')'">
+                    <div class="darkener pointer pad" @click="$router.push(content.url)">
+                        <span class="md-headline">{{ content.title }}</span>
+                        <movie-rating :movie="content" :starSize="20"></movie-rating>
                     </div>
                 </div>
             </div>
             <div v-if="placeholders" v-for="n in placeholders" style="flex: 1"></div>
         </div>
-        <paginator identifier="movie-cards" toDispatch="MOVIES_ACTION_GET_LOADNEXTPAGE"></paginator>
+        <paginator identifier="content-cards" :toDispatch="toDispatch"></paginator>
     </div>
 </template>
 
 <script>
     export default {
+        props: ['type'],
         data() {
             return {
                 viewMode: localStorage.getItem('viewMode') || 'grid',
@@ -24,6 +25,7 @@
             }
         },
         mounted() {
+            this.updatePlaceholders();
             let update;
             window.onresize = () => {
                 clearTimeout(update);
@@ -36,14 +38,19 @@
                 localStorage.setItem('viewMode', viewMode);
             },
             updatePlaceholders() {
-                let moviesAmount = this.$store.getters.MOVIES_GET_ALL.length;
+                let contentAmount = (this.type === 'movies' ?
+                    this.$store.getters.MOVIES_GET_ALL.length :
+                    this.$store.getters.SERIES_GET_ALL.length);
                 let perRow = Math.floor(this.$refs.cardsContainer.offsetWidth / 154);
-                this.placeholders = perRow === 0 || moviesAmount % perRow === 0 ? 0 : perRow - (moviesAmount % perRow);
+                this.placeholders = perRow === 0 || contentAmount % perRow === 0 ? 0 : perRow - (contentAmount % perRow);
             }
         },
         watch: {
-            movies() {
-                if (this.$store.getters.MOVIES_GET_ALL.length > 0) {
+            data() {
+                let contentAmount = (this.type === 'movies' ?
+                    this.$store.getters.MOVIES_GET_ALL.length :
+                    this.$store.getters.SERIES_GET_ALL.length);
+                if (contentAmount > 0) {
                     this.updatePlaceholders();
                 }
             },
@@ -54,18 +61,26 @@
             }
         },
         computed: {
-            movies() {
-                return this.$store.getters.MOVIES_GET_ALL;
+            data() {
+                return (this.type === 'movies' ?
+                    this.$store.getters.MOVIES_GET_ALL :
+                    this.$store.getters.SERIES_GET_ALL);
             },
-            loaded: {
-                get() {
-                    return this.$store.getters.MOVIES_GET_ALL.length > 0;
-                },
-                set() {}
+            loading() {
+                return (this.type === 'movies' ?
+                    this.$store.getters.MOVIES_GET_LOADING :
+                    this.$store.getters.SERIES_GET_LOADING);
+            },
+            searchingActive() {
+                return (this.type === 'movies' ?
+                    this.$store.getters.MOVIES_GET_SEARCHING :
+                    this.$store.getters.SERIES_GET_SEARCHING);
+            },
+            toDispatch() {
+                return (this.type === 'movies' ?
+                    'MOVIES_ACTION_GET_LOADNEXTPAGE' :
+                    'SERIES_ACTION_GET_LOADNEXTPAGE');
             }
-        },
-        components: {
-            MovieCard
         }
     }
 </script>
@@ -74,7 +89,7 @@
     @import "~vue-material/src/components/MdAnimation/variables";
     @import "~vue-material/dist/theme/engine";
 
-    .movie-cards {
+    .content-cards {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;

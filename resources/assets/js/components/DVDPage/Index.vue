@@ -18,9 +18,8 @@
             </div>
             <home-filter :show="showFilters"></home-filter>
             <div class="pad no-pad-mobile">
-                <!--<movie-list v-show="listView" :movies="movies"></movie-list>-->
                 <content-list v-show="listView" type="movies"></content-list>
-                <movie-cards v-show="!listView"></movie-cards>
+                <content-cards v-show="!listView" type="movies"></content-cards>
             </div>
         </div>
     </div>

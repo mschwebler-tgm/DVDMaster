@@ -17,8 +17,8 @@
         </div>
         <home-filter :show="showFilters"></home-filter>
         <div class="pad no-pad-mobile">
-            <content-list v-show="listView" :data="series" type="series"></content-list>
-            <series-cards v-show="!listView"></series-cards>
+            <content-list v-show="listView" type="series"></content-list>
+            <content-cards v-show="!listView" type="series"></content-cards>
         </div>
     </div>
 </template>
@@ -27,7 +27,7 @@
     export default {
         data() {
             return {
-                listView: localStorage.getItem('series_listView') === 'true',
+                listView: localStorage.getItem('listView') === 'true',
                 showFilters: localStorage.getItem('showFilters_home') === 'true'
             }
         },
@@ -40,11 +40,6 @@
             toggleFilters() {
                 this.showFilters = !this.showFilters;
                 localStorage.setItem('showFilters_home', this.showFilters ? 'true' : 'false');
-            }
-        },
-        computed: {
-            series() {
-                return this.$store.getters.SERIES_GET_ALL;
             }
         },
         watch: {
