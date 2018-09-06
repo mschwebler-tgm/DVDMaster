@@ -12,7 +12,7 @@ use Tmdb\Repository\TvRepository;
 
 class ImportSeries extends Command
 {
-    protected $signature = 'import:series {tmdbId}';
+    protected $signature = 'import:series {tmdbId} {seasonsToExclude}';
     protected $description = 'Import series from tmdb. Also adds relations to genres and actors.';
     private $seriesDb;
 
