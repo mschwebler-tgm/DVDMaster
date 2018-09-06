@@ -66,6 +66,7 @@
         },
         created() {
             this.$store.watch(state => state.movies.filter, this.handleFilterUpdate, {deep: true});
+            this.boolFilters = this.$store.getters.MOVIES_GET_FILTER.bool || [];
         },
         mounted() {
             this.$refs.genresFilter.update(this.$store.getters.MOVIES_GET_FILTER.genres);
