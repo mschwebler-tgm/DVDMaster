@@ -156,7 +156,6 @@
         },
         methods: {
             updateSlidesPerView($seasons) {
-                console.log('update slides');
                 this.forceHideSeasons = true;
                 this.swiperOption.slidesPerView = $seasons.width() / 176;
                 setTimeout(() => {
