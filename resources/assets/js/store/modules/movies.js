@@ -27,7 +27,8 @@ const actions = {
         state.loading = true;
         return new Promise((resolve, reject) => {
             if (!state.movies.next_page_url) { reject(0) }
-            axios.get(state.movies.next_page_url).then(res => {
+            let nextPageUrl = decodeURIComponent(state.movies.next_page_url);
+            axios.get(nextPageUrl).then(res => {
                 commit('MOVIES_COMMIT_APPEND_MOVIESDATA', res.data);
                 state.loading = false;
                 resolve();
