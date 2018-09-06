@@ -101,7 +101,7 @@
                                         </div>
                                     </div>
                                     <div class="season-remove">
-                                        <div class="season-remove-icon" @click="removeSeason(index)">
+                                        <div class="season-remove-icon" @click="removeSeason(index, season)">
                                             <md-icon class="md-accent md-size-2x">remove_circle_outline</md-icon>
                                         </div>
                                     </div>
@@ -127,6 +127,7 @@
         data() {
             return {
                 series: {},
+                removedSeasons: [],
                 swiperOption: {
                     slidesPerView: window.innerWidth / 230,
                     freeMode: true,
@@ -212,6 +213,7 @@
             save() {
                 let payload = new FormData();
                 payload.set('series', JSON.stringify(this.series));
+                payload.set('removed_seasons', JSON.stringify(this.removedSeasons));
                 payload.set('is_custom', 'false');
                 this.$store.dispatch('SERIES_ACTION_SAVE', payload).then(() => {
                     this.series.comment = null;
@@ -223,8 +225,9 @@
             toggleDetails() {
                 this.hideDetails = !this.hideDetails;
             },
-            removeSeason(index) {
+            removeSeason(index, season) {
                 this.series.seasons.splice(index, 1);
+                this.removedSeasons.push(season.id);
             }
         },
         computed: {
