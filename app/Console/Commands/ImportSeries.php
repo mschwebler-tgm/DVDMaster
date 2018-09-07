@@ -4,22 +4,26 @@ namespace App\Console\Commands;
 
 use App\Actor;
 use App\Genre;
+use App\Season;
 use App\Series;
 use App\SeriesHasActor;
 use App\SeriesHasGenre;
 use Illuminate\Console\Command;
 use Tmdb\Repository\TvRepository;
+use Tmdb\Repository\TvSeasonRepository;
 
 class ImportSeries extends Command
 {
-    protected $signature = 'import:series {tmdbId} {seasonsToExclude}';
+    protected $signature = 'import:series {tmdbId} {seasonsToExclude?}';
     protected $description = 'Import series from tmdb. Also adds relations to genres and actors.';
     private $seriesDb;
+    private $seasonDB;
 
-    public function __construct(TvRepository $seriesDb)
+    public function __construct(TvRepository $seriesDb, TvSeasonRepository $seasonDB)
     {
         parent::__construct();
         $this->seriesDb = $seriesDb;
+        $this->seasonDB = $seasonDB;
     }
 
     public function handle()
@@ -63,6 +67,19 @@ class ImportSeries extends Command
                 'series_id' => $series->id
             ]);
         }
+
+        /** @var \Tmdb\Model\Tv\Season $seasonRes */
+        foreach ($seriesRes->getSeasons() as $seasonRes) {
+            $seasonRes = $this->seasonDB->load($series->tmdb_id, $seasonRes->getSeasonNumber());
+            if (!$seasonRes) { continue; }
+            $season = Season::where('tmdb_id', $seasonRes->getId())->first();
+            if (!$season) {
+                $season = new Season();
+            }
+            $this->setSeasonAttrs($season, $seasonRes);
+            $season->series_id = $series->id;
+            $season->save();
+        }
     }
 
     /**
@@ -95,5 +112,19 @@ class ImportSeries extends Command
             !$actor->gender ||
             !$actor->popularity ||
             !$actor->profile_path;
+    }
+
+    /**
+     * @param Season $season
+     * @param \Tmdb\Model\Tv\Season $seriesRes
+     */
+    private function setSeasonAttrs(Season &$season, $seriesRes)
+    {
+        $season->tmdb_id = $seriesRes->getId();
+        $season->name = $seriesRes->getName();
+        $season->overview = $seriesRes->getOverview();
+        $season->season_number = $seriesRes->getSeasonNumber();
+        $season->poster_path = $seriesRes->getPosterPath();
+        $season->air_date = $seriesRes->getAirDate();
     }
 }
