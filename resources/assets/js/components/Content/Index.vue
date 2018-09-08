@@ -2,7 +2,7 @@
     <div class="md-elevation-1">
         <div class="header">
             <md-toolbar class="md-accent">
-                <h3 class="md-title">Series</h3>
+                <h3 class="md-title">{{ heading }}</h3>
                 <div class="series-toolbar">
                     <div class="pointer" @click="toggleFilters">
                         <md-icon >filter_list</md-icon>
@@ -15,7 +15,7 @@
                 </div>
             </md-toolbar>
         </div>
-        <home-filter :show="showFilters"></home-filter>
+        <home-filter :show="showFilters" :type="type"></home-filter>
         <div class="pad no-pad-mobile">
             <content-list v-show="listView"
                           :type="type"
@@ -34,8 +34,6 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
-
     export default {
         data() {
             return {
@@ -50,11 +48,13 @@
                 actions: {
                     firstPage: this.$route.name + '_ACTION_GET_FIRSTPAGE',  // MOVIES_ACTION_GET_FIRSTPAGE,
                     paginateAction: this.$route.name + '_ACTION_GET_LOADNEXTPAGE'  // MOVIES_ACTION_GET_LOADNEXTPAGE
-                }
+                },
+                heading: ''
             }
         },
         created() {
-            this.initModule(this.$route.name)
+            this.initModule(this.$route.name);
+            this.heading = this.type.charAt(0).toUpperCase() + this.type.slice(1).toLowerCase();
         },
         methods: {
             initModule(module) {
@@ -88,6 +88,8 @@
                 if (this.$store.getters[this.getters.all].length === 0) {
                     this.$store.dispatch(this.actions.firstPage);
                 }
+                this.type = this.$route.name;
+                this.heading = this.type.charAt(0).toUpperCase() + this.type.slice(1).toLowerCase();
             }
         },
         computed: {
