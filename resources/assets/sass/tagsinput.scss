@@ -1,7 +1,8 @@
 .custom-tag {
-  background-color: #26a69a;
-  font-size: 14px;
-  padding: 4px 6px;
+  background-color: var(--md-theme-default-highlight, #E0E0E0);
+  color: var(--md-theme-default-text-primary, rgba(0, 0, 0, 0.87)) !important;
+  font-size: 12px;
+  padding: 2px 6px;
   border-radius: 0.4em;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -13,10 +14,14 @@
   -moz-box-shadow: none !important;
   box-shadow: none !important;
   padding: 0 !important;
+  background-color: transparent !important;
 }
 
 .tt-input {
   min-width: 150px;
+  bottom: 5px;
+  padding-bottom: 5px !important;
+  border-bottom: 1px solid rgba(.5, .5, .5, .5) !important;
 }
 
 .tt-menu {
@@ -41,16 +46,18 @@
 }
 
 .tt-suggestion:hover {
-  background-color: #26a69a;
+  background-color: var(--md-theme-default-accent, #ff5252);
+  color: var(--md-theme-default-text-primary-on-accent, #fff);
 }
 
 .tt-cursor {
-  background-color: #26a69a;
+  background-color: var(--md-theme-default-accent, #ff5252);
+  color: var(--md-theme-default-text-primary-on-accent, #fff);
 }
 
 .bootstrap-tagsinput .tag {
   position: relative;
-  top: 10px;
+  //top: 10px;
 }
 
 .tag-center {
@@ -73,7 +80,7 @@
 
 .custom-wrapper .bootstrap-tagsinput .twitter-typeahead {
   position: relative;
-  top: 10px;
+  top: 5px;
   left: 10px;
   margin: 0;
 }

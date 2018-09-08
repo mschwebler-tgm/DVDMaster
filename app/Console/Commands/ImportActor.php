@@ -5,12 +5,14 @@ namespace App\Console\Commands;
 use App\Actor;
 use App\Movie;
 use App\MovieHasActor;
+use App\Series;
+use App\SeriesHasActor;
 use Illuminate\Console\Command;
 use Tmdb\Repository\MovieRepository;
 
 class ImportActor extends Command
 {
-    protected $signature = 'import:actor {tmdbId} {appendToMovie?}';
+    protected $signature = 'import:actor {tmdbId} {appendToMovie?} {appendToSeries?}';
     protected $description = 'Command description';
 
     private $movieDb;
@@ -48,6 +50,16 @@ class ImportActor extends Command
                     ]);
                 }
             }
+            $seriesId = $this->argument('appendToSeries');
+            if ($seriesId) {
+                $dbSeries = Series::where('tmdb_id', $seriesId)->first();
+                if ($dbSeries) {
+                    SeriesHasActor::firstOrCreate([
+                        'actor_id' => $actor->id,
+                        'series_id' => $dbSeries->id
+                    ]);
+                }
+            }
             return $actor;
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -60,6 +72,7 @@ class ImportActor extends Command
         $actor->birthday = $actorRes['birthday'] ? $actorRes['birthday'] : null;
         $actor->deathday = $actorRes['deathday'] ? $actorRes['deathday'] : null;
         $actor->imdb_id = $actorRes['imdb_id'] ? $actorRes['imdb_id'] : null;
+        $actor->tmdb_id = $actorRes['id'] ? $actorRes['id'] : null;
         $actor->name = $actorRes['name'] ? $actorRes['name'] : null;
         $actor->also_known_as = $actorRes['also_known_as'] && count($actorRes['also_known_as']) > 0 ? $actorRes['also_known_as'][0] : null;
         $actor->gender = $actorRes['gender'] ? $actorRes['gender'] : null;

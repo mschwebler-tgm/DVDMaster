@@ -102,10 +102,14 @@ class MovieDao
         $movie = Movie::create([
             "custom_rating" => isset($movie['custom_rating']) ? $movie['custom_rating'] : null,
             "title" => isset($movie['title']) ? $movie['title'] : null,
+            "duration" => isset($movie['duration']) ? $movie['duration'] : null,
             "backdrop_path" => $backdropPath ? Storage::url($backdropPath) : null,
             "poster_path" => $backdropPath ? Storage::url($posterPath) : null,
             "overview" => isset($movie['overview']) ? $movie['overview'] : null,
             "release_date" => isset($movie['release_date']) ? $movie['release_date'] : null,
+            "blue_ray" => isset($movie['blue_ray']) ? $movie['blue_ray'] : null,
+            "true_story" => isset($movie['true_story']) ? $movie['true_story'] : null,
+            "based_on_book" => isset($movie['based_on_book']) ? $movie['based_on_book'] : null,
         ]);
 
         return $movie;
@@ -126,10 +130,11 @@ class MovieDao
         $rental = Rental::where([['movie_id', '=', $movie->id], ['user_id', '=', $user->id], ['state', '=', 'pending']])->first();
         $rental->setCreatedAt(Carbon::now());
         $rental->save();
+        $rental->load('user');
         return $rental;
     }
 
-    public function retrieve(Movie $movie, $date, $quality)
+    public function retrieve(Movie $movie, $like, $date, $quality)
     {
         if (!$date) {
             $date = Carbon::now();
@@ -139,6 +144,7 @@ class MovieDao
         if (!$rental) {
             return null;
         }
+        $rental->like = $like;
         $rental->retrieved_at = $date;
         $rental->quality = $quality;
         $rental->state = 'complete';

@@ -47,7 +47,7 @@ class ImportMovie extends Command
             $dbActor = Actor::where('tmdb_id', $actor->getId())->first();
             if (!$dbActor || $this->actorNotComplete($dbActor)) {
                 $this->info('dispatching ImportActor for ' . $actor->getName());
-                \App\Jobs\ImportActor::dispatch($actor->getId(), $movie->tmdb_id);
+                \App\Jobs\ImportActor::dispatch($actor->getId(), 'Movie', $movie->tmdb_id);
             } else {
                 MovieHasActor::firstOrCreate([
                     'actor_id' => $dbActor->id,

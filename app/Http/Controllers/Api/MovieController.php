@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Movie;
 use App\Service\Dao\MovieDao;
+use App\Service\Facades\ContentTransformer;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,8 +21,9 @@ class MovieController extends Controller
 
     public function index()
     {
-        return Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')
-            ->orderBy('popularity', 'desc')->paginate();
+        $movies = Movie::with('actors', 'genres', 'pendingRental.user')
+            ->orderBy('title', 'asc')->paginate();
+        return ContentTransformer::transformContentPaginaton($movies, 'movies');
     }
 
     public function store(Request $request)
@@ -31,7 +33,7 @@ class MovieController extends Controller
             abort(500);
         }
 
-        $isCustom = (bool) $request->get('is_custom');
+        $isCustom = $request->get('is_custom') === 'true';
         if ($isCustom) {
             $posterPath = null;
             $posterPath = $this->savePoster($request);
@@ -39,13 +41,22 @@ class MovieController extends Controller
             $backdropPath = $this->saveBackdropImage($request);
             $this->movieDao->insertFromCustomArray($request->all(), $posterPath, $backdropPath);
         } else if ($isCustom === false) {
-            Artisan::call('import:movie', ['tmdbId' => $movie['id']]);
+            $reqMovie = json_decode($movie, true);
+            $movie = new Movie();
+            $movie->tmdb_id = $reqMovie['id'];
+            $movie->title = isset($reqMovie['title']) ? $reqMovie['title'] : '';
+            $movie->comment = isset($reqMovie['comment']) ? $reqMovie['comment'] : null;
+            $movie->blue_ray = isset($reqMovie['blue_ray']) ? $reqMovie['blue_ray'] : false;
+            $movie->based_on_book = isset($reqMovie['based_on_book']) ? $reqMovie['based_on_book'] : false;
+            $movie->true_story = isset($reqMovie['true_story']) ? $reqMovie['true_story'] : false;
+            $movie->save();
+            Artisan::call('import:movie', ['tmdbId' => $reqMovie['id']]);
         }
     }
 
     public function show($id)
     {
-        $movie = Movie::with('rentedBy', 'actors', 'genres', 'pendingRental')->find($id);
+        $movie = Movie::with('actors', 'genres', 'pendingRental.user')->find($id);
         if (!$movie) {
             abort(404);
         }
@@ -78,7 +89,7 @@ class MovieController extends Controller
 
     public function borrowTo($movieId, $userId)
     {
-        $movie = Movie::find($movieId);
+        $movie = Movie::with('pendingRental.user')->where('id', $movieId)->first();
         $user = User::find($userId);
         if (!$movie || !$user) {
             abort(404);
@@ -94,7 +105,7 @@ class MovieController extends Controller
             abort(404);
         }
 
-        return $this->movieDao->retrieve($movie, $request->get('date'), $request->get('quality'));
+        return $this->movieDao->retrieve($movie, $request->get('like'), $request->get('date'), $request->get('quality'));
     }
 
     public function rateMovie($movieId, Request $request)

@@ -1,5 +1,5 @@
 <template>
-    <div :id="identifier" style="height: 120px; position: relative; width: 100%; display: flex; align-items: center; justify-content: center;">
+    <div :id="identifier" style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding-bottom: 1px">
         <loader v-show="loading"></loader>
     </div>
 </template>
@@ -7,45 +7,36 @@
 <script>
     export default {
         props: ['toDispatch', 'identifier'],
-        data() {
-            return {
-                loading: false
-            }
-        },
         mounted() {
             this.initScrollSpy();
         },
         methods: {
             initScrollSpy() {
                 let paginatorEl = $('#' + this.identifier);
-                let $window = $(window);
-                $window.scroll(() => {
-                    let top_of_element = paginatorEl.offset().top;
-                    let bottom_of_element = paginatorEl.offset().top + paginatorEl.outerHeight();
-                    let bottom_of_screen = $window.scrollTop() + window.innerHeight;
-                    let top_of_screen = $window.scrollTop();
-
-                    if ((bottom_of_screen > top_of_element) && (top_of_screen < bottom_of_element)) {
-                        this.paginate();
-                    }
+                let scrollContainer = $('#app-content').parent();
+                scrollContainer.scroll(() => {
+                    // https://stackoverflow.com/questions/16308037/detect-when-elements-within-a-scrollable-div-are-out-of-view
+                    let contHeight = scrollContainer.height();
+                    let elemTop = paginatorEl.offset().top - scrollContainer.offset().top;
+                    let elemBottom = elemTop + paginatorEl.height();
+                    let isTotal = (elemTop >= 0 && elemBottom <= contHeight);
+                    isTotal && this.paginate();
                 });
             },
             paginate() {
-                if (!this.loading && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
-                    console.log('loading');
-                    this.loading = true;
-                    this.$store.dispatch(this.toDispatch).then(() => {
-                        this.loading = false;
-                    });
+                if (!this.$store.getters.MOVIES_GET_LOADING && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
+                    this.$store.dispatch(this.toDispatch);
                 }
+            }
+        },
+        computed: {
+            loading() {
+                return this.$store.getters.MOVIES_GET_LOADING;
             }
         }
     }
 </script>
 
 <style scoped>
-    #paginator {
-        padding-top: 160px;
-        position: relative;
-    }
+
 </style>

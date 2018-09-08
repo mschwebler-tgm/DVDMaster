@@ -10,10 +10,16 @@ class Movie extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $casts = [
+        'based_on_book' => 'boolean',
+        'blue_ray' => 'boolean',
+        'belongs_to_collection' => 'boolean',
+        'true_story' => 'boolean',
+    ];
 
     public function rentedBy()
     {
-        return $this->belongsToMany('App\User', 'rentals', 'movie_id', 'user_id');
+        return $this->belongsToMany('App\User', 'rentals', 'movie_id', 'user_id')->whereNull('retrieved_at');
     }
 
     public function actors()

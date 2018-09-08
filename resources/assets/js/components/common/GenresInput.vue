@@ -7,9 +7,13 @@
 <script>
     export default {
         props: ['initial', 'classes'],
+        data() {
+            return {
+                preventEmit: false
+            }
+        },
         mounted() {
             this.initTagsinput();
-            this.initValues();
         },
         methods: {
             initTagsinput() {
@@ -32,16 +36,23 @@
                     }
                 });
 
-                this.initValues(input);
+                this.initValues(input, this.initial);
 
-                input.on('itemAdded', () => this.$emit('change', input.tagsinput('items')));
-                input.on('itemRemoved', () => this.$emit('change', input.tagsinput('items')));
+                input.on('itemAdded', () => !this.preventEmit && this.$emit('change', input.tagsinput('items')));
+                input.on('itemRemoved', () => !this.preventEmit && this.$emit('change', input.tagsinput('items')));
             },
-            initValues(input) {
-                if (!this.initial || !input) return;
-                for (let genre of this.initial) {
+            initValues(input, values) {
+                if (!values || !input) return;
+                this.preventEmit = true;
+                for (let genre of values) {
                     input.tagsinput('add', genre);
                 }
+                this.preventEmit = false;
+            },
+            update(genres) {
+                let input = $('#custom_genres');
+                input.tagsinput('removeAll');
+                this.initValues(input, genres);
             }
         }
     }

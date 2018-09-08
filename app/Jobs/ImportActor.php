@@ -14,16 +14,18 @@ class ImportActor implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $tmdbId;
-    private $appendToMovie;
+    private $appendTo;
+    private $appendToId;
 
-    public function __construct($tmdbId, $appendToMovie)
+    public function __construct($tmdbId, $appendTo, $id)
     {
         $this->tmdbId = $tmdbId;
-        $this->appendToMovie = $appendToMovie;
+        $this->appendTo = $appendTo;
+        $this->appendToId = $id;
     }
 
     public function handle()
     {
-        Artisan::call('import:actor', ['tmdbId' => $this->tmdbId, 'appendToMovie' => $this->appendToMovie]);
+        Artisan::call('import:actor', ['tmdbId' => $this->tmdbId, "appendTo{$this->appendTo}" => $this->appendToId]);
     }
 }

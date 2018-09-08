@@ -14,16 +14,11 @@
     <script src="/js/app.js" defer></script>
     <script src="/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js" defer></script>
     <script src="/lib/typeahead/typeahead.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-    <script src="https://materializecss.com/extras/noUiSlider/nouislider.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="https://materializecss.com/extras/noUiSlider/nouislider.css" rel="stylesheet">
 
     <!-- Styles -->
     <link href="/css/app.css" rel="stylesheet">
@@ -44,57 +39,49 @@
             </div>
         </div>
     </div>
-    <div class="navbar-fixed">
-        @guest
-        @else
-            <ul id="dropdown1" class="dropdown-content">
-                <li>
-                    <a class="dropdown-item" href="/logout"
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        {{ __('Logout') }}
-                    </a>
-                    <form id="logout-form" action="/logout" method="POST"
-                          style="display: none;">
-                        @csrf
-                    </form>
-                </li>
-            </ul>
-        @endguest
+    <root>
+        <template slot="topRight">
+            @guest
+                <span class="md-subheading pointer" style="line-height: 48px; vertical-align: center" @click="toLogin">{{ __('Login') }}</span>&nbsp;&nbsp;&nbsp;
+                <span class="md-subheading pointer" style="line-height: 48px; vertical-align: center" @click="toRegistration">{{ __('Register') }}</span>
+            @else
+                <md-button @click="showSidepanel = true" class="md-xsmall-hide">{{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}</md-button>
+            @endguest
+        </template>
+        <template slot="content">
+            <md-button @click="showSidepanel = true" class="md-icon-button" id="menu-button" style="position: absolute; top: 8px; right: 4px;">
+                <md-icon>menu</md-icon>
+            </md-button>
+            @yield('content')
+        </template>
+    </root>
+    <md-drawer class="md-right" style="max-width: 300px;" :md-active.sync="showSidepanel">
+        <md-toolbar class="md-transparent" md-elevation="0">
+            <span class="md-title">{{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}</span>
+        </md-toolbar>
 
-        <nav>
-            <div class="nav-wrapper" style="overflow: hidden;">
-                <a class="brand-logo left" href="{{ url('/') }}" style="padding-left: 20px;">
-                    {{ config('app.name', 'DVD Master') }}
-                </a>
-                <div class="container">
-                    <ul id="nav-mobile" class="left hide-on-med-and-down">
-                        <li><router-link to="/">Home</router-link></li>
-                        <li><router-link to="/addMovie">Add Movie</router-link></li>
-                        <li><router-link to="/rentals">Rentals</router-link></li>
-                    </ul>
-                    <search-bar></search-bar>
-                </div>
-                <ul class="right hide-on-med-and-down" style="position: absolute; top: 0; right: 0;">
-                    <!-- Dropdown Trigger -->
-                    @guest
-                        <li><a href="/login">{{ __('Login') }}</a></li>
-                        <li><a href="/register">{{ __('Register') }}</a></li>
-                    @else
-                        <li><a class="dropdown-trigger" href="#" data-target="dropdown1">{{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}<i
-                                        class="material-icons right">arrow_drop_down</i></a></li>
-                    @endguest
-                </ul>
-            </div>
-        </nav>
-    </div>
-
-    <main class="py-4">
-        @yield('content')
-    </main>
+        <md-list>
+            <md-list-item class="pointer">
+                <md-icon>power_settings_new</md-icon>
+                <span class="md-list-item-text" onclick="document.getElementById('logout-form').submit();">Logout</span>
+            </md-list-item>
+        </md-list>
+    </md-drawer>
+    <md-snackbar md-position="center" :md-duration="toastDuration" :md-active.sync="toastShow" md-persistent>
+        <span v-text="toastText"></span>
+        <md-button class="md-primary" @click="toastShow = false">Close</md-button>
+    </md-snackbar>
+    <form id="logout-form" action="/logout" method="POST"
+          style="display: none;">
+        @csrf
+    </form>
 </div>
 
 <script>
-    window.user_id = {{ isset(Auth::user()->id) ? Auth::user()->id : null }};
+    window.user_id = {{ isset(Auth::user()->id) ? Auth::user()->id : 0 }};
+    window.isAdmin = !!{{ isset(Auth::user()->role) && Auth::user()->role === 'admin'? 1 : 0 }};
+    window.isLogged = !!{{ Auth::user() != null ? 1 : 0 }};
+    window.user_key = '{{ isset(Auth::user()->api_key) ? Auth::user()->api_key : null }}';
 </script>
 </body>
 </html>

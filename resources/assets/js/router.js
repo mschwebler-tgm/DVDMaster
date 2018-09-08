@@ -1,26 +1,25 @@
 import VueRouter from 'vue-router'
 
-//Define route components
-const Foo = {template: '<div>Foo</div>'};
-
 // lazy load components
-const MovieCards = (resolve) => require(['./components/MovieCards'], resolve);
-const AddMovie = (resolve) => require(['./components/AddMovie'], resolve);
+const AddMovie = (resolve) => require(['./components/AddMoviePage/AddMovie'], resolve);
 const MoviePage = (resolve) => require(['./components/MoviePage/MoviePage'], resolve);
 const MovieEdit = (resolve) => require(['./components/MoviePage/Edit'], resolve);
 const MovieView = (resolve) => require(['./components/MoviePage/View'], resolve);
+const ContentList = (resolve) => require(['./components/Content/Index'], resolve);
 
 export default new VueRouter({
     mode: 'history',
     base: __dirname,
     routes: [
         {
-            path: '/',
-            component: MovieCards
+            path: '/movies',
+            name: 'MOVIES',
+            component: ContentList
         },
         {
-            path: '/foo',
-            component: Foo
+            path: '/series',
+            name: 'SERIES',
+            component: ContentList
         },
         {
             path: '/addMovie',
@@ -40,6 +39,10 @@ export default new VueRouter({
                     component: MovieView
                 }
             ]
+        },
+        {
+            path: '/',
+            redirect: '/movies'
         }
     ]
 });

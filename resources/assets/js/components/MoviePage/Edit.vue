@@ -1,6 +1,6 @@
 <template>
-    <div class="z-depth-3 movie-edit">
-        <div class="pictures">
+    <div class="md-elevation-3 movie-edit">
+        <div class="pictures"> <!-- images -->
             <div class="movie-cover" :style="{'background-image': coverSrc}"
                  @click="openCustomCoverDialog()">
                 <div class="darken">
@@ -16,73 +16,46 @@
                 <input type="file" id="custom_backdrop" style="display: none" accept="image/*" @change="previewBackdrop">
             </div>
         </div>
-        <div class="row" style="padding-top: 20px; margin-bottom: 0;">
-            <div class="input-field col s6">
-                <input id="custom_title" type="text" class="validate" v-model="movie.title">
-                <label for="custom_title">Title</label>
+        <div class="pad" style="position: relative;">
+            <md-field id="title">
+                <label>Title</label>
+                <md-input v-model="movie.title" placeholder="Title"></md-input>
+            </md-field>
+            <div style="position: absolute; top: 15px; right: 15px;">
+                <movie-rating :movie="movie" @newCustomRating="updateRating(movie, $event)"></movie-rating>
             </div>
-            <div class="input-field col s6">
-                <star-rating :increment="0.5" style="z-index: 1000;" inactive-color="#e6e6e6" class="right"
-                             active-color="#FFD700" v-model="movie.custom_rating" :show-rating="false"
-                             :border-width="0" :star-size="40"></star-rating>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s6">
-                <input id="comment" type="text" class="validate" v-model="movie.comment">
-                <label for="comment">Comment</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <textarea id="custom_overview" class="validate materialize-textarea" v-model="movie.overview"></textarea>
-                <label for="custom_overview">Overview</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <label class="active">Actors</label>
+            <md-field>
+                <label>Overview</label>
+                <md-textarea v-model="movie.overview" md-autogrow></md-textarea>
+            </md-field>
+            <md-field id="comment">
+                <label>Comment</label>
+                <md-input v-model="movie.comment" placeholder="Comment"></md-input>
+            </md-field>
+            <div style="margin-bottom: 24px;">
+                <label>Actors</label>
                 <actors-input @change="updateActors" :initial="movie.actors"></actors-input>
             </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <label class="active">Genres</label>
+            <div style="margin-bottom: 24px;">
+                <label>Genres</label>
                 <genres-input @change="updateGenres" :initial="movie.genres"></genres-input>
             </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s3">
-                <label class="active">Release date</label>
-                <input type="text" class="datepicker" v-model="movie.release_date">
+            <md-datepicker v-model="movie.release_date" md-immediately id="release-date">
+                <label>Release date</label>
+            </md-datepicker>
+            <md-checkbox v-model="movie.blue_ray"><md-icon>album</md-icon>&nbsp;&nbsp;Blue-Ray</md-checkbox><br>
+            <md-checkbox v-model="movie.based_on_book"><md-icon>event</md-icon>&nbsp;&nbsp;Based on book</md-checkbox><br>
+            <md-checkbox v-model="movie.true_story"><md-icon>book</md-icon>&nbsp;&nbsp;True Story</md-checkbox><br>
+            <div class="flex flex-justify-end">
+                <md-button class="md-raised md-accent" @click="save">Save</md-button>
             </div>
-        </div>
-        <div class="row">
-            <div style="padding-left: 15px;">
-                <label>
-                    <input type="checkbox" v-model="movie.blue_ray" />
-                    <span>Blue-Ray</span>
-                </label>
-                <br><br>
-                <label>
-                    <input type="checkbox" v-model="movie.based_on_book" />
-                    <span>Based on book</span>
-                </label>
-                <br><br>
-                <label>
-                    <input type="checkbox" v-model="movie.true_story" />
-                    <span>True Story</span>
-                </label>
-            </div>
-        </div>
-        <div class="save">
-            <a class="waves-effect waves-light btn right" @click="save()">Save</a>
         </div>
     </div>
 </template>
 
 <script>
     import StarRating from 'vue-star-rating';
+    import moment from 'moment';
 
     export default {
         props: ['movie'],
@@ -91,23 +64,6 @@
                 custom_backdrop_preview: null,
                 custom_poster_preview: null
             }
-        },
-        mounted() {
-            M.updateTextFields();
-            M.textareaAutoResize($('#custom_overview'));
-            M.Datepicker.init(document.querySelectorAll('.datepicker'), {
-                autoclose: true,
-                format: 'dd. mm. yyyy',
-                yearRange: [1950, (new Date()).getFullYear()],
-                firstDay: 1,
-                onSelect: dateEvent => {
-                    let date = new Date(dateEvent);
-                    let year = date.getFullYear();
-                    let month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
-                    let day = date.getDay() < 10 ? '0' + date.getDay() : date.getDay();
-                    this.customMovie.release_date = year + '-' + month + '-' + day;
-                },
-            });
         },
         methods: {
             openCustomCoverDialog() {
@@ -147,6 +103,10 @@
             },
             save() {
                 let payload = new FormData();
+                if (this.movie.release_date) {
+                    this.movie.release_date = moment(this.movie.release_date).format('YYYY-MM-DD');
+                }
+
                 payload.set('movie', JSON.stringify(this.movie));
                 let coverInput = $('#custom_cover')[0];
                 if (coverInput.files && coverInput.files[0]) {
@@ -226,5 +186,19 @@
         display: flex;
         justify-content: flex-end;
         padding: 0 15px 15px 15px;
+    }
+
+    #title, #comment, #release-date {
+        width: 50%;
+    }
+
+    @media only screen and (max-width: 600px){
+        #title {
+            margin-top: 55px;
+        }
+
+        #title, #comment, #release-date {
+            width: 100%;
+        }
     }
 </style>
