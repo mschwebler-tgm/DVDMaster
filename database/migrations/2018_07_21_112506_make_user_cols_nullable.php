@@ -1,22 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
 
 class MakeUserColsNullable extends Migration
 {
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->nullable()->change();
-        });
+        DB::statement('ALTER TABLE users MODIFY email VARCHAR(255) NULL');
     }
 
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->unique()->change();
-        });
+        DB::statement('ALTER TABLE users MODIFY email VARCHAR(255) NOT NULL');
     }
 }
