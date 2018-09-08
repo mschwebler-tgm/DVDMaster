@@ -171,6 +171,7 @@
                     res = JSON.parse(res);
                     if (res.results && res.results.length > 0) {
                         this.getSeries(res.results.shift().id);
+                        this.removedSeasons = [];
                     } else {
                         this.$root.toast('No search results');
                     }

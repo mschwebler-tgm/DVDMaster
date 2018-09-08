@@ -29,6 +29,7 @@ class ImportSeries extends Command
     public function handle()
     {
         $tmdbId = $this->argument('tmdbId');
+        $seasonsToExclude = explode(',', $this->argument('seasonsToExclude'));
         $series = Series::where('tmdb_id', $tmdbId)->first();
         if ($series) {
             $this->info('Movie already in database. Updating...');
@@ -70,6 +71,7 @@ class ImportSeries extends Command
 
         /** @var \Tmdb\Model\Tv\Season $seasonRes */
         foreach ($seriesRes->getSeasons() as $seasonRes) {
+            if (in_array($seasonRes->getId(), $seasonsToExclude)) { continue; }
             $seasonRes = $this->seasonDB->load($series->tmdb_id, $seasonRes->getSeasonNumber());
             if (!$seasonRes) { continue; }
             $season = Season::where('tmdb_id', $seasonRes->getId())->first();

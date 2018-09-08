@@ -45,7 +45,7 @@ class SeriesController extends Controller
                 $series->true_story = isset($reqSeries['true_story']) ? $reqSeries['true_story'] : false;
                 $series->save();
             }
-            Artisan::call('import:series', ['tmdbId' => $reqSeries['id'], 'seasonsToExclude' => $request->get('removed_seasons')]);
+            Artisan::call('import:series', ['tmdbId' => $reqSeries['id'], 'seasonsToExclude' => trim($request->get('removed_seasons'), '[]')]);
         }
     }
 
