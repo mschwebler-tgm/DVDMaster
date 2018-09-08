@@ -14,6 +14,7 @@ import 'vue-material/dist/vue-material.min.css';
 Vue.component('user-modal', require('./components/MoviePage/UserModal.vue'));
 Vue.component('retrieval-modal', require('./components/MoviePage/RetrievalModal.vue'));
 Vue.component('movie-rating', require('./components/common/MovieRating.vue'));
+Vue.component('content-rating', require('./components/common/ContentRating.vue'));
 Vue.component('actors-input', require('./components/common/ActorsInput.vue'));
 Vue.component('genres-input', require('./components/common/GenresInput.vue'));
 Vue.component('search-bar', require('./components/SearchBar.vue'));
@@ -22,7 +23,7 @@ Vue.component('dashboard', require('./components/Dashboard.vue'));
 Vue.component('loader', require('./components/common/Loader.vue'));
 
 // Movies
-Vue.component('home-filter', require('./components/DVDPage/Filter.vue'));
+Vue.component('home-filter', require('./components/common/Filter.vue'));
 
 // General view
 Vue.component('content-list', require('./components/Content/ListView.vue'));

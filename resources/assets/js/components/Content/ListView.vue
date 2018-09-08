@@ -4,40 +4,18 @@
             <content-list-item :content="content" :type="type"></content-list-item>
         </div>
         <loader v-if="searchingActive"></loader>
-        <paginator :identifier="data.type + '-list'" :toDispatch="toDispatch"></paginator>
+        <paginator :identifier="type + '-list'" :toDispatch="paginateAction"></paginator>
     </div>
 </template>
 
 <script>
     export default {
-        props: ['type'],
+        props: ['type', 'data', 'loading', 'searchingActive', 'paginateAction'],
         methods: {
             navigateToDetailPage(event, content) {
                 if (event.target.classList.value.indexOf('toContent') !== -1 || this.$root.isMobile) {
                     this.$router.push(content.url);
                 }
-            }
-        },
-        computed: {
-            data() {
-                return this.type === 'movies' ?
-                    this.$store.getters.MOVIES_GET_ALL :
-                    this.$store.getters.SERIES_GET_ALL;
-            },
-            loading() {
-                return this.type === 'movies' ?
-                    this.$store.getters.MOVIES_GET_LOADING :
-                    this.$store.getters.SERIES_GET_LOADING;
-            },
-            searchingActive() {
-                return this.type === 'movies' ?
-                    this.$store.getters.MOVIES_GET_SEARCHING :
-                    this.$store.getters.SERIES_GET_SEARCHING;
-            },
-            toDispatch() {
-                return this.type === 'movies' ?
-                    'MOVIES_ACTION_GET_LOADNEXTPAGE' :
-                    'SERIES_ACTION_GET_LOADNEXTPAGE';
             }
         }
     }

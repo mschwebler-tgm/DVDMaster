@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <movie-rating :movie="content" @newCustomRating="updateRating($event)" class="desktop-only"></movie-rating>
+        <content-rating :content="content" :initialCustomValue="content.custom_rating" class="desktop-only"></content-rating>
     </div>
 </template>
 
@@ -78,9 +78,6 @@
                 }
                 return names;
             },
-            updateRating(rating) {
-                axios.post(this.content.api + '/rate', {rating});
-            }
         },
         computed: {
             rentedBy() {

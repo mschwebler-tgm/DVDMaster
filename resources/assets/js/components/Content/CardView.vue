@@ -5,19 +5,19 @@
                 <div class="image" :style="'background-image: url(' + $root.getImagePath(content.poster_path, 'w154') + ')'">
                     <div class="darkener pointer pad" @click="$router.push(content.url)">
                         <span class="md-headline">{{ content.title }}</span>
-                        <movie-rating :movie="content" :starSize="20"></movie-rating>
+                        <content-rating :content="content" :starSize="20" :initialCustomValue="content.custom_rating"></content-rating>
                     </div>
                 </div>
             </div>
             <div v-if="placeholders" v-for="n in placeholders" style="flex: 1"></div>
         </div>
-        <paginator identifier="content-cards" :toDispatch="toDispatch"></paginator>
+        <paginator identifier="content-cards" :toDispatch="paginateAction"></paginator>
     </div>
 </template>
 
 <script>
     export default {
-        props: ['type'],
+        props: ['type', 'data', 'loading', 'searchingActive', 'paginateAction'],
         data() {
             return {
                 viewMode: localStorage.getItem('viewMode') || 'grid',
@@ -33,10 +33,6 @@
             }
         },
         methods: {
-            setViewMode(viewMode) {
-                this.viewMode = viewMode;
-                localStorage.setItem('viewMode', viewMode);
-            },
             updatePlaceholders() {
                 let contentAmount = (this.type === 'movies' ?
                     this.$store.getters.MOVIES_GET_ALL.length :
@@ -60,28 +56,6 @@
                 }
             }
         },
-        computed: {
-            data() {
-                return (this.type === 'movies' ?
-                    this.$store.getters.MOVIES_GET_ALL :
-                    this.$store.getters.SERIES_GET_ALL);
-            },
-            loading() {
-                return (this.type === 'movies' ?
-                    this.$store.getters.MOVIES_GET_LOADING :
-                    this.$store.getters.SERIES_GET_LOADING);
-            },
-            searchingActive() {
-                return (this.type === 'movies' ?
-                    this.$store.getters.MOVIES_GET_SEARCHING :
-                    this.$store.getters.SERIES_GET_SEARCHING);
-            },
-            toDispatch() {
-                return (this.type === 'movies' ?
-                    'MOVIES_ACTION_GET_LOADNEXTPAGE' :
-                    'SERIES_ACTION_GET_LOADNEXTPAGE');
-            }
-        }
     }
 </script>
 

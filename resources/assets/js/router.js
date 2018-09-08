@@ -5,8 +5,7 @@ const AddMovie = (resolve) => require(['./components/AddMoviePage/AddMovie'], re
 const MoviePage = (resolve) => require(['./components/MoviePage/MoviePage'], resolve);
 const MovieEdit = (resolve) => require(['./components/MoviePage/Edit'], resolve);
 const MovieView = (resolve) => require(['./components/MoviePage/View'], resolve);
-const DVDPage = (resolve) => require(['./components/DVDPage/Index'], resolve);
-const SeriesPage = (resolve) => require(['./components/SeriesPage/Index'], resolve);
+const ContentList = (resolve) => require(['./components/Content/Index'], resolve);
 
 export default new VueRouter({
     mode: 'history',
@@ -14,11 +13,13 @@ export default new VueRouter({
     routes: [
         {
             path: '/movies',
-            component: DVDPage
+            name: 'MOVIES',
+            component: ContentList
         },
         {
             path: '/series',
-            component: SeriesPage
+            name: 'SERIES',
+            component: ContentList
         },
         {
             path: '/addMovie',
