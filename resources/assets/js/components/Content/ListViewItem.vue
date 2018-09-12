@@ -10,7 +10,7 @@
                             <md-chip class="genre-chip">{{ genre }}</md-chip>
                         </template>
                     </div>
-                    <div class="duration md-caption desktop-only">{{ content.duration }} min. {{ (type === 'series' ? '/ Episode' : '') }}</div>
+                    <div class="duration md-caption desktop-only">{{ content.duration }} min. {{ (type === 'SERIES' ? '/ Episode' : '') }}</div>
                 </div>
             </div>
             <div class="hints toContent">
