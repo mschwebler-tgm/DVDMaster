@@ -4,13 +4,16 @@
             <content-list-item :content="content" :type="type"></content-list-item>
         </div>
         <loader v-if="searchingActive"></loader>
-        <paginator :identifier="type + '-list'" :toDispatch="paginateAction"></paginator>
+        <paginator :identifier="type + '-list'"
+                   :toDispatch="paginateAction"
+                   :loading="loading"
+                   :nextPageUrl="nextPageUrl"></paginator>
     </div>
 </template>
 
 <script>
     export default {
-        props: ['type', 'data', 'loading', 'searchingActive', 'paginateAction'],
+        props: ['type', 'data', 'loading', 'searchingActive', 'paginateAction', 'nextPageUrl'],
         methods: {
             navigateToDetailPage(event, content) {
                 if (event.target.classList.value.indexOf('toContent') !== -1 || this.$root.isMobile) {

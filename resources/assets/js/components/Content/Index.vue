@@ -22,12 +22,14 @@
                           :data="content"
                           :loading="loading"
                           :searchingActive="searchingActive"
+                          :nextPageUrl="nextPageUrl"
                           :paginateAction="actions.paginateAction"></content-list>
             <content-cards v-show="!listView"
                            :type="type"
                            :data="content"
                            :loading="loading"
                            :searchingActive="searchingActive"
+                           :nextPageUrl="nextPageUrl"
                            :paginateAction="actions.paginateAction"></content-cards>
         </div>
     </div>
@@ -46,6 +48,7 @@
                     all: this.$route.name + '_GET_ALL',  // MOVIES_GET_ALL
                     loading: this.$route.name + '_GET_LOADING',  // MOVIES_GET_LOADING
                     searchingActive: this.$route.name + '_GET_SEARCHING',  // MOVIES_GET_SEARCHING
+                    nextPageUrl: this.$route.name + '_GET_NEXT_PAGE_URL',  // MOVIES_GET_NEXT_PAGE_URL
                 },
                 actions: {
                     firstPage: this.$route.name + '_ACTION_GET_FIRSTPAGE',  // MOVIES_ACTION_GET_FIRSTPAGE,
@@ -67,6 +70,7 @@
             initGetters(module) {
                 this.getters.all = module + '_GET_ALL';  // MOVIES_GET_ALL
                 this.getters.loading = module + '_GET_LOADING';  // MOVIES_GET_LOADING
+                this.getters.nextPageUrl = module + '_GET_NEXT_PAGE_URL';  // MOVIES_GET_SEARCHING
                 this.getters.searchingActive = module + '_GET_SEARCHING';  // MOVIES_GET_SEARCHING
             },
             initActions(module) {
@@ -99,6 +103,9 @@
             },
             searchingActive() {
                 return this.$store.getters[this.getters.searchingActive];
+            },
+            nextPageUrl() {
+                return this.$store.getters[this.getters.nextPageUrl];
             }
         }
     }

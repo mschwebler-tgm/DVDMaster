@@ -6,7 +6,7 @@
 
 <script>
     export default {
-        props: ['toDispatch', 'identifier'],
+        props: ['toDispatch', 'identifier', 'loading', 'nextPageUrl'],
         mounted() {
             this.initScrollSpy();
         },
@@ -24,14 +24,9 @@
                 });
             },
             paginate() {
-                if (!this.$store.getters.MOVIES_GET_LOADING && this.$store.getters.MOVIES_GET_NEXT_PAGE_URL) {
+                if (!this.loading && this.nextPageUrl) {
                     this.$store.dispatch(this.toDispatch);
                 }
-            }
-        },
-        computed: {
-            loading() {
-                return this.$store.getters.MOVIES_GET_LOADING;
             }
         }
     }
