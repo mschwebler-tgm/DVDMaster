@@ -1,19 +1,22 @@
 <template>
-    <md-autocomplete v-model="search" @md-changed="getActors" @md-opened="getActors" @md-selected="selectItem"
-                     :md-options="items" v-if="items">
-        <label>{{ (type.charAt(0).toUpperCase() + type.slice(1)) }}</label>
+    <div>
+        <md-chip v-for="item in selectedItems" :key="item.id">{{ item.name }}</md-chip>
+        <md-autocomplete v-model="search" @md-changed="getItems" @md-opened="getItems" @md-selected="selectItem" @md-closed="onClose"
+                         :md-options="items" v-if="items">
+            <label>{{ (type.charAt(0).toUpperCase() + type.slice(1)) }}</label>
 
-        <template slot="md-autocomplete-item" slot-scope="{ item, term }">
-            <div v-if="imageKey" style="float: left; width: 50px">
-                <img :src="$root.getImagePath(item[imageKey], 'w45')" class="preview-image">
-            </div>
-            <md-highlight-text :md-term="term">{{ item.name }}</md-highlight-text>
-        </template>
+            <template slot="md-autocomplete-item" slot-scope="{ item, term }">
+                <div v-if="imageKey" style="float: left; width: 50px">
+                    <img :src="$root.getImagePath(item[imageKey], 'w45')" class="preview-image">
+                </div>
+                <md-highlight-text :md-term="term">{{ item.name }}</md-highlight-text>
+            </template>
 
-        <template slot="md-autocomplete-empty" slot-scope="{ term }">
-            No {{ (type.charAt(0).toUpperCase() + type.slice(1)) }} matching "{{ searchTerm }}" were found. <a @click="noop()">Create a new</a> one!
-        </template>
-    </md-autocomplete>
+            <template slot="md-autocomplete-empty" slot-scope="{ term }">
+                No {{ (type.charAt(0).toUpperCase() + type.slice(1)) }} matching "{{ searchTerm }}" were found. <a @click="noop()">Create a new</a> one!
+            </template>
+        </md-autocomplete>
+    </div>
 </template>
 
 <script>
@@ -22,11 +25,13 @@
         data() {
             return {
                 search: null,
-                items: []
+                items: [],
+                selectedItems: [],
+                resetSearchOnClose: false,
             }
         },
         methods: {
-            getActors() {
+            getItems() {
                 this.items = new Promise((resolve, reject) => {
                     let payload = null;
                     if (this.search) {
@@ -46,8 +51,23 @@
                 });
             },
             selectItem(item) {
-                this.search = item.name;
-                this.$emit('selected', item);
+                this.search = '';
+                this.resetSearchOnClose = true;
+                this.getItems();
+                !this.isDuplicate(item) && this.selectedItems.push(item);
+            },
+            onClose() {
+                if (this.resetSearchOnClose) {
+                    this.search = '';
+                }
+                this.resetSearchOnClose = false;
+            },
+            isDuplicate(item) {
+                for (let existing of this.selectedItems) {
+                    if (item.name === existing.name) {
+                        return true;
+                    }
+                }
             }
         },
         computed: {
