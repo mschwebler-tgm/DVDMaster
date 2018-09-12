@@ -61,6 +61,7 @@
         },
         methods: {
             initModule(module) {
+                this.type = this.$route.name;
                 this.initGetters(module);
                 this.initActions(module);
                 if (this.$store.getters[this.getters.all].length === 0) {
@@ -87,11 +88,7 @@
                 localStorage.setItem('listView', val);
             },
             '$route.name'(type) {
-                this.initGetters(type);
-                this.initActions(type);
-                if (this.$store.getters[this.getters.all].length === 0) {
-                    this.$store.dispatch(this.actions.firstPage);
-                }
+                this.initModule(type);
             }
         },
         computed: {
