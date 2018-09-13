@@ -52,7 +52,8 @@
                 actions: {
                     firstPage: this.$route.name + '_ACTION_GET_FIRSTPAGE',  // MOVIES_ACTION_GET_FIRSTPAGE,
                     paginateAction: this.$route.name + '_ACTION_GET_LOADNEXTPAGE'  // MOVIES_ACTION_GET_LOADNEXTPAGE
-                }
+                },
+                heading: ''
             }
         },
         created() {

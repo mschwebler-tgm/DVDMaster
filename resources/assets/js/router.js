@@ -1,7 +1,7 @@
 import VueRouter from 'vue-router'
 
 // lazy load components
-const AddMovie = (resolve) => require(['./components/AddMoviePage/AddMovie'], resolve);
+import AddMovie from './components/AddMoviePage/AddMovie';
 const MoviePage = (resolve) => require(['./components/MoviePage/MoviePage'], resolve);
 const MovieEdit = (resolve) => require(['./components/MoviePage/Edit'], resolve);
 const MovieView = (resolve) => require(['./components/MoviePage/View'], resolve);
