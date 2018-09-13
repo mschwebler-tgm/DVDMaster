@@ -2,7 +2,7 @@
     <div class="md-elevation-1">
         <div class="header">
             <md-toolbar class="md-accent">
-                <h3 class="md-title" style="width: 100px;">{{ label }}</h3>
+                <h3 class="md-title toolbar-label">{{ label }}</h3>
                 <div class="series-toolbar">
                     <md-button class="md-icon-button" @click="toggleFilters">
                         <md-icon>filter_list</md-icon>
@@ -11,8 +11,7 @@
                 </div>
                 <div style="width: 127px;"></div> <!-- compensate absolute view toggle element -->
                 <div class="viewToggle">
-                    <md-switch v-model="listView">{{ listView ? 'Listview' : 'Gridview' }}
-                    </md-switch>
+                    <md-switch v-model="listView" class="desktop-only"><span class="desktop-only">{{ listView ? 'Listview' : 'Gridview' }}</span></md-switch>
                 </div>
             </md-toolbar>
         </div>
@@ -148,6 +147,10 @@
         align-items: center;
     }
 
+    .toolbar-label {
+        width: 100px;
+    }
+
     @media only screen and (max-width: 960px) {
         .viewToggle {
             height: 48px;
@@ -157,6 +160,10 @@
     @media only screen and (max-width: 600px) {
         .viewToggle {
             height: 56px;
+            width: 62px;
+        }
+        .toolbar-label {
+            width: auto;
         }
     }
 </style>
