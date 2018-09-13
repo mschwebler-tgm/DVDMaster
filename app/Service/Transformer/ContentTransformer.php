@@ -15,13 +15,18 @@ class ContentTransformer
      */
     public function transformContentPaginaton($content, $type)
     {
+        $queryParams = request()->all();
+        if (request()->has('page')) {
+            unset($queryParams['page']);
+        }
+        $queryParams = http_build_query($queryParams);
         $transformedContent = [
             'type' => $type,
             'currentPage' => $content->currentPage(),
             'lastPage' => $content->lastPage(),
             'perPage' => $content->perPage(),
-            'prev_page_url' => $content->previousPageUrl() ? $content->previousPageUrl() . '&' . request()->getQueryString() : null,
-            'next_page_url' => $content->nextPageUrl() ? $content->nextPageUrl() . '&' . request()->getQueryString() : null,
+            'prev_page_url' => $content->previousPageUrl() ? $content->previousPageUrl() . '&' . $queryParams : null,
+            'next_page_url' => $content->nextPageUrl() ? $content->nextPageUrl() . '&' . $queryParams : null,
             'first_page_url' => $content->url(0),
             'last_page_url' => $content->url($content->lastPage()),
             'path' => request()->url(),
