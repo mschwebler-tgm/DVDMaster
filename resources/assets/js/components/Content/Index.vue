@@ -7,7 +7,7 @@
                     <md-button class="md-icon-button" @click="toggleFilters">
                         <md-icon>filter_list</md-icon>
                     </md-button>
-                    <md-button class="md-dense md-primary">Clear filter</md-button>
+                    <md-button class="md-dense md-primary" @click="clearFilters">Clear filter</md-button>
                 </div>
                 <div style="width: 127px;"></div> <!-- compensate absolute view toggle element -->
                 <div class="viewToggle">
