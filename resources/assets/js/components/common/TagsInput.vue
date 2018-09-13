@@ -1,6 +1,5 @@
 <template>
     <div>
-        <md-chip v-for="(item, index) in selectedItems" :key="item.id" md-deletable @md-delete="selectedItems.splice(index, 1)">{{ item.name }}</md-chip>
         <md-autocomplete v-model="search" @md-changed="getItems" @md-opened="getItems" @md-selected="selectItem" @md-closed="onClose"
                          :md-options="items" v-if="items">
             <label>{{ (type.charAt(0).toUpperCase() + type.slice(1)) }}</label>
@@ -21,14 +20,16 @@
 
 <script>
     export default {
-        props: ['type', 'imageKey'],
+        props: ['type', 'imageKey', 'value'],
         data() {
             return {
                 search: null,
                 items: [],
-                selectedItems: [],
                 resetSearchOnClose: false,
             }
+        },
+        created() {
+            this.getItems();
         },
         methods: {
             getItems(term) {
@@ -55,7 +56,7 @@
             },
             selectItem(item) {
                 this.resetSearchOnClose = true;
-                !this.isDuplicate(item) && this.selectedItems.push(item);
+                !this.isDuplicate(item) && this.$emit('input', [...this.value, item])
             },
             onClose() {
                 if (this.resetSearchOnClose) {
@@ -65,7 +66,7 @@
                 this.resetSearchOnClose = false;
             },
             isDuplicate(item) {
-                for (let existing of this.selectedItems) {
+                for (let existing of this.value) {
                     if (item.id === existing.id) {
                         return true;
                     }
@@ -81,9 +82,16 @@
 </script>
 
 <style scoped>
+
     .preview-image {
         margin-right: 10px;
         max-width: 45px;
         max-height: 56px;
     }
+
+    .item-chip {
+        margin-bottom: 4px;
+        margin-left: 4px;
+    }
+
 </style>
