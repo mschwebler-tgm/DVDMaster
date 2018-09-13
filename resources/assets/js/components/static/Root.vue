@@ -77,7 +77,6 @@
         },
         mounted() {
             this.initScrollSpy();
-            console.log(this.$refs.tabs.$forceUpdate());
         },
         methods: {
             search() {

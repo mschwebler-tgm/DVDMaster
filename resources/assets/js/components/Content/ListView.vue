@@ -1,7 +1,7 @@
 <template>
     <div class="list-view">
         <div>
-            <fade-transition :duration="200" name="fade" tag="div" v-if="data && !searchingActive" v-for="content in data"  :key="data.id">
+            <fade-transition v-if="data && !searchingActive" v-for="content in data"  :key="data.id" mode="out-in">
                 <div class="movie-row toContent" @click="navigateToDetailPage($event, content)">
                     <content-list-item :content="content" :type="type"></content-list-item>
                 </div>
@@ -13,16 +13,14 @@
                     md-icon="inbox"
                     md-label="No records found :("
                     md-description="Click below or use the shortcut STRG+Q to clear all filter selections and search terms.">
-                <md-button class="md-primary md-raised" @click="$parent.clearFilters();">Clear filter</md-button>
+                <md-button class="md-primary md-raised" @click="onEmptyState">Clear filter</md-button>
             </md-empty-state>
         </div>
 
         <paginator :identifier="type + '-list'"
                    :toDispatch="paginateAction"
                    :loading="loading || searchingActive"
-                   :nextPageUrl="nextPageUrl"
-                   class="top"
-                   style="position: absolute; top: 0; left: 0;"></paginator>
+                   :nextPageUrl="nextPageUrl"></paginator>
     </div>
 </template>
 
@@ -34,6 +32,10 @@
                 if (event.target.classList.value.indexOf('toContent') !== -1 || this.$root.isMobile) {
                     this.$router.push(content.url);
                 }
+            },
+            onEmptyState() {
+                this.$parent.clearFilters();
+                this.$store.dispatch(this.type + '_ACTION_SEARCH');
             }
         }
     }
@@ -42,7 +44,6 @@
 <style scoped>
 
     .list-view {
-        min-height: 121px;
         position: relative;
     }
 
