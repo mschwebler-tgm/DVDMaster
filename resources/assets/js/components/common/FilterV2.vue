@@ -98,4 +98,34 @@
         align-items: center;
     }
 
+    /* Animations */
+
+    .filters-enter-active {
+        max-height: 500px;
+        -webkit-transition: max-height 1s;
+        -moz-transition: max-height 1s;
+        -ms-transition: max-height 1s;
+        -o-transition: max-height 1s;
+        transition: max-height 1s;
+        overflow: hidden;
+    }
+
+    .filters-leave-active {
+        max-height: 0;
+        -webkit-transition: max-height .5s;
+        -moz-transition: max-height .5s;
+        -ms-transition: max-height .5s;
+        -o-transition: max-height .5s;
+        transition: max-height .5s;
+        overflow: hidden;
+    }
+
+    .filters-leave {
+        max-height: 500px;
+    }
+
+    .filters-enter {
+        max-height: 0;
+    }
+
 </style>

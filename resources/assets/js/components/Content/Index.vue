@@ -2,11 +2,12 @@
     <div class="md-elevation-1">
         <div class="header">
             <md-toolbar class="md-accent">
-                <h3 class="md-title">Series</h3>
+                <h3 class="md-title" style="width: 100px;">{{ label }}</h3>
                 <div class="series-toolbar">
-                    <div class="pointer" @click="toggleFilters">
-                        <md-icon >filter_list</md-icon>
-                    </div>
+                    <md-button class="md-icon-button" @click="toggleFilters">
+                        <md-icon>filter_list</md-icon>
+                    </md-button>
+                    <md-button class="md-dense md-primary">Clear filter</md-button>
                 </div>
                 <div style="width: 127px;"></div> <!-- compensate absolute view toggle element -->
                 <div class="viewToggle">
@@ -104,6 +105,9 @@
             },
             nextPageUrl() {
                 return this.$store.getters[this.getters.nextPageUrl];
+            },
+            label() {
+                return this.type.charAt(0).toUpperCase() + this.type.slice(1).toLowerCase();
             }
         }
     }
@@ -115,8 +119,13 @@
     }
 
     .series-toolbar {
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.13);
     }
 
     .viewToggle {
