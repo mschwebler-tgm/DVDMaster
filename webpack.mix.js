@@ -34,5 +34,11 @@ mix.webpackConfig({
     })
     .sass('resources/assets/sass/app.scss', 'public/css');
 
-mix.js('resources/assets/js/app.js', 'public/js');
+mix.js('resources/assets/js/app.js', 'public/js').browserSync({
+    proxy: 'https://dvdmaster.local',
+    port: 3002,
+    ui: {
+        port: 3003
+    }
+});
 
