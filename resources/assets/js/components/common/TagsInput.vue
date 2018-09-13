@@ -31,7 +31,8 @@
             }
         },
         methods: {
-            getItems() {
+            getItems(term) {
+                if (_.isObject(term)) { return }
                 this.items = new Promise((resolve, reject) => {
                     let payload = null;
                     if (this.search) {
@@ -59,6 +60,7 @@
             onClose() {
                 if (this.resetSearchOnClose) {
                     this.search = '';
+                    this.getItems();
                 }
                 this.resetSearchOnClose = false;
             },
