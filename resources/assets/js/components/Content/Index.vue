@@ -49,6 +49,7 @@
                     loading: this.$route.name + '_GET_LOADING',  // MOVIES_GET_LOADING
                     searchingActive: this.$route.name + '_GET_SEARCHING',  // MOVIES_GET_SEARCHING
                     nextPageUrl: this.$route.name + '_GET_NEXT_PAGE_URL',  // MOVIES_GET_NEXT_PAGE_URL
+                    filters: this.$route.name + '_GET_FILTER', // MOVIES_GET_FILTER
                 },
                 actions: {
                     firstPage: this.$route.name + '_ACTION_GET_FIRSTPAGE',  // MOVIES_ACTION_GET_FIRSTPAGE,
@@ -64,7 +65,7 @@
                 this.type = this.$route.name;
                 this.initGetters(module);
                 this.initActions(module);
-                if (this.$store.getters[this.getters.all].length === 0) {
+                if (this.$store.getters[this.getters.all].length === 0 && _.isEmpty(this.$store.getters[this.getters.filters])) {
                     this.$store.dispatch(this.actions.firstPage);
                 }
             },

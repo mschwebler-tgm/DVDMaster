@@ -4,18 +4,18 @@
             <div class="pad filters">
                 <div class="tags">
                     <div>
-                        <tags-input type="actors" image-key="profile_path" v-model="actors"></tags-input>
+                        <tags-input type="actors" image-key="profile_path" v-model="actors" v-on:input="onActors"></tags-input>
                         <div class="item-chips">
-                            <md-chip v-for="(item, index) in actors" :key="item.id" md-deletable @md-delete="actors.splice(index, 1)" class="item-chip">{{ item.name }}</md-chip>
+                            <md-chip v-for="(item, index) in actors" :key="item.id" md-deletable @md-delete="actors.splice(index, 1); onActors()" class="item-chip">{{ item.name }}</md-chip>
                         </div>
                     </div>
                     <div>
-                        <tags-input type="genres" v-model="genres"></tags-input>
-                        <md-chip v-for="(item, index) in genres" :key="item.id" md-deletable @md-delete="genres.splice(index, 1)" class="item-chip">{{ item.name }}</md-chip>
+                        <tags-input type="genres" v-model="genres" v-on:input="onGenres"></tags-input>
+                        <md-chip v-for="(item, index) in genres" :key="item.id" md-deletable @md-delete="genres.splice(index, 1); onGenres()" class="item-chip">{{ item.name }}</md-chip>
                     </div>
                 </div>
                 <div class="bools pad">
-                    <bool-filters v-model="boolFilters" :type="type"></bool-filters>
+                    <bool-filters v-model="boolFilters" :type="type" v-on:input="onBoolFilters"></bool-filters>
                 </div>
             </div>
         </md-content>
@@ -34,18 +34,30 @@
                 actors: []
             }
         },
-        watch: {
-            boolFilters() {
+        methods: {
+            initFilters() {
+                this.boolFilters = this.$store.getters[this.type + '_GET_FILTER'].bool || [];
+                this.genres = this.$store.getters[this.type + '_GET_FILTER'].genres || [];
+                this.actors = this.$store.getters[this.type + '_GET_FILTER'].actors || [];
+            },
+            onBoolFilters() {
                 this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'bool', data: this.boolFilters});
                 this.$store.dispatch(this.type + '_ACTION_SEARCH');
             },
-            genres() {
+            onGenres() {
                 this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'genres', data: this.genres});
                 this.$store.dispatch(this.type + '_ACTION_SEARCH');
             },
-            actors() {
+            onActors() {
                 this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'actors', data: this.actors});
                 this.$store.dispatch(this.type + '_ACTION_SEARCH');
+            }
+        },
+        watch: {
+            type() {
+                this.$store.commit(this.type + '_COMMIT_PREVENT_SEARCH', true);
+                this.initFilters();
+                this.$store.commit(this.type + '_COMMIT_PREVENT_SEARCH', false);
             }
         },
         components: {

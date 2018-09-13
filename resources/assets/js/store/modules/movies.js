@@ -6,7 +6,8 @@ const state = {
     movie: {},
     filter: {},
     loading: false,
-    searching: false
+    searching: false,
+    preventSearch: false
 };
 
 const actions = {
@@ -39,6 +40,7 @@ const actions = {
         });
     },
     MOVIES_ACTION_SEARCH ({commit, state}) {
+        if (this.preventSearch) { return; }
         state.searching = true;
         function _pluckNames(dataArray) {
             let names = [];
@@ -148,6 +150,9 @@ const mutations = {
     },
     MOVIES_SET_ROOT (state, vueInstance) {
         state.$root = vueInstance;
+    },
+    MOVIES_COMMIT_PREVENT_SEARCH (state, bool) {
+        state.preventSearch = !!bool;
     }
 };
 

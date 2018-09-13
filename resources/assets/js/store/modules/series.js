@@ -6,7 +6,8 @@ const state = {
     singleSeries: {},
     filter: {},
     loading: false,
-    searching: false
+    searching: false,
+    preventSearch: false
 };
 
 const actions = {
@@ -39,6 +40,7 @@ const actions = {
         });
     },
     SERIES_ACTION_SEARCH ({commit, state}) {
+        if (this.preventSearch) { return; }
         state.searching = true;
         function _pluckNames(dataArray) {
             let names = [];
@@ -87,6 +89,9 @@ const mutations = {
     },
     SERIES_COMMIT_FILTER_UPDATE (state, {type, data}) {
         Vue.set(state.filter, type, data);
+    },
+    SERIES_COMMIT_PREVENT_SEARCH (state, bool) {
+        state.preventSearch = !!bool;
     }
 };
 
