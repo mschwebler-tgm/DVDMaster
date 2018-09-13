@@ -39,21 +39,21 @@
                     }
                     axios.get('/api/' + this.type, {params: payload}).then(res => {
                         // set toLowerCase property as the autocomplete makes use of that function
-                        let mappedItems = res.data.map(actor => ({
-                            'id': actor.id,
-                            'name': actor.name,
-                            'profile_path': actor.profile_path,
-                            'toLowerCase': () => actor.name.toLowerCase(),
-                            'toString': () => actor.name
-                        }));
+                        let mappedItems = res.data
+                            .filter(actor => !this.isDuplicate(actor))
+                            .map(actor => ({
+                                'id': actor.id,
+                                'name': actor.name,
+                                'profile_path': actor.profile_path,
+                                'toLowerCase': () => actor.name.toLowerCase(),
+                                'toString': () => actor.name
+                            }));
                         resolve(mappedItems);
                     }).catch(reject);
                 });
             },
             selectItem(item) {
-                this.search = '';
                 this.resetSearchOnClose = true;
-                this.getItems();
                 !this.isDuplicate(item) && this.selectedItems.push(item);
             },
             onClose() {
@@ -64,7 +64,7 @@
             },
             isDuplicate(item) {
                 for (let existing of this.selectedItems) {
-                    if (item.name === existing.name) {
+                    if (item.id === existing.id) {
                         return true;
                     }
                 }
