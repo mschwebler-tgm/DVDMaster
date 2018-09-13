@@ -89,9 +89,4 @@
         max-height: 56px;
     }
 
-    .item-chip {
-        margin-bottom: 4px;
-        margin-left: 4px;
-    }
-
 </style>
