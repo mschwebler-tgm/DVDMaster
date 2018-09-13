@@ -56,7 +56,11 @@
             }
         },
         created() {
-            this.initModule(this.$route.name)
+            this.initModule(this.$route.name);
+            $(document).bind('keydown', 'ctrl+q', () => {
+                this.clearFilters();
+                this.$store.dispatch(this.type + '_ACTION_SEARCH');
+            })
         },
         methods: {
             initModule(module) {

@@ -42,6 +42,8 @@ if (window.user_key) {
     window.axios.defaults.headers.common['api-key'] = window.user_key;
 }
 
+require('jquery-hotkeys');
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
