@@ -47,3 +47,4 @@ Route::get('/users/{id}', 'UserController@getAllExcept');
 Route::get('/stats', 'StatsController@index');
 
 Route::get('/customSearch/movies', 'SearchController@movies');
+Route::get('/customSearch/series', 'SearchController@series');

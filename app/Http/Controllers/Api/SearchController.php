@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Movie;
+use App\Series;
 use App\Service\Facades\ContentTransformer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -37,6 +38,14 @@ class SearchController extends Controller
         $movies = $this->search($movies, $request, 'title');
         $movies = $movies->orderBy('title', 'asc')->paginate();
         return ContentTransformer::transformContentPaginaton($movies, 'movies');
+    }
+
+    public function series(Request $request)
+    {
+        $series = Series::with('actors', 'genres', 'pendingRental.user');
+        $series = $this->search($series, $request, 'name');
+        $series = $series->orderBy('name', 'asc')->paginate();
+        return ContentTransformer::transformContentPaginaton($series, 'series');
     }
 
     private function applyBoolfilters(&$content, $boolFilters)

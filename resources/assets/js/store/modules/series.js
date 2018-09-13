@@ -38,6 +38,29 @@ const actions = {
             });
         });
     },
+    SERIES_ACTION_SEARCH ({commit, state}) {
+        state.searching = true;
+        function _pluckNames(dataArray) {
+            let names = [];
+            for (let data of dataArray) {
+                names.push(data.name);
+            }
+            return names;
+        }
+        let filter = _.clone(state.filter);
+        filter.genres && (filter.genres = _pluckNames(filter.genres));
+        filter.actors && (filter.actors = _pluckNames(filter.actors));
+        return new Promise((resolve, reject) => {
+            axios.get('/api/customSearch/series', {params: filter}).then(res => {
+                commit('SERIES_COMMIT_SET_SERIESDATA', res.data);
+                state.searching = false;
+                resolve();
+            }).catch(() => {
+                state.searching = false;
+                reject();
+            });
+        });
+    },
     SERIES_ACTION_SAVE ({state, commit}, payload) {
         return new Promise((resolve, reject) => {
             axios.post('/api/series', payload).then(res => {
@@ -61,6 +84,9 @@ const mutations = {
     },
     SERIES_SET_ROOT (state, vueInstance) {
         state.$root = vueInstance;
+    },
+    SERIES_COMMIT_FILTER_UPDATE (state, {type, data}) {
+        Vue.set(state.filter, type, data);
     }
 };
 
@@ -68,7 +94,9 @@ const getters = {
     SERIES_GET_ALL: state => state.series.data,
     SERIES_GET_NEXT_PAGE_URL: state => state.series.next_page_url,
     SERIES_GET: state => state.singleSeries,
+    SERIES_GET_FILTER: state => state.filter,
     SERIES_GET_LOADING: state => state.loading,
+    SERIES_GET_SEARCHING: state => state.searching,
 };
 
 export default {
