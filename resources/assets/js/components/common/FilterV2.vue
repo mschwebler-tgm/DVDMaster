@@ -1,21 +1,21 @@
 <template>
     <transition name="filters">
         <md-content class="md-elevation-2" v-show="show">
-            <div class="pad filters">
+            <div class="pad filters mobile-column">
                 <div class="tags">
-                    <div>
-                        <div class="flex">
+                    <div class="mobile-column">
+                        <div class="flex mobile-w-100">
                             <md-icon>person</md-icon>&nbsp;&nbsp;
-                            <tags-input type="actors" image-key="profile_path" v-model="actors" v-on:input="onActors"></tags-input>
+                            <tags-input type="actors" image-key="profile_path" v-model="actors" v-on:input="onActors" style="flex: 1;"></tags-input>
                         </div>
                         <div class="item-chips">
                             <md-chip v-for="(item, index) in actors" :key="item.id" md-deletable @md-delete="actors.splice(index, 1); onActors()" class="item-chip">{{ item.name }}</md-chip>
                         </div>
                     </div>
-                    <div>
-                        <div class="flex">
+                    <div class="mobile-column">
+                        <div class="flex mobile-w-100">
                             <md-icon>bookmark</md-icon>&nbsp;&nbsp;
-                            <tags-input type="genres" v-model="genres" v-on:input="onGenres"></tags-input>
+                            <tags-input type="genres" v-model="genres" v-on:input="onGenres"  style="flex: 1;"></tags-input>
                         </div>
                         <div class="item-chips">
                             <md-chip v-for="(item, index) in genres" :key="item.id" md-deletable @md-delete="genres.splice(index, 1); onGenres()" class="item-chip">{{ item.name }}</md-chip>
