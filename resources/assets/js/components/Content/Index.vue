@@ -17,7 +17,7 @@
             </md-toolbar>
         </div>
         <home-filter :show="showFilters" :type="type"></home-filter>
-        <div class="pad no-pad-mobile">
+        <div class="pad no-pad-mobile" style="min-height: 731px;">
             <content-list v-show="listView"
                           :type="type"
                           :data="content"
@@ -64,7 +64,7 @@
                 this.type = module;
                 this.initGetters(module);
                 this.initActions(module);
-                if (this.$store.getters[this.getters.all].length === 0 && _.isEmpty(this.$store.getters[this.getters.filters])) {
+                if (this.$store.getters[this.getters.all].length === 0 && this.isFilterEmpty()) {
                     this.$store.dispatch(this.actions.firstPage);
                 }
             },
@@ -85,6 +85,12 @@
             },
             clearFilters() {
                 this.$store.commit(this.type + '_COMMIT_CLEAR_FILTER')
+            },
+            isFilterEmpty() {
+                return _.isEmpty(this.$store.getters[this.getters.filters].bool) &&
+                       _.isEmpty(this.$store.getters[this.getters.filters].genres) &&
+                       _.isEmpty(this.$store.getters[this.getters.filters].actors) &&
+                       _.isEmpty(this.$store.getters[this.getters.filters].title);
             }
         },
         watch: {

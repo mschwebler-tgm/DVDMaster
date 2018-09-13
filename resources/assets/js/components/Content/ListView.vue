@@ -1,13 +1,28 @@
 <template>
-    <div>
-        <div class="movie-row toContent" v-if="data && !searchingActive" v-for="content in data" @click="navigateToDetailPage($event, content)" :key="data.id">
-            <content-list-item :content="content" :type="type"></content-list-item>
+    <div class="list-view">
+        <div>
+            <fade-transition :duration="200" name="fade" tag="div" v-if="data && !searchingActive" v-for="content in data"  :key="data.id">
+                <div class="movie-row toContent" @click="navigateToDetailPage($event, content)">
+                    <content-list-item :content="content" :type="type"></content-list-item>
+                </div>
+            </fade-transition>
         </div>
-        <loader v-if="searchingActive"></loader>
+
+        <div v-if="!loading && !searchingActive && data.length === 0">
+            <md-empty-state
+                    md-icon="inbox"
+                    md-label="No records found :("
+                    md-description="Click below or use the shortcut STRG+Q to clear all filter selections and search terms.">
+                <md-button class="md-primary md-raised" @click="$parent.clearFilters();">Clear filter</md-button>
+            </md-empty-state>
+        </div>
+
         <paginator :identifier="type + '-list'"
                    :toDispatch="paginateAction"
-                   :loading="loading"
-                   :nextPageUrl="nextPageUrl"></paginator>
+                   :loading="loading || searchingActive"
+                   :nextPageUrl="nextPageUrl"
+                   class="top"
+                   style="position: absolute; top: 0; left: 0;"></paginator>
     </div>
 </template>
 
@@ -26,6 +41,11 @@
 
 <style scoped>
 
+    .list-view {
+        min-height: 121px;
+        position: relative;
+    }
+
     .movie-row {
         padding: 10px;
         border-top: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));
@@ -42,4 +62,10 @@
     .movie-row:last-child {
         border-bottom: 0;
     }
+
+    .top {
+        position: absolute;
+        top: 0;
+    }
+
 </style>

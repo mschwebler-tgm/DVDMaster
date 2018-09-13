@@ -10,13 +10,13 @@
                         <div class="md-layout">
                             <div class="md-layout-item md-xsmall-size-80 md-small-size-60" style="position: relative;">
                                 <div :class="{'menu-hide': searchActive}" class="menu">
-                                    <md-tabs class="md-primary" style="padding: 0;" v-if="userIsLogged" md-sync-router>
-                                        <md-tab :id="tab.url" :md-label="tab.label" :key="tab.label" v-for="tab in tabs" @click="tabClicked(tab)" :to="tab.url"></md-tab>
+                                    <md-tabs class="md-primary" style="padding: 0;" v-if="userIsLogged" md-sync-route ref="tabs">
+                                        <md-tab :id="tab.url" :md-label="tab.label" :key="tab.label" v-for="tab in tabs" :to="tab.url" :md-icon="tab.icon"></md-tab>
                                     </md-tabs>
                                 </div>
                                 <div :class="{'show-search mobile-search-grow': searchActive}" class="mobile-search mobile-only" v-if="userIsLogged">
                                     <md-field class="md-custom-input" style="margin: 0; top: -6px">
-                                        <md-input placeholder="Search" class="white-text" v-model="query" @keyup.enter="search"></md-input>
+                                        <md-input placeholder="Search" class="white-text" v-model="searchTerm" @keyup.enter="search"></md-input>
                                     </md-field>
                                 </div>
                             </div>
@@ -29,7 +29,7 @@
                                 <div class="desktop-only" v-if="userIsLogged">
                                     <div class="flex flex-align-center" style="padding-right: 15px;">
                                         <md-field class="md-custom-input" style="margin: 0; top: -6px">
-                                            <md-input placeholder="Search" class="white-text" v-model="query" @keyup.enter="search"></md-input>
+                                            <md-input placeholder="Search" class="white-text" v-model="searchTerm" @keyup.enter="search"></md-input>
                                             <md-icon>search</md-icon>
                                         </md-field>
                                     </div>
@@ -65,32 +65,23 @@
     export default {
         data() {
             return {
+                type: this.$route.name,  // MOVIES || SERIES
                 tabs: [
                     {label: 'Movies', url: '/movies'},
                     {label: 'Series', url: '/series'},
-                    {label: 'Add Movie/Series', url: '/addMovie'}
+                    {url: '/addMovie', icon: 'add_circle_outline'}
                 ],
                 searchActive: false,
-                query: '',
                 showBackToTop: false
             }
         },
         mounted() {
             this.initScrollSpy();
+            console.log(this.$refs.tabs.$forceUpdate());
         },
         methods: {
-            tabClicked(event) {
-                if (event.label === 'Home') {
-                    this.query = '';
-                    this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'genres', data: []});
-                    this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'actors', data: []});
-                    this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'bool', data: []});
-                    this.search();
-                }
-            },
             search() {
-                this.$store.commit('MOVIES_COMMIT_FILTER_UPDATE', {type: 'title', data: this.query});
-                this.$store.dispatch('MOVIES_ACTION_SEARCH');
+                this.$store.dispatch(this.type + '_ACTION_SEARCH');
             },
             initScrollSpy() {
                 let scrollContainer = $('#app-content').parent();
@@ -105,9 +96,22 @@
                 }, 1000, 'swing');
             }
         },
+        watch: {
+            '$route.name'(type) {
+                this.type = type;
+            }
+        },
         computed: {
             userIsLogged() {
                 return window.isLogged;
+            },
+            searchTerm: {
+                get() {
+                    return this.$store.getters[this.type + '_GET_FILTER'] ? this.$store.getters[this.type + '_GET_FILTER'].title : '';
+                },
+                set(data) {
+                    this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'title', data});
+                }
             }
         }
     }
