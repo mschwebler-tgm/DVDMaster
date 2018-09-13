@@ -34,6 +34,14 @@
                 actors: []
             }
         },
+        created() {
+            this.$store.watch(state => state[this.type.toLowerCase()].filter, () => {
+                if (!_.isEmpty(this.boolFilters) || !_.isEmpty(this.genres) || !_.isEmpty(this.actors)) {
+                    this.initFilters();
+                    this.doSearch();
+                }
+            }, {deep: true});
+        },
         methods: {
             initFilters() {
                 this.boolFilters = this.$store.getters[this.type + '_GET_FILTER'].bool || [];
@@ -41,16 +49,22 @@
                 this.actors = this.$store.getters[this.type + '_GET_FILTER'].actors || [];
             },
             onBoolFilters() {
-                this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'bool', data: this.boolFilters});
-                this.$store.dispatch(this.type + '_ACTION_SEARCH');
+                this.filterUpdate('bool', this.boolFilters);
+                this.doSearch();
             },
             onGenres() {
-                this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'genres', data: this.genres});
-                this.$store.dispatch(this.type + '_ACTION_SEARCH');
+                this.filterUpdate('genres', this.genres);
+                this.doSearch();
             },
             onActors() {
-                this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'actors', data: this.actors});
+                this.filterUpdate('actors', this.actors);
+                this.doSearch();
+            },
+            doSearch() {
                 this.$store.dispatch(this.type + '_ACTION_SEARCH');
+            },
+            filterUpdate(type, data) {
+                this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type, data});
             }
         },
         watch: {

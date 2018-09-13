@@ -90,6 +90,9 @@ const mutations = {
     SERIES_COMMIT_FILTER_UPDATE (state, {type, data}) {
         Vue.set(state.filter, type, data);
     },
+    SERIES_COMMIT_CLEAR_FILTER (state) {
+        Vue.set(state, 'filter', {});
+    },
     SERIES_COMMIT_PREVENT_SEARCH (state, bool) {
         state.preventSearch = !!bool;
     }

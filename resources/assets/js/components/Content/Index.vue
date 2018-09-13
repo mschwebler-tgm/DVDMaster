@@ -37,8 +37,6 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
-
     export default {
         data() {
             return {
@@ -63,7 +61,7 @@
         },
         methods: {
             initModule(module) {
-                this.type = this.$route.name;
+                this.type = module;
                 this.initGetters(module);
                 this.initActions(module);
                 if (this.$store.getters[this.getters.all].length === 0 && _.isEmpty(this.$store.getters[this.getters.filters])) {
@@ -72,6 +70,7 @@
             },
             initGetters(module) {
                 this.getters.all = module + '_GET_ALL';  // MOVIES_GET_ALL
+                this.getters.filters = module + '_GET_FILTER';  // MOVIES_GET_FILTER
                 this.getters.loading = module + '_GET_LOADING';  // MOVIES_GET_LOADING
                 this.getters.nextPageUrl = module + '_GET_NEXT_PAGE_URL';  // MOVIES_GET_SEARCHING
                 this.getters.searchingActive = module + '_GET_SEARCHING';  // MOVIES_GET_SEARCHING
@@ -83,6 +82,9 @@
             toggleFilters() {
                 this.showFilters = !this.showFilters;
                 localStorage.setItem('showFilters_home', this.showFilters ? 'true' : 'false');
+            },
+            clearFilters() {
+                this.$store.commit(this.type + '_COMMIT_CLEAR_FILTER')
             }
         },
         watch: {
