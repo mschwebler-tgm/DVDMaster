@@ -1,6 +1,6 @@
 <template>
     <div>
-        <md-chip v-for="item in selectedItems" :key="item.id">{{ item.name }}</md-chip>
+        <md-chip v-for="(item, index) in selectedItems" :key="item.id" md-deletable @md-delete="selectedItems.splice(index, 1)">{{ item.name }}</md-chip>
         <md-autocomplete v-model="search" @md-changed="getItems" @md-opened="getItems" @md-selected="selectItem" @md-closed="onClose"
                          :md-options="items" v-if="items">
             <label>{{ (type.charAt(0).toUpperCase() + type.slice(1)) }}</label>
