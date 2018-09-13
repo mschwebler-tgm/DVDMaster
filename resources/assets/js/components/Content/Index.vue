@@ -15,7 +15,7 @@
                 </div>
             </md-toolbar>
         </div>
-        <home-filter :show="showFilters"></home-filter>
+        <home-filter :show="showFilters" :type="type"></home-filter>
         <div class="pad no-pad-mobile">
             <content-list v-show="listView"
                           :type="type"
