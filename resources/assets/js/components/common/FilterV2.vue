@@ -4,14 +4,22 @@
             <div class="pad filters">
                 <div class="tags">
                     <div>
-                        <tags-input type="actors" image-key="profile_path" v-model="actors" v-on:input="onActors"></tags-input>
+                        <div class="flex">
+                            <md-icon>person</md-icon>&nbsp;&nbsp;
+                            <tags-input type="actors" image-key="profile_path" v-model="actors" v-on:input="onActors"></tags-input>
+                        </div>
                         <div class="item-chips">
                             <md-chip v-for="(item, index) in actors" :key="item.id" md-deletable @md-delete="actors.splice(index, 1); onActors()" class="item-chip">{{ item.name }}</md-chip>
                         </div>
                     </div>
                     <div>
-                        <tags-input type="genres" v-model="genres" v-on:input="onGenres"></tags-input>
-                        <md-chip v-for="(item, index) in genres" :key="item.id" md-deletable @md-delete="genres.splice(index, 1); onGenres()" class="item-chip">{{ item.name }}</md-chip>
+                        <div class="flex">
+                            <md-icon>bookmark</md-icon>&nbsp;&nbsp;
+                            <tags-input type="genres" v-model="genres" v-on:input="onGenres"></tags-input>
+                        </div>
+                        <div class="item-chips">
+                            <md-chip v-for="(item, index) in genres" :key="item.id" md-deletable @md-delete="genres.splice(index, 1); onGenres()" class="item-chip">{{ item.name }}</md-chip>
+                        </div>
                     </div>
                 </div>
                 <div class="bools pad">

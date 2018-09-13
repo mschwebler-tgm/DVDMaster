@@ -148,7 +148,7 @@ const mutations = {
     MOVIES_COMMIT_FILTER_UPDATE (state, {type, data}) {
         Vue.set(state.filter, type, data);
     },
-    SERIES_COMMIT_CLEAR_FILTER (state) {
+    MOVIES_COMMIT_CLEAR_FILTER (state) {
         Vue.set(state, 'filter', {});
     },
     MOVIES_SET_ROOT (state, vueInstance) {
