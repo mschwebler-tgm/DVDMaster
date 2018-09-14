@@ -16,8 +16,6 @@ Vue.component('retrieval-modal', require('./components/MoviePage/RetrievalModal.
 Vue.component('tags-input', require('./components/common/TagsInput.vue'));
 Vue.component('movie-rating', require('./components/common/MovieRating.vue'));
 Vue.component('content-rating', require('./components/common/ContentRating.vue'));
-Vue.component('actors-input', require('./components/common/ActorsInput.vue'));
-Vue.component('genres-input', require('./components/common/GenresInput.vue'));
 Vue.component('search-bar', require('./components/SearchBar.vue'));
 Vue.component('paginator', require('./components/common/Paginator.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));

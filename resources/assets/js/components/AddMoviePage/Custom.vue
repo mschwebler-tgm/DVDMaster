@@ -34,12 +34,12 @@
                 <md-textarea v-model="customMovie.overview" md-autogrow></md-textarea>
             </md-field>
             <div style="margin-bottom: 24px;">
-                <label>Genres</label>
-                <genres-input @change="genres => customMovie.genres = genres"></genres-input>
+                <tags-input v-model="customMovie.actors" type="actors" image-key="profile_path"></tags-input>
+                <md-chip v-for="(actor, index) in customMovie.actors" :key="actor.id" class="custom-chip" md-deletable @md-delete="customMovie.actors.splice(index, 1)">{{ actor.name }}</md-chip>
             </div>
             <div style="margin-bottom: 24px;">
-                <label>Actors</label>
-                <actors-input @change="actors => customMovie.actors = actors"></actors-input>
+                <tags-input v-model="customMovie.genres" type="genres" image-key="profile_path"></tags-input>
+                <md-chip v-for="(genre, index) in customMovie.genres" :key="genre.id" class="custom-chip" md-deletable @md-delete="customMovie.genres.splice(index, 1)">{{ genre.name }}</md-chip>
             </div>
             <md-datepicker v-model="customMovie.release_date" md-immediately id="release-date">
                 <label>Release date</label>
@@ -65,6 +65,10 @@
                 custom_backdrop_preview: null,
                 custom_poster_preview: null
             }
+        },
+        created() {
+            if (!this.customMovie.actors) Vue.set(this.customMovie, 'actors', []);
+            if (!this.customMovie.genres) Vue.set(this.customMovie, 'genres', []);
         },
         methods: {
             openCustomCoverDialog() {

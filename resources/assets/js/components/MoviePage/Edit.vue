@@ -33,12 +33,12 @@
                 <md-input v-model="movie.comment" placeholder="Comment"></md-input>
             </md-field>
             <div style="margin-bottom: 24px;">
-                <label>Actors</label>
-                <actors-input @change="updateActors" :initial="movie.actors"></actors-input>
+                <tags-input v-model="movie.actors" type="actors" image-key="profile_path"></tags-input>
+                <md-chip v-for="(actor, index) in movie.actors" :key="actor.id" class="custom-chip" md-deletable @md-delete="movie.actors.splice(index, 1)">{{ actor.name }}</md-chip>
             </div>
             <div style="margin-bottom: 24px;">
-                <label>Genres</label>
-                <genres-input @change="updateGenres" :initial="movie.genres"></genres-input>
+                <tags-input v-model="movie.genres" type="genres" image-key="profile_path"></tags-input>
+                <md-chip v-for="(genre, index) in movie.genres" :key="genre.id" class="custom-chip" md-deletable @md-delete="movie.genres.splice(index, 1)">{{ genre.name }}</md-chip>
             </div>
             <md-datepicker v-model="movie.release_date" md-immediately id="release-date">
                 <label>Release date</label>
@@ -95,12 +95,6 @@
                 $('#custom_backdrop').val(null);
                 this.custom_backdrop_preview = null;
             },
-            updateActors(actors) {
-                this.movie.actors = actors;
-            },
-            updateGenres(genres) {
-                this.movie.genres = genres;
-            },
             save() {
                 let payload = new FormData();
                 if (this.movie.release_date) {
@@ -134,6 +128,11 @@
 </script>
 
 <style scoped>
+
+    .custom-chip {
+        margin-left: 4px;
+        margin-bottom: 4px;
+    }
 
     .movie-edit > .row{
         padding: 0 15px;
