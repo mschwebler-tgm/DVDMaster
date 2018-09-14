@@ -74,6 +74,20 @@ const actions = {
             });
         });
     },
+    SERIES_CHECK_FOR_NEW_CONTENT ({state, commit}) {
+        console.log('SERIES_CHECK_FOR_NEW_CONTENT called');
+        console.log(state.series.data.length, state.series.currentPage, state.series.lastPage);
+        if (state.series.data.length === 0 || state.series.currentPage !== state.series.lastPage) { return }
+        axios.get('/api/series', {params: {page: state.series.currentPage}}).then(res => {
+            for (let resSeries of res.data.data) {
+                if (_.findIndex(state.series.data, series => series.id === resSeries.id) >= 0) {
+                    // todo if statement does not work as expected
+                    console.log(resSeries);
+                    commit('SERIES_COMMIT_APPEND_SERIESDATA', resSeries);
+                }
+            }
+        });
+    }
 };
 
 const mutations = {

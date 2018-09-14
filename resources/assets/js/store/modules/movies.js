@@ -132,6 +132,14 @@ const actions = {
                 reject(err);
             });
         });
+    },
+    MOVIES_CHECK_FOR_NEW_CONTENT ({state, commit}) {
+        if (state.movies.data.length === 0 || state.movies.currentPage !== state.movies.lastPage) { return }
+        axios.get('/api/movies', {params: {page: state.movies.currentPage}}).then(res => {
+            for (let movie of res.data.data) {
+                console.log(movie.id);
+            }
+        });
     }
 };
 

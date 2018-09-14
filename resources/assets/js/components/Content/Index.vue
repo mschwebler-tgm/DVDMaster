@@ -63,6 +63,9 @@
                 this.clearFilters();
             })
         },
+        beforeRouteEnter(to, from, next) {
+            next(vm => vm.$store.dispatch(vm.type + '_CHECK_FOR_NEW_CONTENT'));
+        },
         methods: {
             initModule(module) {
                 this.type = module;
