@@ -109,7 +109,7 @@
                     return this.$store.getters[this.type + '_GET_FILTER'] ? this.$store.getters[this.type + '_GET_FILTER'].title : '';
                 },
                 set(data) {
-                    this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'title', data});
+                    this.type && this.$store.commit(this.type + '_COMMIT_FILTER_UPDATE', {type: 'title', data});
                 }
             }
         }
