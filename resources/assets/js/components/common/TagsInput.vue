@@ -12,7 +12,7 @@
             </template>
 
             <template slot="md-autocomplete-empty" slot-scope="{ term }">
-                No {{ (type.charAt(0).toUpperCase() + type.slice(1)) }} matching "{{ searchTerm }}" were found. <a @click="noop()">Create a new</a> one!
+                No {{ (type.charAt(0).toUpperCase() + type.slice(1)) }} matching "{{ searchTerm }}" were found.
             </template>
         </md-autocomplete>
     </div>
