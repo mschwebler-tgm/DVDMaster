@@ -152,42 +152,13 @@ class MovieDao
         return $rental;
     }
 
-    /**
-     * @param Movie $movie
-     * @param array $genres
-     */
     public function updateGenres(Movie $movie, $genres)
     {
-        $genresToDetach = $movie->genres->pluck('id')->toArray();
-        $genresToAttach = [];
-        foreach ($genres as $key => $genre) {
-            if (!in_array($genre['id'], $genresToDetach)) {
-                $genresToAttach[] = $genre['id'];
-            } else {
-                unset($genresToDetach[$key]);
-            }
-        }
-        $movie->genres()->attach($genresToAttach);
-        $movie->genres()->detach($genresToDetach);
+        $movie->genres()->sync(collect($genres)->pluck('id')->toArray());
     }
 
-    /**
-     * @param Movie $movie
-     * @param array $actors
-     */
     public function updateActors(Movie $movie, $actors)
     {
-        $actorsToDetach = $movie->actors->pluck('id')->toArray();
-        $actorsToAttach = [];
-
-        foreach ($actors as $key => $actor) {
-            if (!in_array($actor['id'], $actorsToDetach)) {
-                $actorsToAttach[] = $actor['id'];
-            } else {
-                unset($actorsToDetach[$key]);
-            }
-        }
-        $movie->actors()->attach($actorsToAttach);
-        $movie->actors()->detach($actorsToDetach);
+        $movie->actors()->sync(collect($actors)->pluck('id')->toArray());
     }
 }
