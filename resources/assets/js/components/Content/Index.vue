@@ -60,7 +60,6 @@
             this.initModule(this.$route.name);
             $(document).bind('keydown', 'ctrl+q', () => {
                 this.clearFilters();
-                this.$store.dispatch(this.type + '_ACTION_SEARCH');
             })
         },
         methods: {
@@ -88,7 +87,8 @@
                 localStorage.setItem('showFilters_home', this.showFilters ? 'true' : 'false');
             },
             clearFilters() {
-                this.$store.commit(this.type + '_COMMIT_CLEAR_FILTER')
+                this.$store.commit(this.type + '_COMMIT_CLEAR_FILTER');
+                this.$store.dispatch(this.type + '_ACTION_SEARCH');
             },
             isFilterEmpty() {
                 return _.isEmpty(this.$store.getters[this.getters.filters].bool) &&
