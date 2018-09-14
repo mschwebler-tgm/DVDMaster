@@ -69,8 +69,16 @@ class SeriesController extends Controller
     {
     }
 
-    public function rateMovie($movieId, Request $request)
+    public function rate($seriesId, Request $request)
     {
+        $series = Series::find($seriesId);
+        if (!$series || !$request->get('rating')) {
+            abort(404);
+        }
+
+        $series->custom_rating = $request->get('rating');
+        $series->save();
+        return $series;
     }
 
     public function updateMovie($movieId, Request $request)

@@ -29,6 +29,7 @@ Route::group(['middleware' => ['adminOnly']], function () {
 
     // series
     Route::post('/series', 'SeriesController@store');
+    Route::post('/series/{seriesId}/rate', 'SeriesController@rate');
 
     // other
     Route::post('/users', 'UserController@create');
