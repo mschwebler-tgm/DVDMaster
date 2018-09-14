@@ -23,10 +23,9 @@ Vue.component('paginator', require('./components/common/Paginator.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
 Vue.component('loader', require('./components/common/Loader.vue'));
 
-// Movies
-Vue.component('home-filter', require('./components/common/FilterV2.vue'));
-
 // General view
+Vue.component('content-filter', require('./components/Content/Filter.vue'));
+Vue.component('order-filter', require('./components/Content/OrderFilter.vue'));
 Vue.component('content-list', require('./components/Content/ListView.vue'));
 Vue.component('content-list-item', require('./components/Content/ListViewItem.vue'));
 Vue.component('content-cards', require('./components/Content/CardView.vue'));
