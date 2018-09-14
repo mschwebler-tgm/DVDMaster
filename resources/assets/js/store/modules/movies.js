@@ -104,6 +104,7 @@ const actions = {
     },
     MOVIES_ACTION_DELETE ({state, commit}, id) {
         axios.get('/api/movie/' + id + '/delete').then(() => {
+            commit('MOVIES_COMMIT_REMOVE_MOVIE', id);
             state.$root.toast('Movie deleted');
             state.$root.$router.go(-1);
         }).catch(() => {
@@ -156,6 +157,13 @@ const mutations = {
     },
     MOVIES_COMMIT_PREVENT_SEARCH (state, bool) {
         state.preventSearch = !!bool;
+    },
+    MOVIES_COMMIT_REMOVE_MOVIE (state, id) {
+        for (let i = 0; i < state.movies.data.length; i++) {
+            if (state.movies.data[i].id === id) {
+                state.movies.data.splice(i, 1);
+            }
+        }
     }
 };
 
