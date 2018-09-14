@@ -99,7 +99,7 @@ class MovieDao
 
         $movie = (array) json_decode($payload['movie']);
 
-        $movie = Movie::create([
+        $dbMovie = Movie::create([
             "custom_rating" => isset($movie['custom_rating']) ? $movie['custom_rating'] : null,
             "title" => isset($movie['title']) ? $movie['title'] : null,
             "duration" => isset($movie['duration']) ? $movie['duration'] : null,
@@ -111,6 +111,9 @@ class MovieDao
             "true_story" => isset($movie['true_story']) ? $movie['true_story'] : null,
             "based_on_book" => isset($movie['based_on_book']) ? $movie['based_on_book'] : null,
         ]);
+
+        $this->updateActors($dbMovie, $movie['actors']);
+        $this->updateGenres($dbMovie, $movie['genres']);
 
         return $movie;
     }
