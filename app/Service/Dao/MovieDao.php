@@ -137,7 +137,7 @@ class MovieDao
         return $rental;
     }
 
-    public function retrieve(Movie $movie, $like, $date, $quality)
+    public function retrieve(Movie $movie, $like, $date, $dvdQuality, $caseQuality)
     {
         if (!$date) {
             $date = Carbon::now();
@@ -149,7 +149,8 @@ class MovieDao
         }
         $rental->like = $like;
         $rental->retrieved_at = $date;
-        $rental->quality = $quality;
+        $rental->dvd_quality = $dvdQuality;
+        $rental->case_quality = $caseQuality;
         $rental->state = 'complete';
         $rental->save();
         return $rental;
