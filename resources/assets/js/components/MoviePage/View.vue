@@ -165,23 +165,22 @@
                 });
             },
             retrieveMovie(params) {
-                switch (params.quality) {
-                    case 'DVD lost': params.quality = 'lost';
-                        break;
-                    case 'Bad Shape': params.quality = 'bad';
-                        break;
-                    case 'Some damage': params.quality = 'meh';
-                        break;
-                    case 'Minor scratches': params.quality = 'okay';
-                        break;
-                    case 'Original': params.quality = 'good';
-                        break;
-                }
+                params.dvd_quality = this._parseQuality(params.dvd_quality);
+                params.case_quality = this._parseQuality(params.case_quality);
                 params.date = moment(params.data).format('YYYY-MM-DD');
                 this.$store.dispatch('MOVIES_ACTION_RETRIEVE', {id: this.movie.id, payload: params}).then(() => {
                     Vue.set(this.movie, 'pending_rental', []);
                 });
             },
+            _parseQuality(quality) {
+                switch (quality) {
+                    case 'DVD lost': return 'lost';
+                    case 'Bad Shape': return 'bad';
+                    case 'Some damage': return 'meh';
+                    case 'Minor scratches': return 'okay';
+                    case 'Original': return 'good';
+                }
+            }
         },
         computed: {
             lastSeen() {

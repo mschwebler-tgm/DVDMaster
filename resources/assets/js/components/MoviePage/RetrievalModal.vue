@@ -1,8 +1,8 @@
 <template>
     <div id="retrieval-modal">
-        <md-dialog :md-active.sync="showModal">
+        <md-dialog :md-active.sync="showModal" style="height: 580px;">
             <md-dialog-content>
-                <md-steppers :md-active-step.sync="active" md-linear>
+                <md-steppers :md-active-step.sync="active" md-linear style="height: 420px;">
                     <md-step id="user" md-label="Recommendation" :md-description="like !== null ? (like ? 'Like' : 'Dislike') : ''" :md-done.sync="likeSelected">
                         <div class="custom-step">
                             <br>
@@ -42,15 +42,41 @@
                             <md-button class="md-raised md-accent step-button" @click="setDone('dateSelected', 'quality')" style="float: right">Continue</md-button>
                         </div>
                     </md-step>
-                    <md-step id="quality" class="custom-step" md-label="Quality" :md-description="quality || ''" :md-done.sync="qualitySelected">
+                    <md-step id="quality" class="custom-step" md-label="Quality" :md-description="dvd_quality || ''" :md-done.sync="qualitySelected">
                         <div class="custom-step">
                             <br>
                             <span class="md-display-1">In which shape was the DVD?</span>
                             <br>
                             <br>
+                            <div style="height: 100px" class="flex flex-justify-center flex-align-center">
+                                <vue-slider v-model="dvd_quality" v-bind="sliderOptions" ref="slider1">
+                                    <div class="vue-slider-tooltip" slot="tooltip" slot-scope="{ value }"
+                                         style="background-color: var(--md-theme-default-accent, #448aff);
+                                                border: 1px solid var(--md-theme-default-accent, #448aff)">
+                                        {{ value }}
+                                    </div>
+                                    <div slot="label" slot-scope="{ label, active }">
+                                        <span class="vue-slider-piecewise-label" v-if="active" style="color: var(--md-theme-default-accent, #448aff);">{{ label }}</span>
+                                        <span class="md-caption" v-else style="
+                                        position: absolute;
+                                        display: inline-block;
+                                        top: 100%;
+                                        left: 50%;
+                                        white-space: nowrap;
+                                        font-size: 12px;
+                                        transform: translate(-50%,8px);
+                                        visibility: visible;">{{ label }}</span>
+                                    </div>
+                                </vue-slider>
+                            </div>
+
+                            <br>
+                            <br>
+                            <span class="md-display-1">In which shape was the Case?</span>
+                            <br>
                             <br>
                             <div style="height: 100px" class="flex flex-justify-center flex-align-center">
-                                <vue-slider v-model="quality" v-bind="sliderOptions" ref="slider">
+                                <vue-slider v-model="case_quality" v-bind="sliderOptions" ref="slider2">
                                     <div class="vue-slider-tooltip" slot="tooltip" slot-scope="{ value }"
                                          style="background-color: var(--md-theme-default-accent, #448aff);
                                                 border: 1px solid var(--md-theme-default-accent, #448aff)">
@@ -98,7 +124,8 @@
                 qualitySelected: false,
                 like: null,
                 date: null,
-                quality: 'Original',
+                dvd_quality: 'Original',
+                case_quality: 'Original',
                 sliderOptions: {
                     width: '80%',
                     tooltip: 'always',
@@ -147,7 +174,8 @@
                     this.$emit('retrieved', {
                         like: this.like,
                         date: this.date,
-                        quality: this.quality
+                        dvd_quality: this.dvd_quality,
+                        case_quality: this.case_quality
                     });
                 }
             },
@@ -179,7 +207,8 @@
             },
             active(state) {
                 if (state === 'quality') {
-                    setTimeout(this.$refs.slider.refresh, 1000);
+                    setTimeout(this.$refs.slider1.refresh, 1000);
+                    setTimeout(this.$refs.slider2.refresh, 1000);
                 }
             }
         },
@@ -199,7 +228,7 @@
 
 <style scoped>
     .custom-step {
-        min-height: 350px;
+        min-height: 460px;
         position: relative;
     }
 
