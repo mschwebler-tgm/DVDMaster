@@ -56,21 +56,12 @@ class MovieController extends Controller
 
     public function show($id)
     {
-        $movie = Movie::with('actors', 'genres', 'pendingRental.user')->find($id);
-        if (!$movie) {
-            abort(404);
-        }
-
-        return $movie;
+        return $this->movieDao->find($id);
     }
 
     public function destroy($id)
     {
-        /** @var Movie $movie */
-        $movie = Movie::find($id);
-        if (!$movie) {
-            abort(404);
-        }
+        $movie = $this->movieDao->find($id);
         $movie->delete();
         return response('success', 200);
     }
@@ -78,20 +69,16 @@ class MovieController extends Controller
     public function updateLastSeen($id, $date)
     {
         $date = new Carbon($date);
-        $movie = Movie::find($id);
-        if (!$movie) {
-            abort(404);
-        }
-
+        $movie = $this->movieDao->find($id);
         $movie->update(['last_seen' => $date]);
         return response($movie->last_seen, 200);
     }
 
     public function borrowTo($movieId, $userId)
     {
-        $movie = Movie::with('pendingRental.user')->where('id', $movieId)->first();
+        $movie = $this->movieDao->find($movieId);
         $user = User::find($userId);
-        if (!$movie || !$user) {
+        if (!$user) {
             abort(404);
         }
 
@@ -100,18 +87,14 @@ class MovieController extends Controller
 
     public function retrieveMovie($movieId, Request $request)
     {
-        $movie = Movie::find($movieId);
-        if (!$movie) {
-            abort(404);
-        }
-
+        $movie = $this->movieDao->find($movieId);
         return $this->movieDao->retrieve($movie, $request->get('like'), $request->get('date'), $request->get('dvd_quality'), $request->get('case_quality'));
     }
 
     public function rateMovie($movieId, Request $request)
     {
-        $movie = Movie::find($movieId);
-        if (!$movie || !$request->get('rating')) {
+        $movie = $this->movieDao->find($movieId);
+        if (!$request->get('rating')) {
             abort(404);
         }
 
@@ -122,9 +105,8 @@ class MovieController extends Controller
 
     public function updateMovie($movieId, Request $request)
     {
-        /** @var Movie $movie */
-        $movie = Movie::with('genres', 'actors')->where('id', $movieId)->first();
-        if (!$movie || !$request->get('movie')) {
+        $movie = $this->movieDao->find($movieId);
+        if (!$request->get('movie')) {
             abort(404);
         }
 

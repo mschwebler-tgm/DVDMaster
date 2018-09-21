@@ -13,6 +13,20 @@ use Illuminate\Support\Facades\Storage;
 class MovieDao
 {
     /**
+     * @param $id
+     * @return Movie
+     */
+    public function find($id)
+    {
+        $movie = Movie::with('actors', 'genres', 'pendingRental.user')->find($id);
+        if (!$movie) {
+            abort(404);
+        }
+
+        return $movie;
+    }
+
+    /**
      * @param $movie \Tmdb\Model\Movie|\Tmdb\Model\AbstractModel
      * @return Movie
      */
