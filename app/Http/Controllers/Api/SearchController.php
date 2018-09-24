@@ -36,7 +36,7 @@ class SearchController extends Controller
     {
         $movies = Movie::with('actors', 'genres', 'pendingRental.user');
         $this->search($movies, $request, 'title');
-        $this->applyOrderFilters($movies, $request, 'title');
+        $this->applyOrderFilters($movies, $request);
         $movies = $movies->orderBy('title', 'asc')->paginate();
         return ContentTransformer::transformContentPaginaton($movies, 'movies');
     }
@@ -44,7 +44,8 @@ class SearchController extends Controller
     public function series(Request $request)
     {
         $series = Series::with('actors', 'genres', 'pendingRental.user');
-        $series = $this->search($series, $request, 'name');
+        $this->search($series, $request, 'name');
+        $this->applyOrderFilters($series, $request, ['title' => 'name', 'duration' => 'episode_runtime']);
         $series = $series->orderBy('name', 'asc')->paginate();
         return ContentTransformer::transformContentPaginaton($series, 'series');
     }
@@ -74,12 +75,13 @@ class SearchController extends Controller
         $this->isFirstQuery = false;
     }
 
-    private function applyOrderFilters(Builder $builder, Request $request, $titleField)
+    private function applyOrderFilters(Builder $builder, Request $request, $specialFields = [])
     {
         $orderFilter = json_decode($request->get('order'));
         if (!$orderFilter) {
             return;
         }
-        $builder->orderBy($orderFilter->field === 'title' ? $titleField : $orderFilter->field, $orderFilter->direction);
+        $field = isset($specialFields[$orderFilter->field]) ? $specialFields[$orderFilter->field] : $orderFilter->field;
+        $builder->orderBy($field, $orderFilter->direction);
     }
 }
