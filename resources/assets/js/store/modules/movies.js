@@ -4,7 +4,12 @@ const state = {
         data: []
     },
     movie: {},
-    filter: {},
+    filter: {
+        order: {
+            direction: 'asc',
+            field: 'title'
+        }
+    },
     loading: false,
     searching: false,
     preventSearch: false
