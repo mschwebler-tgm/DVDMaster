@@ -59,6 +59,8 @@
         display: flex;
         justify-content: space-around;
         overflow-x: scroll;
+        padding-top: 5px;
+        margin-bottom: -20px;
     }
 
     .order-filters > div {
@@ -72,6 +74,13 @@
 
     .direction.active {
         opacity: 1;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .order-filters {
+            padding-left: 50%;
+            padding-top: 0;
+        }
     }
 
 </style>
