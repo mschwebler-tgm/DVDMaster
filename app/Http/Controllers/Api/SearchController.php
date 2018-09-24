@@ -35,7 +35,8 @@ class SearchController extends Controller
     public function movies(Request $request)
     {
         $movies = Movie::with('actors', 'genres', 'pendingRental.user');
-        $movies = $this->search($movies, $request, 'title');
+        $this->search($movies, $request, 'title');
+        $this->applyOrderFilters($movies, $request, 'title');
         $movies = $movies->orderBy('title', 'asc')->paginate();
         return ContentTransformer::transformContentPaginaton($movies, 'movies');
     }
@@ -71,5 +72,14 @@ class SearchController extends Controller
         }
         $content->$method($firstArg, $secondArg);
         $this->isFirstQuery = false;
+    }
+
+    private function applyOrderFilters(Builder $builder, Request $request, $titleField)
+    {
+        $orderFilter = json_decode($request->get('order'));
+        if (!$orderFilter) {
+            return;
+        }
+        $builder->orderBy($orderFilter->field === 'title' ? $titleField : $orderFilter->field, $orderFilter->direction);
     }
 }
