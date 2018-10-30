@@ -40,4 +40,9 @@ class Series extends Model
     {
         return $this->hasMany('App\Rental')->where('state', 'pending');
     }
+
+    public function seasons()
+    {
+        return $this->hasMany('\App\Season');
+    }
 }

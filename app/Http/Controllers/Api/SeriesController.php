@@ -51,6 +51,12 @@ class SeriesController extends Controller
 
     public function show($id)
     {
+        $series = Series::with('actors', 'genres', 'pendingRental.user', 'seasons')->find($id);
+        if (!$series) {
+            abort(404);
+        }
+
+        return $series;
     }
 
     public function destroy($id)

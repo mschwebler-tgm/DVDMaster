@@ -41,6 +41,7 @@ Route::get('/movie/{id}', 'MovieController@show');
 
 //series
 Route::get('/series', 'SeriesController@index');
+Route::get('/series/{id}', 'SeriesController@show');
 
 Route::get('/actors', 'ActorController@actors');
 Route::get('/genres', 'GenreController@genres');
