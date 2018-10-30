@@ -5,6 +5,7 @@ import AddMovie from './components/AddMoviePage/AddMovie';
 const MoviePage = (resolve) => require(['./components/MoviePage/MoviePage'], resolve);
 const MovieEdit = (resolve) => require(['./components/MoviePage/Edit'], resolve);
 const MovieView = (resolve) => require(['./components/MoviePage/View'], resolve);
+const SeriesPage = (resolve) => require(['./components/SeriesPage/SeriesPage'], resolve);
 const ContentList = (resolve) => require(['./components/Content/Index'], resolve);
 
 export default new VueRouter({
@@ -34,6 +35,21 @@ export default new VueRouter({
                     path: 'edit',
                     component: MovieEdit
                 },
+                {
+                    path: '/',
+                    component: MovieView
+                }
+            ]
+        },
+        {
+            path: '/series/:id',
+            component: SeriesPage,
+            props: true,
+            children: [
+                // {
+                //     path: 'edit',
+                //     component: MovieEdit
+                // },
                 {
                     path: '/',
                     component: MovieView

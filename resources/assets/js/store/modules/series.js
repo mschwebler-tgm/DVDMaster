@@ -94,6 +94,16 @@ const actions = {
                 }
             }
         });
+    },
+    SERIES_ACTION_GET_BY_ID ({commit}, id) {
+        return new Promise((resolve, reject) => {
+            axios.get('/api/series/' + id).then(res => {
+                commit('SERIES_COMMIT_SET', res.data);
+                resolve();
+            }).catch(() => {
+                reject();
+            });
+        });
     }
 };
 
@@ -104,6 +114,9 @@ const mutations = {
     SERIES_COMMIT_APPEND_SERIESDATA (state, data) {
         data.data = state.series.data.concat(data.data);
         state.series = data;
+    },
+    SERIES_COMMIT_SET (state, series) {
+        state.singleSeries = series;
     },
     SERIES_SET_ROOT (state, vueInstance) {
         state.$root = vueInstance;
