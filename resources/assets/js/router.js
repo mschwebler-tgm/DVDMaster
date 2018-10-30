@@ -6,6 +6,8 @@ const MoviePage = (resolve) => require(['./components/MoviePage/MoviePage'], res
 const MovieEdit = (resolve) => require(['./components/MoviePage/Edit'], resolve);
 const MovieView = (resolve) => require(['./components/MoviePage/View'], resolve);
 const SeriesPage = (resolve) => require(['./components/SeriesPage/SeriesPage'], resolve);
+const SeriesView = (resolve) => require(['./components/SeriesPage/View'], resolve);
+const SeriesEdit = (resolve) => require(['./components/SeriesPage/Edit'], resolve);
 const ContentList = (resolve) => require(['./components/Content/Index'], resolve);
 
 export default new VueRouter({
@@ -46,13 +48,13 @@ export default new VueRouter({
             component: SeriesPage,
             props: true,
             children: [
-                // {
-                //     path: 'edit',
-                //     component: MovieEdit
-                // },
+                {
+                    path: 'edit',
+                    component: SeriesEdit
+                },
                 {
                     path: '/',
-                    component: MovieView
+                    component: SeriesView
                 }
             ]
         },
